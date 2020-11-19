@@ -25,7 +25,7 @@ class Login extends Component {
       <SafeAreaView style={styles.container}>
         <View
           style={{
-            backgroundColor: "#003f5c",
+            backgroundColor: "#189ad3",
             flex: 1,
             padding:20,
             justifyContent: "space-around",
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "80%",
-    backgroundColor: "#465881",
+    backgroundColor: "#fff",
     borderRadius: 25,
     height: 50,
     margin: 20,
