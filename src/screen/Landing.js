@@ -39,7 +39,7 @@ const LandingScreen = ({navigation}) => {
             }]}>Stay connected with everyone!</Text>
             <Text style={styles.text}>Sign in with account</Text>
             <View style={styles.button}>
-            <TouchableOpacity onPress={()=>navigation.navigate('Loginscreen')}>
+            <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
                     style={styles.signIn}

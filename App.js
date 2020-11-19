@@ -1,14 +1,13 @@
-import * as react from 'react';
-import 'react-native-gesture-handler';
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import 'react-native-gesture-handler';
 import { Platform, RefreshControlComponent, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screen/Home.js';
 import Profile from './src/screen/Profile.js';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import RootStack from './src/screen/RootStack.js'
+import RootStack from './src/screen/RootStackScreen.js'
+import RootStackScreen from './src/screen/RootStackScreen.js';
 
 
 
@@ -20,7 +19,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
     <NavigationContainer  >
-      <RootStack/>
+      <RootStackScreen/>
       {/* <Stack.Navigator initialRouteName={LoginScreen}>
         <Stack.Screen        
         name="Login"
