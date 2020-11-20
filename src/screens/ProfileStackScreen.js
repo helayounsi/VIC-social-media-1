@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native'
 
 const ProfileStackScreen = props =>{
   return (<View style={styles.ProfileScreen}>
-    <Text>This is the CameraScreen</Text>
+    <Text>This is the  ProfileStackScreen</Text>
   </View>)
 }; 
 

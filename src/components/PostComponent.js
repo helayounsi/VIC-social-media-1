@@ -26,14 +26,18 @@ const PostComponent = () => (
   style={styles.card}
 />
 <Card.Content>
-<Paragraph>Your comment here !</Paragraph>
+
 <View style={styles.feed}>
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
  Like
 </Button>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+ Comment
+</Button>
 <Button icon={require('../../assets/profile-photo/share.png')}>
  Share
 </Button>
+
 </View>
 </Card.Content>
   </Card>
@@ -50,11 +54,24 @@ const PostComponent = () => (
   isLooping
   style={styles.card}
 />
+<Card.Content>
+<View style={styles.feed}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
+ Like
+</Button>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+ Comment
+</Button>
+<Button icon={require('../../assets/profile-photo/share.png')}>
+ Share
+</Button>
+</View>
+</Card.Content>
   </Card>
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  // source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={false}
@@ -68,6 +85,9 @@ const PostComponent = () => (
 <View style={styles.feed}>
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
  Like
+</Button>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+ Comment
 </Button>
 <Button icon={require('../../assets/profile-photo/share.png')}>
  Share

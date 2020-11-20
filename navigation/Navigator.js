@@ -17,15 +17,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 
-// const Navigator = createStackNavigator({
-// Home: HomeScreen,
-// Details: DetailsScreen,
-// Explore: ExploreScreen,
-// });
-
-
-
-// //;
 
 
 const ProfileStack = createStackNavigator();
