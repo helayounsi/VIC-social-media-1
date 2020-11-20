@@ -20,8 +20,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
     <NavigationContainer  >
-      <CameraScreen/>
-      {/* <RootStackScreen/> */}
+      {/* <Profile/> */}
+      {/* <CameraScreen/> */}
+      <RootStackScreen/>
       {/* <Stack.Navigator initialRouteName={LoginScreen}>
         <Stack.Screen        
         name="Login"
