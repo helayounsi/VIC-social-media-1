@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import "react-native-gesture-handler";
 import {
@@ -34,3 +36,4 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? 25 : 0,
   },
 });
+
