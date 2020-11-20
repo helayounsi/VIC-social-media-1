@@ -9,7 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootStack from './src/screen/RootStackScreen.js'
 import RootStackScreen from './src/screen/RootStackScreen.js';
 import CameraScreen from './src/screen/CameraScreen.js';
-
+import UpdateScreen from './src/screen/UpdateScreen.js';
 
 
 
@@ -20,7 +20,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
     <NavigationContainer  >
-      <CameraScreen/>
+      <UpdateScreen/>
+      {/* <Profile/> */}
+      {/* <CameraScreen/> */}
       {/* <RootStackScreen/> */}
       {/* <Stack.Navigator initialRouteName={LoginScreen}>
         <Stack.Screen        
