@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
 import { Video } from 'expo-av';
-
+import PostComponent from '../components/PostComponent';
 
 const HomeScreen = props =>{
   return (
@@ -18,7 +18,9 @@ const HomeScreen = props =>{
   style={{ width: 400, height: 300 }}
 />
     <Text>This is the Home Screen!</Text>
-  </View> </SafeAreaView>)
+  </View>
+  <PostComponent/>
+   </SafeAreaView>)
 }; 
 
 
