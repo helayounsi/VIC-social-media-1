@@ -215,7 +215,8 @@ const LoginScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    // onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={() => navigation.navigate('Root')}
                 >
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
