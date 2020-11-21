@@ -16,14 +16,25 @@ const SearchScreen = props =>{
       onChangeText={onChangeSearch}
       value={searchQuery}
     />
-
-    <ScrollView style={styles.scrollView}>
+    <View >
+    <Text style={styles.tag}># Domestic animals</Text>
+    </View>
+    <ScrollView horizontal={true} > 
     <View style={styles.med}>
              <View style={styles.mediaImagecontainer}>
                <Image source={require("../../assets/Anim/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
              </View>
              <View style={styles.mediaImagecontainer}>
                <Image source={require("../../assets/Anim/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Anim/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Anim/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Anim/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
              </View>
              </View>
       </ScrollView>
@@ -58,6 +69,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 10
+  },
+  tag:{
+    marginTop: 10,
+    alignItems: 'stretch'
   }
 });
 
