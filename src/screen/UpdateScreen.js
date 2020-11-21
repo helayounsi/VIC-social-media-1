@@ -460,7 +460,7 @@ const UpdateScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.firstname, data.lastname, data.username, data.city, data.country, data.description, data.phonenumber )}}
+                    onPress={() => {onSubmitEditing( data.firstname, data.lastname, data.username, data.city, data.country, data.description, data.phonenumber )}}
                 >
               
                 <LinearGradient
