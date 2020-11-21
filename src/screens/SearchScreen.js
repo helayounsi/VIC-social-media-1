@@ -16,8 +16,9 @@ const SearchScreen = props =>{
       onChangeText={onChangeSearch}
       value={searchQuery}
     />
-    <View >
-    <Text style={styles.tag}># Domestic animals</Text>
+     <ScrollView showVerticalScrollIndicator={false}>
+    <View style={styles.tag} >
+    <Text  style={{position: 'absolute',top: -30, right: 35}}># Domestic animals</Text>
     </View>
     <ScrollView horizontal={true} > 
     <View style={styles.med}>
@@ -37,6 +38,53 @@ const SearchScreen = props =>{
                <Image source={require("../../assets/Anim/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
              </View>
              </View>
+      </ScrollView>
+
+      <View style={styles.tag} >
+    <Text  style={{position: 'absolute',top: -30, right: 35}}>#Wildlife animals</Text>
+    </View>
+    <ScrollView horizontal={true} > 
+    <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Animsauvage/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Animsauvage/7.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Animsauvage/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Animsauvage/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Animsauvage/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+      </ScrollView>
+
+      <View style={styles.tag} >
+    <Text  style={{position: 'absolute',top: -30, right: 35}}>#flowers</Text>
+    </View>
+    <ScrollView horizontal={true} > 
+    <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Flowers/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Flowers/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Flowers/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Flowers/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Flowers/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+      </ScrollView>
       </ScrollView>
    </View>
     
@@ -71,8 +119,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   tag:{
-    marginTop: 10,
-    alignItems: 'stretch'
+    marginTop: 50,
+    textAlign: "left",
+    marginRight: 10
+
   }
 });
 
