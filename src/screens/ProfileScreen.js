@@ -1,20 +1,49 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Image, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Image,
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-class profile extends Component {
+class ProfileScreen extends Component {
+  static propTypes = {
+    // array of strings, will be list items of Menu
+    // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
+    // onPress: PropTypes.func.isRequired
+  }
   constructor(props) {
     super(props);
     this.state = {
+      icon: null
     };
+  }
+
+  onError () {
+    console.log('Popup Error')
+  }
+
+  onPress = () => {
+    if (this.state.icon) {
+      UIManager.showPopupMenu(
+        findNodeHandle(this.state.icon),
+        this.props.actions,
+        this.onError,
+        this.props.onPress
+      )
+    }
+  }
+  nRef = icon => {
+    if (!this.state.icon) {
+      this.setState({icon})
+    }
   }
 
   render() {
     return (
      <SafeAreaView style={styles.container}>       
          <View style={styles.titleBar}>
-          <Ionicons name="ios-arrow-back" size={24} color="#52575D"></Ionicons>
+          {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
+          <TouchableOpacity onPress={this.onPress}>
           <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
+          </TouchableOpacity>
          </View>
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
@@ -97,7 +126,7 @@ class profile extends Component {
   }
 }
 
-export default profile;
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -179,8 +208,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 150,
-    height: 200,
+    width: 290,
+    height: 210,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10

@@ -347,7 +347,7 @@ const UpdateScreen = ({navigation}) => {
             }]}>Change your city name</Text>
             <View style={styles.action}>
                 <FontAwesome 
-                    name="envelope"
+                    name="map-marker"
                     color={colors.text}
                     size={20}
                 />
@@ -386,7 +386,7 @@ const UpdateScreen = ({navigation}) => {
             }]}>Change your country name</Text>
             <View style={styles.action}>
                 <FontAwesome 
-                    name="map-marker"
+                    name="globe"
                     color={colors.text}
                     size={20}
                 />
@@ -433,6 +433,7 @@ const UpdateScreen = ({navigation}) => {
                 <TextInput 
                     placeholder="+216"
                     placeholderTextColor="#666666"
+                    keyboardType='number-pad'
                     style={[styles.textInput, {
                         color: colors.text
                     }]}
