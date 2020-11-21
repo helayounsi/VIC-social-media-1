@@ -18,7 +18,14 @@ const SearchScreen = props =>{
     />
 
     <ScrollView style={styles.scrollView}>
-
+    <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Anim/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/Anim/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
       </ScrollView>
    </View>
     
@@ -32,8 +39,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  image:{
+    flex: 1,
+    width: undefined,
+    height: undefined
+  },
+  mediaImagecontainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: 290,
+    height: 210,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginHorizontal: 10
+  },
+  med:{
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10
   }
 });
 
 
 export default SearchScreen ; 
+
+
