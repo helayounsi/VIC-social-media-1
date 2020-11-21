@@ -10,20 +10,25 @@ const SearchScreen = props =>{
   const onChangeSearch = query => setSearchQuery(query);
 
   return (
-    <View style={styles.ProfileScreen}>
-    <Searchbar
+   <View style={styles.container}>
+     <Searchbar
       placeholder="Search"
       onChangeText={onChangeSearch}
       value={searchQuery}
     />
-     </View>
+
+    <ScrollView style={styles.scrollView}>
+
+      </ScrollView>
+   </View>
+    
   );
 };
  
 
 
 const styles = StyleSheet.create({
-  screen: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
