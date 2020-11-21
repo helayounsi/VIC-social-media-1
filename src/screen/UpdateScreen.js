@@ -13,12 +13,7 @@ import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-
 import { useTheme } from 'react-native-paper';
-
-// import { AuthContext } from '../components/context';
-
-// import Users from '../model/users';
 
 const UpdateScreen = ({navigation}) => {
 
@@ -29,53 +24,154 @@ const UpdateScreen = ({navigation}) => {
         city:'',
         country:'',
         description:'',
-        mobilePhone:'',
-        check_textInputChange: false,
+        phonenumber:'',
+        check_usernameChange: false,
+        check_firstnameChange: false,
+        check_lastnameChange: false,
+        check_bioChange: false,
+        check_citynameChange: false,
+        check_countrynameChange: false,
+        check_phonenumberChange: false,
     });
 
     const { colors } = useTheme();
 
-    const textInputChange = (val) => {
+    const usernameChange = (val) => {
         if( val.length !== 0 ) {
             setData({
                 ...data,
                 username: val,
-                check_textInputChange: true,
+                check_usernameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
                 username: val,
-                check_textInputChange: false,
+                check_usernameChange: false,
                 isValidUser: false
             });
         }
     }
 
-    const handlePasswordChange = (val) => {
-       
+
+    const firstnameChange = (val) => {
+        if( val.length !== 0 ) {
             setData({
                 ...data,
-                password: val,
-                isValidPassword: true
+                firstname: val,
+                check_firstnameChange: true,
+                isValidUser: true
             });
-     
+        } else {
+            setData({
+                ...data,
+                firstname: val,
+                check_firstnameChange: false,
+                isValidUser: false
+            });
+        }
     }
 
-    const updateSecureTextEntry = () => {
-        setData({
-            ...data,
-            secureTextEntry: !data.secureTextEntry
-        });
+
+    const lastnameChange = (val) => {
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                lastname: val,
+                check_lastnameChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                lastname: val,
+                check_lastnameChange: false,
+                isValidUser: false
+            });
+        }
+    }
+
+    const bioChange = (val) => {
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                description: val,
+                check_bioChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                description: val,
+                check_bioChange: false,
+                isValidUser: false
+            });
+        }
     }
 
 
+
+    const citynameChange = (val) => {
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                bio: val,
+                check_citynameChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                bio: val,
+                check_citynameChange: false,
+                isValidUser: false
+            });
+        }
+    }
+
+    const countrynameChange = (val) => {
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                bio: val,
+                check_countrynameChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                bio: val,
+                check_countrynameChange: false,
+                isValidUser: false
+            });
+        }
+    }
+
+    const phonenumberChange = (val) => {
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                bio: val,
+                check_phonenumberChange: true,
+                isValidUser: true
+            });
+        } else {
+            setData({
+                ...data,
+                bio: val,
+                check_phonenumberChange: false,
+                isValidUser: false
+            });
+        }
+    }
+    
+    
     return (
       <View style={styles.container}>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
-            <Text style={styles.text_header}>Welcome!</Text>
+            <Text style={styles.text_header}>Edit profile !</Text>
         </View>
         <Animatable.View 
             animation="fadeInUpBig"
@@ -103,10 +199,11 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => usernameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                
+                {data.check_usernameChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -143,10 +240,10 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => firstnameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_firstnameChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -183,10 +280,10 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => lastnameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_lastnameChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -211,7 +308,7 @@ const UpdateScreen = ({navigation}) => {
             }]}>Change your Bio</Text>
             <View style={styles.action}>
                 <FontAwesome 
-                    name="user-o"
+                    name="edit"
                     color={colors.text}
                     size={20}
                 />
@@ -222,10 +319,10 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => bioChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_bioChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -250,7 +347,7 @@ const UpdateScreen = ({navigation}) => {
             }]}>Change your city name</Text>
             <View style={styles.action}>
                 <FontAwesome 
-                    name="user-o"
+                    name="envelope"
                     color={colors.text}
                     size={20}
                 />
@@ -261,10 +358,10 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => citynameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_citynameChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -278,7 +375,7 @@ const UpdateScreen = ({navigation}) => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>City must be 10 characters long.</Text>
+            <Text style={styles.errorMsg}>City name must be 10 characters long.</Text>
             </Animatable.View>
             }
 
@@ -289,21 +386,21 @@ const UpdateScreen = ({navigation}) => {
             }]}>Change your country name</Text>
             <View style={styles.action}>
                 <FontAwesome 
-                    name="user-o"
+                    name="map-marker"
                     color={colors.text}
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Enter your new username"
+                    placeholder="Enter your country name"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => countrynameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_countrynameChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -317,7 +414,7 @@ const UpdateScreen = ({navigation}) => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
+            <Text style={styles.errorMsg}>Country name must be 4 characters long.</Text>
             </Animatable.View>
             }
 
@@ -340,10 +437,10 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
+                    onChangeText={(val) => phonenumberChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
-                {data.check_textInputChange ? 
+                {data.check_phonenumberChange ? 
                 <Animatable.View
                     animation="bounceIn"
                 >
@@ -357,14 +454,15 @@ const UpdateScreen = ({navigation}) => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Username must be 9 characters long.</Text>
+            <Text style={styles.errorMsg}>Phone number must be 9 characters long.</Text>
             </Animatable.View>
             }
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={() => {loginHandle( data.firstname, data.lastname, data.username, data.city, data.country, data.description, data.phonenumber )}}
                 >
+              
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
                     style={styles.signIn}
