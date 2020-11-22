@@ -41,33 +41,44 @@ class ProfileScreen extends Component {
     }
   }
   
-  useEffect=(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
-        }
-      }
-    })();
-  }, []);
+  openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
-  pickImage = async () => {
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    console.log(pickerResult);
+  }
+  // useEffect=(() => {
+  //   (async () => {
+  //     if (Platform.OS !== 'web') {
+  //       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+  //       if (status !== 'granted') {
+  //         alert('Sorry, we need camera roll permissions to make this work!');
+  //       }
+  //     }
+  //   })();
+  // }, []);
+
+  // pickImage = async () => {
     
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
     
    
-    console.log(result);
+  //   console.log(result);
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
 
 
   render() {
@@ -89,7 +100,7 @@ class ProfileScreen extends Component {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={this.pickImage}></Ionicons>
+             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={this.openImagePickerAsync}></Ionicons>
            </View>
          </View>
          <View style={styles.infoContainer}>
