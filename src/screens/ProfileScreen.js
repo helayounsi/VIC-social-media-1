@@ -1,8 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
+import {TextInput,Button} from 'react-native-paper'
 import {StyleSheet, View, Text, SafeAreaView, Image,
- ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle, Modal} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
 
@@ -15,7 +17,9 @@ class ProfileScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      icon: null
+      icon: null,
+      modalVisible: useState(false),
+      setModalVisible: useState(false),
     };
   }
 
@@ -41,17 +45,50 @@ class ProfileScreen extends Component {
     }
   }
   
-  openImagePickerAsync = async () => {
-    let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera roll is required!");
-      return;
+  pickFromGallery = async ()=>{
+    const {granted} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    if(granted){
+         let data =  await ImagePicker.launchImageLibraryAsync({
+              mediaTypes:ImagePicker.MediaTypeOptions.Images,
+              allowsEditing:true,
+              aspect:[1,1],
+              quality:0.5
+          })
+          
+          }
+    else{
+       Alert.alert("you need to give up permission to work")
     }
+ }
 
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    console.log(pickerResult);
+
+ pickFromCamera = async ()=>{
+  const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(granted){
+       let data =  await ImagePicker.launchCameraAsync({
+            mediaTypes:ImagePicker.MediaTypeOptions.Images,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+  }else{
+     Alert.alert("you need to give up permission to work")
   }
+}
+
+
+  // openImagePickerAsync = async () => {
+  //   let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+  //   if (permissionResult.granted === false) {
+  //     alert("Permission to access camera roll is required!");
+  //     return;
+  //   }
+
+  //   let pickerResult = await ImagePicker.launchImageLibraryAsync();
+  //   console.log(pickerResult);
+  // }
   // useEffect=(() => {
   //   (async () => {
   //     if (Platform.OS !== 'web') {
@@ -100,7 +137,7 @@ class ProfileScreen extends Component {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={this.openImagePickerAsync}></Ionicons>
+             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=>setModalVisible(!modalVisible)}></Ionicons>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -165,7 +202,37 @@ class ProfileScreen extends Component {
            {/* </ScrollView> */}
          </View>
        </ScrollView>
-
+       <Modal
+             animationType="slide"
+             transparent={true}
+             visible={modalVisible}
+             onRequestClose={()=>{
+              Alert.alert('Modal has been closed.');
+             }}
+             >
+              <View style={styles.modalView}>
+                  <View style={styles.modalButtonView}>
+                        <Button icon="camera"
+                        
+                         mode="contained"
+                         onPress={() => pickFromCamera()}>
+                                camera
+                        </Button>
+                        <Button 
+                        icon="image-area"
+                         mode="contained"
+                         
+                          onPress={() => pickFromGallery()}>
+                                gallery
+                        </Button>
+                  </View>
+                <Button 
+                
+                onPress={() => setModal(false)}>
+                        cancel
+                </Button>
+              </View>
+             </Modal>
      </SafeAreaView>
     );
   }
