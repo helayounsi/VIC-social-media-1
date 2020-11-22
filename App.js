@@ -13,12 +13,14 @@ import Navigator from "./navigation/Navigator"
 // import RootStackScreen from "./src/screens/RootStackScreen.js";
 // import CameraScreen from "./src/screen/CameraScreen.js";
 import ImagePicker from "./src/components/ImagePicker";
+//import EditProfileScreen from "./src/screens/PickImage.js";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return ( 
         //<ImagePicker/>
+        
             <Navigator/>
         
   );

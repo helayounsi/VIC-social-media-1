@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Image,
  ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import ImagePicker from '../components/ImagePicker'
+import * as ImagePicker from 'expo-image-picker';
+//import ImagePicker from '../components/ImagePicker'
+//import ImagePicker from 'react-native-image-picker';
 
 class ProfileScreen extends Component {
   static propTypes = {
@@ -16,6 +18,8 @@ class ProfileScreen extends Component {
       icon: null
     };
   }
+
+
 
   onError () {
     console.log('Popup Error')
@@ -36,6 +40,35 @@ class ProfileScreen extends Component {
       this.setState({icon})
     }
   }
+  
+  useEffect=(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  pickImage = async () => {
+    
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    
+   
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
 
   render() {
     return (
@@ -56,7 +89,7 @@ class ProfileScreen extends Component {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}}></Ionicons>
+             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={this.pickImage}></Ionicons>
            </View>
          </View>
          <View style={styles.infoContainer}>
