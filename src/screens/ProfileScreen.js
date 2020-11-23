@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 290,
-    height: 210,
+    width: 180,
+    height: 250,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10

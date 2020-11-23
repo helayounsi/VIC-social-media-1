@@ -1,12 +1,13 @@
-import * as React from 'react';
+import  React, { Component } from 'react';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share} from 'react-native'
-import { Video } from 'expo-av';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image} from 'react-native'
+import { Video, } from 'expo-av';
+
 
 
 const LeftContent = () => (
-  <Avatar.Image size={24} source={require('../../assets/profile-photo/me.png')} />
+  <Avatar.Image size={45} source={require('../../assets/profile-photo/me.png')} />
 );
 
 const onShare = async () => {
@@ -28,15 +29,23 @@ const onShare = async () => {
   }
 };
 
-const PostComponent = () => {
+class PostComponent extends Component {
+  constructor (props){
+    super(props);
+    this.state={
+
+    }
+  }
+  render(){
   return (
   <SafeAreaView>
     <ScrollView>
     <View style={{justifyContent: 'center'}}>
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
+    
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={true}
@@ -45,19 +54,38 @@ const PostComponent = () => {
   isLooping
   style={styles.card}
 />
+
 <Card.Content>
 
 <View style={styles.feed}>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
  Like
 </Button>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
  Comment
 </Button>
-<Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare}>
+<Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
  Share
 </Button>
 
+</View>
+</Card.Content>
+  </Card>
+
+  <Card>
+    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
+    <Card.Cover source={require("../../assets/profile-photo/4.jpg")} />
+<Card.Content>
+<View style={styles.feed}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
+ Like
+</Button>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
+ Comment
+</Button>
+<Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
+ Share
+</Button>
 </View>
 </Card.Content>
   </Card>
@@ -65,25 +93,24 @@ const PostComponent = () => {
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={true}
   resizeMode="cover"
   shouldPlay
-  isLooping
-  
+  isLooping  
   style={styles.card}
 />
 <Card.Content>
 <View style={styles.feed}>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
  Like
 </Button>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
  Comment
 </Button>
-<Button icon={require('../../assets/profile-photo/share.png')}>
+<Button icon={require('../../assets/profile-photo/share.png')}  onPress={onShare} color={'#189ad3'}>
  Share
 </Button>
 </View>
@@ -92,7 +119,7 @@ const PostComponent = () => {
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={true}
@@ -103,15 +130,14 @@ const PostComponent = () => {
   style={styles.card}
 />
 <Card.Content>
-<Paragraph>Your comment here !</Paragraph>
 <View style={styles.feed}>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
  Like
 </Button>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')}>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
  Comment
 </Button>
-<Button icon={require('../../assets/profile-photo/share.png')}>
+<Button icon={require('../../assets/profile-photo/share.png')}  onPress={onShare} color={'#189ad3'}>
  Share
 </Button>
 </View>
@@ -121,6 +147,7 @@ const PostComponent = () => {
   </ScrollView>
   </SafeAreaView>
 )
+}
   };
 
 export default PostComponent;
@@ -130,10 +157,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+    
   },
   card: {
     width: 330,
     height: 450, 
     margin: 10
-  }
+  },
+  image:{
+    flex: 1,
+    width: undefined,
+    height: undefined
+  },
 });
