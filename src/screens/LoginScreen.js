@@ -7,8 +7,11 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
+import { SocialIcon } from 'react-native-elements'
+
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -114,6 +117,7 @@ const LoginScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
+          <ScrollView>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
             <Text style={styles.text_header}>Welcome!</Text>
@@ -213,7 +217,8 @@ const LoginScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    // onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={() => navigation.navigate('Root')}
                 >
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
@@ -238,9 +243,48 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
+        <View style={styles.iconContainer}>
+            <View style={styles.icon}>
+            <SocialIcon
+              title="Sign In Google Plus"
+              button
+              type="google-plus-official"
+              onPress={() => {
+                alert('google');
+              }}
+            />
+          </View>
+            <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              //Social Icon using react-native-elements
+              button
+              //To make a button type Social Icon
+              title="Sign In facebook"
+              //Title of Social Button
+              type="facebook"
+              //Type of Social Icon
+              onPress={() => {
+                //Action to perform on press of Social Icon
+                alert('facebook');
+              }}
+            />
+          </View>
+          <View style={{width: '100%', flexDirection: 'column'}}>
+            <SocialIcon
+              title="Sign In twitter"
+              button
+              type="twitter"
+              
+              onPress={() => {
+                alert('twitter');
+              }}
+            />
+          </View>
+          </View>
         </Animatable.View>
+        </ScrollView>
       </View>
-    );
+          );
 };
 
 export default LoginScreen;
@@ -311,5 +355,8 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
+    },
+    iconContainer: {
+        marginTop:10
     }
   });

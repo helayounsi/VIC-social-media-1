@@ -40,7 +40,7 @@ class ProfileScreen extends Component {
     return (
      <SafeAreaView style={styles.container}>       
          <View style={styles.titleBar}>
-          <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons>
+          {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
           <TouchableOpacity onPress={this.onPress}>
           <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
           </TouchableOpacity>
@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 150,
-    height: 200,
+    width: 180,
+    height: 250,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10
