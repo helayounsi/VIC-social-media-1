@@ -12,12 +12,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Navigator from "./navigation/Navigator"
 // import RootStackScreen from "./src/screens/RootStackScreen.js";
 // import CameraScreen from "./src/screen/CameraScreen.js";
+import ImagePicker from "./src/components/ImagePicker";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return ( 
-             <Navigator/>
+        //<ImagePicker/>
+            <Navigator/>
         
   );
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Image,
  ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import ImagePicker from '../components/ImagePicker'
 
 class ProfileScreen extends Component {
   static propTypes = {
