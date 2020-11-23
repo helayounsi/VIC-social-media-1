@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect } from 'react';
 import {TextInput,Button} from 'react-native-paper'
 import {StyleSheet, View, Text, SafeAreaView, Image,
- ScrollView, TouchableOpacity, UIManager, findNodeHandle, Modal} from 'react-native';
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle, Modal, Alert} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -18,13 +18,11 @@ class ProfileScreen extends Component {
     super(props);
     this.state = {
       icon: null,
-      modalVisible: useState(false),
-      setModalVisible: useState(false),
+      modal: false,
     };
   }
 
-
-
+  
   onError () {
     console.log('Popup Error')
   }
@@ -100,23 +98,33 @@ class ProfileScreen extends Component {
   //   })();
   // }, []);
 
-  // pickImage = async () => {
-    
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-    
-   
-  //   console.log(result);
+ //handlModal functions
+ handelModal=()=>{
+  this.setState({
+    modal:!this.state.modal?true:false
+  });
+}
+//pick image from galery
+pickImage = async () => {
+  const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(granted){
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  console.log(result);
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+  }else{
+    Alert.alert("you need to give up permission to work")
+ }
+};
 
-  //   if (!result.cancelled) {
-  //     setImage(result.uri);
-  //   }
-  // };
 
+  
 
   render() {
     return (
@@ -137,7 +145,7 @@ class ProfileScreen extends Component {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=>setModalVisible(!modalVisible)}></Ionicons>
+             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=>this.handelModal}></Ionicons>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -205,7 +213,7 @@ class ProfileScreen extends Component {
        <Modal
              animationType="slide"
              transparent={true}
-             visible={modalVisible}
+             visible={this.state.modal}
              onRequestClose={()=>{
               Alert.alert('Modal has been closed.');
              }}
@@ -213,22 +221,20 @@ class ProfileScreen extends Component {
               <View style={styles.modalView}>
                   <View style={styles.modalButtonView}>
                         <Button icon="camera"
-                        
                          mode="contained"
-                         onPress={() => pickFromCamera()}>
+                         onPress={() => this.pickFromCamera()}>
                                 camera
                         </Button>
                         <Button 
                         icon="image-area"
-                         mode="contained"
-                         
-                          onPress={() => pickFromGallery()}>
+                        mode="contained"
+                        onPress={() => this.pickImage()}>
                                 gallery
                         </Button>
                   </View>
                 <Button 
                 
-                onPress={() => setModal(false)}>
+                onPress={() => this.handelModal}>
                         cancel
                 </Button>
               </View>
@@ -330,5 +336,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     paddingVertical: 10
+  },
+  modalView:{
+    marginTop:80,
+    backgroundColor:'#fff'
   }
 })
