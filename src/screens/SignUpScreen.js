@@ -7,11 +7,8 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert,
-    ScrollView
+    Alert
 } from 'react-native';
-import { SocialIcon } from 'react-native-elements'
-
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -28,8 +25,10 @@ const LoginScreen = ({navigation}) => {
     const [data, setData] = React.useState({
         username: '',
         password: '',
+        confirm_password: '',
         check_textInputChange: false,
         secureTextEntry: true,
+        confirm_secureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
     });
@@ -72,12 +71,34 @@ const LoginScreen = ({navigation}) => {
         // }
     }
 
+    const handleConfirmPasswordChange = (val) => {
+      // if( val.trim().length >= 8 ) {
+          setData({
+              ...data,
+              confirm_password: val,
+              isValidPassword: true
+          });
+      // } else {
+      //     setData({
+      //         ...data,
+      //         password: val,
+      //         isValidPassword: false
+      //     });
+      // }
+  }
     const updateSecureTextEntry = () => {
         setData({
             ...data,
             secureTextEntry: !data.secureTextEntry
         });
     }
+
+    const updateConfirmSecureTextEntry = () => {
+      setData({
+          ...data,
+          confirm_secureTextEntry: !data.confirm_secureTextEntry
+      });
+  }
 
     // const handleValidUser = (val) => {
     //     if( val.trim().length >= 4 ) {
@@ -117,10 +138,9 @@ const LoginScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-          <ScrollView>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
-            <Text style={styles.text_header}>Welcome!</Text>
+            <Text style={styles.text_header}>Register Now!</Text>
         </View>
         <Animatable.View 
             animation="fadeInUpBig"
@@ -209,16 +229,50 @@ const LoginScreen = ({navigation}) => {
             <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
             </Animatable.View>
             }
-            
+             <Text style={[styles.text_footer, {
+                color: colors.text,
+                marginTop: 35
+            }]}>Confirm Password</Text>
+            <View style={styles.action}>
+                <Feather 
+                    name="lock"
+                    color={colors.text}
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Confirm Your Password"
+                    placeholderTextColor="#666666"
+                    confirm_secureTextEntry={data.confirm_secureTextEntry ? true : false}
+                    style={[styles.textInput, {
+                        color: colors.text
+                    }]}
+                    autoCapitalize="none"
+                    onChangeText={(val) => handleConfirmPasswordChange(val)}
+                />
+                <TouchableOpacity
+                    onPress={updateConfirmSecureTextEntry}
+                >
+                    {data.confirm_secureTextEntry ? 
+                    <Feather 
+                        name="eye-off"
+                        color="grey"
+                        size={20}
+                    />
+                    :
+                    <Feather 
+                        name="eye"
+                        color="grey"
+                        size={20}
+                    />
+                    }
+                </TouchableOpacity>
+            </View>
+              {/* to add facebook, google, twitter */}
 
-            <TouchableOpacity>
-                <Text style={{color: '#189ad3', marginTop:15}}>Forgot password?</Text>
-            </TouchableOpacity>
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    // onPress={() => {loginHandle( data.username, data.password )}}
-                    onPress={() => navigation.navigate('Root')}
+                    onPress={() => {loginHandle( data.username, data.password )}}
                 >
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
@@ -226,12 +280,12 @@ const LoginScreen = ({navigation}) => {
                 >
                     <Text style={[styles.textSign, {
                         color:'#fff'
-                    }]}>Sign In</Text>
+                    }]}>Sign Up</Text>
                 </LinearGradient>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUp')}
+                    onPress={() => navigation.goBack()}
                     style={[styles.signIn, {
                         borderColor: '#189ad3',
                         borderWidth: 1,
@@ -240,51 +294,13 @@ const LoginScreen = ({navigation}) => {
                 >
                     <Text style={[styles.textSign, {
                         color: '#189ad3'
-                    }]}>Sign Up</Text>
+                    }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
-        <View style={styles.iconContainer}>
-            <View style={styles.icon}>
-            <SocialIcon
-              title="Sign In Google Plus"
-              button
-              type="google-plus-official"
-              onPress={() => {
-                alert('google');
-              }}
-            />
-          </View>
-            <View style={{width: '100%', flexDirection: 'column'}}>
-            <SocialIcon
-              //Social Icon using react-native-elements
-              button
-              //To make a button type Social Icon
-              title="Sign In facebook"
-              //Title of Social Button
-              type="facebook"
-              //Type of Social Icon
-              onPress={() => {
-                //Action to perform on press of Social Icon
-                alert('facebook');
-              }}
-            />
-          </View>
-          <View style={{width: '100%', flexDirection: 'column'}}>
-            <SocialIcon
-              title="Sign In twitter"
-              button
-              type="twitter"
-              
-              onPress={() => {
-                alert('twitter');
-              }}
-            />
-          </View>
-          </View>
+           
         </Animatable.View>
-        </ScrollView>
       </View>
-          );
+    );
 };
 
 export default LoginScreen;
@@ -355,8 +371,5 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
-    },
-    iconContainer: {
-        marginTop:10
     }
   });

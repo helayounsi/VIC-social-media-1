@@ -1,52 +1,58 @@
 import React from "react";
 
-import NotificationsScreen from "../src/screens/NotificationsScreen";
+// import NotificationsScreen from "../src/screens/NotificationsScreen";
 import SearchScreen from "../src/screens/SearchScreen";
 import HomeScreen from "../src/screens/HomeScreen";
 import ChatScreen from "../src/screens/ChatScreen";
 import ProfileScreen from "../src/screens/ProfileScreen";
-import OpenCameraScreen from "../src/screens/OpenCameraScreen";
-import EditProfileScreen from "../src/screens/EditProfileScreen";
+// import OpenCameraScreen from "../src/screens/OpenCameraScreen";
+// import EditProfileScreen from "../src/screens/EditProfileScreen";
 import LoginScreen from "../src/screens/LoginScreen";
-import RegisterScreen from "../src/screens/RegisterScreen";
-import CameraScreen from "../src/screens/CameraScreen";
+import LandingScreen from '../src/screens/LandingScreen';
+import SignUpScreen from '../src/screens/SignUpScreen';
+// import RegisterScreen from "../src/screens/RegisterScreen";
+import OpenCameraScreen from "../src/screens/CameraScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import Ionicons from "react-native-vector-icons/Ionicons";
+// import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 
 
 
-const ProfileStack = createStackNavigator();
+// const ProfileStack = createStackNavigator();
 
-function ProfileStackScreen() {
-  return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen}  options={{
-          headerRight: () => (
-            <Button
-              onPress={() => alert("This is a button!")}
-              icon="camera" mode="contained"
-            >h</Button>
-          ),
-        }}/>
-        <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
-    </ProfileStack.Navigator>
-  );
-}
+// function ProfileStackScreen() {
+//   return (
+//     <ProfileStack.Navigator>
+//       <ProfileStack.Screen name="Profile" component={ProfileScreen}  options={{
+//           headerRight: () => (
+//             <Button
+//               onPress={() => alert("This is a button!")}
+//               icon="camera" mode="contained"
+//             >h</Button>
+//           ),
+//         }}/>
+//         <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
+//     </ProfileStack.Navigator>
+//   );
+// }
 
 
 
 
 const Tab = createBottomTabNavigator();
 function Root() {
+  if (!window.navigator.userAgent) {
+    window.navigator.userAgent = "react-native";
+  }
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
+          
 
           if (route.name === "Home") {
             iconName = "home";
@@ -67,7 +73,7 @@ function Root() {
         },
       })}
       tabBarOptions={{
-        activeTintColor: "blue",
+        activeTintColor: "#189ad3",
         inactiveTintColor: "gray",
       }}
     >
@@ -77,13 +83,8 @@ function Root() {
       <Tab.Screen options={{headerShown:true}} name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
-      <Tab.Screen
-        name="Chat"
-        component={ChatScreen}
-       
-     
-      /> 
-      <Tab.Screen name="ProfileStack" component={ProfileStackScreen} />
+      <Tab.Screen name="Chat" component={ChatScreen}/> 
+      <Tab.Screen name="ProfileStack" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -97,10 +98,9 @@ export default function MyStack() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen options={{headerShown:false}} name="TryLogin" component={Root} />
+        <Stack.Screen options={{headerShown:false}} name="Landing" component={LandingScreen} />
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
-        <Stack.Screen  options={{headerShown:false}} name="Register" component={RegisterScreen} />
-        <Stack.Screen  options={{headerShown:false}} name="Camera" component={CameraScreen} />
+        <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
       </Stack.Navigator>
     </NavigationContainer>
