@@ -1,10 +1,11 @@
 import React, { Component, useState, useEffect } from 'react';
 import {TextInput,Button} from 'react-native-paper'
 import {StyleSheet, View, Text, SafeAreaView, Image,
- ScrollView, TouchableOpacity, UIManager, findNodeHandle, Modal, Alert} from 'react-native';
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle, Alert} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
 
@@ -16,9 +17,9 @@ class ProfileScreen extends Component {
   }
   constructor(props) {
     super(props);
-    this.state = {
+      this.state = {
       icon: null,
-      modal: false,
+      visibleModal: false,
     };
   }
 
@@ -45,8 +46,8 @@ class ProfileScreen extends Component {
   
 
   pickFromGallery = async ()=>{
-    const {granted} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
-    if(granted){
+    const {status} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    if(status==granted){
          let data =  await ImagePicker.launchImageLibraryAsync({
               mediaTypes:ImagePicker.MediaTypeOptions.Images,
               allowsEditing:true,
@@ -62,8 +63,8 @@ class ProfileScreen extends Component {
 
 
  pickFromCamera = async ()=>{
-  const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
-  if(granted){
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status==granted){
        let data =  await ImagePicker.launchCameraAsync({
             mediaTypes:ImagePicker.MediaTypeOptions.Images,
             allowsEditing:true,
@@ -99,17 +100,18 @@ class ProfileScreen extends Component {
   // }, []);
 
  //handlModal functions
- handelModal=()=>{
+ handelModal =()=>{
   this.setState({
-    modal:!this.state.modal?true:false
+    modal:!this.state.modal? true : false
   });
 }
+
 //pick image from galery
 pickImage = async () => {
-  const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
-  if(granted){
+  //const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
+  //if(granted){
   let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    mediaTypes: ImagePicker.MediaTypeOptions.Image,
     allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
@@ -118,13 +120,27 @@ pickImage = async () => {
   if (!result.cancelled) {
     setImage(result.uri);
   }
-  }else{
-    Alert.alert("you need to give up permission to work")
- }
+ // }else{
+ //   Alert.alert("you need to give up permission to work")
+ //}
 };
 
 
-  
+  //last way to render a modal 
+  _renderButton = (text, onPress) => (
+   
+        <Ionicons  name="ios-add" size={48} color="#DFD8D8" style={{ bottom: 0, right: 0,}} onPress={onPress} >
+    </Ionicons>
+   
+    
+  );
+
+  _renderModalContent = () => (
+    <View style={styles.modalContent}>
+      <Text>Buy!</Text>
+      {this._renderButton('cancel', () => this.setState({ visibleModal: false }))}
+    </View>
+  );
 
   render() {
     return (
@@ -145,7 +161,10 @@ pickImage = async () => {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=>this.handelModal}></Ionicons>
+              {this._renderButton('', () => this.setState({ visibleModal: true }))}
+              <Modal isVisible={this.state.visibleModal === true }> {this._renderModalContent()}
+             
+        </Modal>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -210,7 +229,7 @@ pickImage = async () => {
            {/* </ScrollView> */}
          </View>
        </ScrollView>
-       <Modal
+      {/*<Modal
              animationType="slide"
              transparent={true}
              visible={this.state.modal}
@@ -238,7 +257,7 @@ pickImage = async () => {
                         cancel
                 </Button>
               </View>
-             </Modal>
+             </Modal>*/} 
      </SafeAreaView>
     );
   }
@@ -340,5 +359,25 @@ const styles = StyleSheet.create({
   modalView:{
     marginTop:80,
     backgroundColor:'#fff'
-  }
+  },
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 12,
+    margin: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
 })
