@@ -61,9 +61,6 @@ const ProfileScreen = () => {
 //  }
 
 
- 
-
-
   // openImagePickerAsync = async () => {
   //   let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
 
@@ -90,7 +87,7 @@ const ProfileScreen = () => {
 
 
 // Pick image from gallery
-useEffect =(() => {
+const useEffect =(() => {
   (async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -100,6 +97,7 @@ useEffect =(() => {
     }
   })();
 }, []);
+
 
 const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
@@ -115,10 +113,11 @@ const pickImage = async () => {
     setImage(result.uri);
   }
 };
+
 // Pick image from camera
 const pickFromCamera = async ()=>{
   const {status} =  await Permissions.askAsync(Permissions.CAMERA)
-  if(status==granted){
+  if(status=='granted'){
        let data =  await ImagePicker.launchCameraAsync({
             mediaTypes:ImagePicker.MediaTypeOptions.Images,
             allowsEditing:true,
