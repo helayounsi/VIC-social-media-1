@@ -61,19 +61,7 @@ const ProfileScreen = () => {
 //  }
 
 
-//  pickFromCamera = async ()=>{
-//   const {status} =  await Permissions.askAsync(Permissions.CAMERA)
-//   if(status==granted){
-//        let data =  await ImagePicker.launchCameraAsync({
-//             mediaTypes:ImagePicker.MediaTypeOptions.Images,
-//             allowsEditing:true,
-//             aspect:[1,1],
-//             quality:0.5
-//         })
-//   }else{
-//      Alert.alert("you need to give up permission to work")
-//   }
-// }
+ 
 
 
   // openImagePickerAsync = async () => {
@@ -98,16 +86,11 @@ const ProfileScreen = () => {
   //   })();
   // }, []);
 
- //handlModal functions
-//  handelModal =()=>{
-//   this.setState({
-//     modal:!this.state.modal? true : false
-//   });
-// }
 
 
-// Pick imae from gallery
-useEffect(() => {
+
+// Pick image from gallery
+useEffect =(() => {
   (async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -132,6 +115,20 @@ const pickImage = async () => {
     setImage(result.uri);
   }
 };
+// Pick image from camera
+const pickFromCamera = async ()=>{
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status==granted){
+       let data =  await ImagePicker.launchCameraAsync({
+            mediaTypes:ImagePicker.MediaTypeOptions.Images,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+  }else{
+     Alert.alert("you need to give up permission to work")
+  }
+}
 
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
@@ -157,7 +154,7 @@ const pickImage = async () => {
            <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
                <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
                <View style={styles.modalButtonView}>
-                        <Button icon="camera" onPress={() => this.pickFromCamera()}>
+                        <Button icon="camera" onPress={pickFromCamera}>
                                 camera
                         </Button>
                         <Button  icon="image-area" onPress={pickImage}>
