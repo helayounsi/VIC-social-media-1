@@ -105,25 +105,8 @@ const ProfileScreen = () => {
 //   });
 // }
 
-// //pick image from galery
-// pickImage = async () => {
-//   //const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
-//   //if(granted){
-//   let result = await ImagePicker.launchImageLibraryAsync({
-//     mediaTypes: ImagePicker.MediaTypeOptions.Image,
-//     allowsEditing: true,
-//     aspect: [4, 3],
-//     quality: 1,
-//   });
-//   console.log(result);
-//   if (!result.cancelled) {
-//     setImage(result.uri);
-//   }
-//  // }else{
-//  //   Alert.alert("you need to give up permission to work")
-//  //}
-// };
-//get image from gallery
+
+// Pick imae from gallery
 useEffect(() => {
   (async () => {
     if (Platform.OS !== 'web') {
