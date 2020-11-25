@@ -18,7 +18,7 @@ const SearchScreen = props =>{
     />
      <ScrollView showVerticalScrollIndicator={false}>
     <View style={styles.tag} >
-    <Text  style={{position: 'absolute',top: -30, right: 35}}># Domestic animals</Text>
+    <Text  style={styles.text}># Domestic animals</Text>
     </View>
     <ScrollView horizontal={true} > 
     <View style={styles.med}>
@@ -41,7 +41,7 @@ const SearchScreen = props =>{
       </ScrollView>
 
       <View style={styles.tag} >
-    <Text  style={{position: 'absolute',top: -30, right: 35}}>#Wildlife animals</Text>
+    <Text  style={styles.text}>#Wildlife animals</Text>
     </View>
     <ScrollView horizontal={true} > 
     <View style={styles.med}>
@@ -64,7 +64,7 @@ const SearchScreen = props =>{
       </ScrollView>
 
       <View style={styles.tag} >
-    <Text  style={{position: 'absolute',top: -30, right: 35}}>#flowers</Text>
+    <Text  style={styles.text}>#flowers</Text>
     </View>
     <ScrollView horizontal={true} > 
     <View style={styles.med}>
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 5
   },
   image:{
     flex: 1,
@@ -120,9 +121,12 @@ const styles = StyleSheet.create({
   },
   tag:{
     marginTop: 50,
-    textAlign: "left",
-    marginRight: 10
-
+    marginLeft: 40
+  },
+  text:{
+    top: -30, 
+    right: 35, 
+    fontSize: 20
   }
 });
 
