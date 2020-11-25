@@ -1,80 +1,79 @@
 import React, { Component, useState, useEffect } from 'react';
-import {TextInput,Button} from 'react-native-paper'
+import {TextInput,Button} from 'react-native-paper';
 import {StyleSheet, View, Text, SafeAreaView, Image,
- ScrollView, TouchableOpacity, UIManager, findNodeHandle, Alert} from 'react-native';
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle, Alert, Modal} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import Modal from 'react-native-modal';
+//import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
 
-class ProfileScreen extends Component {
-  static propTypes = {
-    // array of strings, will be list items of Menu
-    // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
-    // onPress: PropTypes.func.isRequired
-  }
-  constructor(props) {
-    super(props);
-      this.state = {
-      icon: null,
-      visibleModal: false,
-    };
-  }
-
-  
-  onError () {
-    console.log('Popup Error')
-  }
-
-  onPress = () => {
-    if (this.state.icon) {
-      UIManager.showPopupMenu(
-        findNodeHandle(this.state.icon),
-        this.props.actions,
-        this.onError,
-        this.props.onPress
-      )
-    }
-  }
-  nRef = icon => {
-    if (!this.state.icon) {
-      this.setState({icon})
-    }
-  }
+const ProfileScreen = () => {
+  // static propTypes = {
+  //   // array of strings, will be list items of Menu
+  //   // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
+  //   // onPress: PropTypes.func.isRequired
+  // }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     icon: null
+  //   };
+  const [Icon, setIcon, image, setImage] = useState(null);
   
 
-  pickFromGallery = async ()=>{
-    const {status} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
-    if(status==granted){
-         let data =  await ImagePicker.launchImageLibraryAsync({
-              mediaTypes:ImagePicker.MediaTypeOptions.Images,
-              allowsEditing:true,
-              aspect:[1,1],
-              quality:0.5
-          })
+  //  onError = () => {
+  //   console.log('Popup Error')
+  // }
+
+  // onPress = () => {
+  //   if (this.state.icon) {
+  //     UIManager.showPopupMenu(
+  //       findNodeHandle(this.state.icon),
+  //       this.props.actions,
+  //       this.onError,
+  //       this.props.onPress
+  //     )
+  //   }
+  // }
+//   nRef = (icon) => {
+//     if (!{Icon}) {
+//       setIcon(icon)
+//     }
+//   }
+  
+
+//   pickFromGallery = async ()=>{
+//     const {status} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
+//     if(status==granted){
+//          let data =  await ImagePicker.launchImageLibraryAsync({
+//               mediaTypes:ImagePicker.MediaTypeOptions.Images,
+//               allowsEditing:true,
+//               aspect:[1,1],
+//               quality:0.5
+//           })
           
-          }
-    else{
-       Alert.alert("you need to give up permission to work")
-    }
- }
+//           }
+//     else{
+//        Alert.alert("you need to give up permission to work")
+//     }
+//  }
 
 
- pickFromCamera = async ()=>{
-  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
-  if(status==granted){
-       let data =  await ImagePicker.launchCameraAsync({
-            mediaTypes:ImagePicker.MediaTypeOptions.Images,
-            allowsEditing:true,
-            aspect:[1,1],
-            quality:0.5
-        })
-  }else{
-     Alert.alert("you need to give up permission to work")
-  }
-}
+//  pickFromCamera = async ()=>{
+//   const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+//   if(status==granted){
+//        let data =  await ImagePicker.launchCameraAsync({
+//             mediaTypes:ImagePicker.MediaTypeOptions.Images,
+//             allowsEditing:true,
+//             aspect:[1,1],
+//             quality:0.5
+//         })
+//   }else{
+//      Alert.alert("you need to give up permission to work")
+//   }
+// }
 
 
   // openImagePickerAsync = async () => {
@@ -100,54 +99,65 @@ class ProfileScreen extends Component {
   // }, []);
 
  //handlModal functions
- handelModal =()=>{
-  this.setState({
-    modal:!this.state.modal? true : false
-  });
-}
+//  handelModal =()=>{
+//   this.setState({
+//     modal:!this.state.modal? true : false
+//   });
+// }
 
-//pick image from galery
-pickImage = async () => {
-  //const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
-  //if(granted){
+// //pick image from galery
+// pickImage = async () => {
+//   //const {granted} =  await Permissions.askAsync(Permissions.CAMERA)
+//   //if(granted){
+//   let result = await ImagePicker.launchImageLibraryAsync({
+//     mediaTypes: ImagePicker.MediaTypeOptions.Image,
+//     allowsEditing: true,
+//     aspect: [4, 3],
+//     quality: 1,
+//   });
+//   console.log(result);
+//   if (!result.cancelled) {
+//     setImage(result.uri);
+//   }
+//  // }else{
+//  //   Alert.alert("you need to give up permission to work")
+//  //}
+// };
+//get image from gallery
+useEffect(() => {
+  (async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  })();
+}, []);
+
+const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Image,
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
   });
+
   console.log(result);
+
   if (!result.cancelled) {
     setImage(result.uri);
   }
- // }else{
- //   Alert.alert("you need to give up permission to work")
- //}
 };
 
+ //toggel a model 
+ const [modalOpen, setModalOpen]=useState(false);
 
-  //last way to render a modal 
-  _renderButton = (Text, onPress) => (
-        <Ionicons  name="ios-add" size={48} color="#DFD8D8" style={{ bottom: 0, right: 0,}} onPress={onPress} >
-          
-    </Ionicons>
-   
-    
-  );
-
-  _renderModalContent = () => (
-    <View style={styles.modalContent}>
-      <Text>Buy</Text>
-      {this._renderButton('cancel', () => this.setState({ visibleModal: false }))}
-    </View>
-  );
-
-  render() {
     return (
      <SafeAreaView style={styles.container}>       
          <View style={styles.titleBar}>
           {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
-          <TouchableOpacity onPress={this.onPress}>
+          <TouchableOpacity >
           <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
           </TouchableOpacity>
          </View>
@@ -160,11 +170,25 @@ pickImage = async () => {
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
            </View>
            <View style={styles.active}></View>
+           
+           <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
+               <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
+               <View style={styles.modalButtonView}>
+                        <Button icon="camera" onPress={() => this.pickFromCamera()}>
+                                camera
+                        </Button>
+                        <Button  icon="image-area" onPress={pickImage}>
+                                gallery
+                        </Button>
+                  </View>
+                <Button onPress={()=> setModalOpen(false)}>
+                        cancel
+                </Button>
+               </View>
+           </Modal>
+           
            <View style={styles.add}>
-              {this._renderButton('', () => this.setState({ visibleModal: true }))}
-              <Modal isVisible={this.state.visibleModal === true }> {this._renderModalContent()}
-             
-        </Modal>
+             <MaterialIcons name="add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=> setModalOpen(true)}></MaterialIcons>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -187,7 +211,7 @@ pickImage = async () => {
            </View>
          </View>
          <View style={{marginTop: 32}}>
-           {/* <ScrollView > */}
+           <ScrollView >
            <View style={styles.med}>
              <View style={styles.mediaImagecontainer}>
                <Image source={require("../../assets/profile-photo/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
@@ -226,41 +250,13 @@ pickImage = async () => {
              </View>
              </View>
 
-           {/* </ScrollView> */}
+           </ScrollView>
          </View>
        </ScrollView>
-      {/*<Modal
-             animationType="slide"
-             transparent={true}
-             visible={this.state.modal}
-             onRequestClose={()=>{
-              Alert.alert('Modal has been closed.');
-             }}
-             >
-              <View style={styles.modalView}>
-                  <View style={styles.modalButtonView}>
-                        <Button icon="camera"
-                         mode="contained"
-                         onPress={() => this.pickFromCamera()}>
-                                camera
-                        </Button>
-                        <Button 
-                        icon="image-area"
-                        mode="contained"
-                        onPress={() => this.pickImage()}>
-                                gallery
-                        </Button>
-                  </View>
-                <Button 
-                
-                onPress={() => this.handelModal}>
-                        cancel
-                </Button>
-              </View>
-             </Modal>*/} 
+     
      </SafeAreaView>
     );
-  }
+ 
 }
 
 export default ProfileScreen;
@@ -345,8 +341,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 290,
-    height: 210,
+    width: 160,
+    height: 150,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10
@@ -354,30 +350,15 @@ const styles = StyleSheet.create({
   med:{
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10
+    paddingVertical: 15,
   },
-  modalView:{
-    marginTop:80,
-    backgroundColor:'#fff'
-  },
-  button: {
-    backgroundColor: 'lightblue',
-    padding: 12,
-    margin: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  bottomModal: {
+  modalContent:{
+    flex: 1,
+    backgroundColor: 'grey',
+    padding: 2,
     justifyContent: 'flex-end',
-    margin: 0,
-  },
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)'
+  }
 })
