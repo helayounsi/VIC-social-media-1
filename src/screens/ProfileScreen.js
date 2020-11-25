@@ -127,9 +127,9 @@ pickImage = async () => {
 
 
   //last way to render a modal 
-  _renderButton = (text, onPress) => (
-   
+  _renderButton = (Text, onPress) => (
         <Ionicons  name="ios-add" size={48} color="#DFD8D8" style={{ bottom: 0, right: 0,}} onPress={onPress} >
+          
     </Ionicons>
    
     
@@ -137,7 +137,7 @@ pickImage = async () => {
 
   _renderModalContent = () => (
     <View style={styles.modalContent}>
-      <Text>Buy!</Text>
+      <Text>Buy</Text>
       {this._renderButton('cancel', () => this.setState({ visibleModal: false }))}
     </View>
   );
