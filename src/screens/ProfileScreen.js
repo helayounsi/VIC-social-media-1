@@ -80,6 +80,7 @@ const pickFromCamera = async ()=>{
 
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
+ const [modalOpen1, setModalOpen1]=useState(false);
 
     return (
      <SafeAreaView style={styles.container}>       
@@ -87,7 +88,14 @@ const pickFromCamera = async ()=>{
           {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
           <TouchableOpacity >
             {/* add a modal for the three dots with three buttons one for log out and one for edit pro*/ }
-          <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
+            <Modal visible={modalOpen1} animationType ='slide'  transparent={true}  swipeDirection="down">
+            <View style={{height: '20%', marginTop: '122', backgroundColor:'white'}}>
+               <Button >Edit profile</Button>
+               <Button>Log out</Button>
+               <Button onPress={()=> setModalOpen1(false)}>cancel</Button>
+               </View>
+          </Modal>
+          <Ionicons name="md-more" size={24} color="#52575D" onPress={()=> setModalOpen1(true)}></Ionicons>
           </TouchableOpacity>
          </View>
          <ScrollView showVerticalScrollIndicator={false}>
