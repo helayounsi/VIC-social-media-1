@@ -1,4 +1,5 @@
 import React from 'react';
+import users from "../../service.js";
 import { 
     View, 
     Text, 
@@ -15,6 +16,7 @@ import { useTheme } from '@react-navigation/native';
 
 const LandingScreen = ({navigation}) => {
     const { colors } = useTheme();
+    // console.log(users);
 
     return (
       <View style={styles.container}>

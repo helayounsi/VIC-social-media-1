@@ -1,47 +1,49 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {StyleSheet, View, Text, SafeAreaView, Image,
  ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import ImagePicker from '../components/ImagePicker'
 
-class ProfileScreen extends Component {
-  static propTypes = {
-    // array of strings, will be list items of Menu
-    // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
-    // onPress: PropTypes.func.isRequired
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      icon: null
-    };
-  }
+const ProfileScreen = () => {
+  // static propTypes = {
+  //   // array of strings, will be list items of Menu
+  //   // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
+  //   // onPress: PropTypes.func.isRequired
+  // }
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     icon: null
+  //   };
+  
+  let [Icon, setIcon] = useState(null);
 
-  onError () {
+   onError = () => {
     console.log('Popup Error')
   }
 
-  onPress = () => {
-    if (this.state.icon) {
-      UIManager.showPopupMenu(
-        findNodeHandle(this.state.icon),
-        this.props.actions,
-        this.onError,
-        this.props.onPress
-      )
-    }
-  }
-  nRef = icon => {
-    if (!this.state.icon) {
-      this.setState({icon})
+  // onPress = () => {
+  //   if (this.state.icon) {
+  //     UIManager.showPopupMenu(
+  //       findNodeHandle(this.state.icon),
+  //       this.props.actions,
+  //       this.onError,
+  //       this.props.onPress
+  //     )
+  //   }
+  // }
+  nRef = (icon) => {
+    if (!{Icon}) {
+      setIcon(icon)
     }
   }
 
-  render() {
+ 
     return (
      <SafeAreaView style={styles.container}>       
          <View style={styles.titleBar}>
           {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
-          <TouchableOpacity onPress={this.onPress}>
+          <TouchableOpacity >
           <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
           </TouchableOpacity>
          </View>
@@ -55,7 +57,7 @@ class ProfileScreen extends Component {
            </View>
            <View style={styles.active}></View>
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}}></Ionicons>
+             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} ></Ionicons>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -78,7 +80,7 @@ class ProfileScreen extends Component {
            </View>
          </View>
          <View style={{marginTop: 32}}>
-           {/* <ScrollView > */}
+           <ScrollView >
            <View style={styles.med}>
              <View style={styles.mediaImagecontainer}>
                <Image source={require("../../assets/profile-photo/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
@@ -117,13 +119,13 @@ class ProfileScreen extends Component {
              </View>
              </View>
 
-           {/* </ScrollView> */}
+           </ScrollView>
          </View>
        </ScrollView>
 
      </SafeAreaView>
     );
-  }
+ 
 }
 
 export default ProfileScreen;
@@ -208,8 +210,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 290,
-    height: 210,
+    width: 160,
+    height: 150,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10
@@ -217,6 +219,6 @@ const styles = StyleSheet.create({
   med:{
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10
+    paddingVertical: 15
   }
 })

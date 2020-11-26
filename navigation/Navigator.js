@@ -69,7 +69,7 @@ function Root() {
         },
       })}
       tabBarOptions={{
-        activeTintColor: "blue",
+        activeTintColor: "#189ad3",
         inactiveTintColor: "gray",
       }}
     >
