@@ -36,7 +36,7 @@ const PostComponent = () => {
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={true}
@@ -65,7 +65,7 @@ const PostComponent = () => {
   <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
     <Video
-  source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+  source={{ uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4' }}
   rate={1.0}
   volume={1.0}
   isMuted={true}
