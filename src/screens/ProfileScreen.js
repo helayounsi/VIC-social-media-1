@@ -87,7 +87,7 @@ const ProfileScreen = () => {
 
 
 // Pick image from gallery
-const useEffect =(() => {
+useEffect (() => {
   (async () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -97,6 +97,7 @@ const useEffect =(() => {
     }
   })();
 }, []);
+
 
 
 const pickImage = async () => {
