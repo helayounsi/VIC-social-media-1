@@ -10,16 +10,7 @@ import * as Permissions from 'expo-permissions';
 //import ImagePicker from 'react-native-image-picker';
 
 const ProfileScreen = () => {
-  // static propTypes = {
-  //   // array of strings, will be list items of Menu
-  //   // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
-  //   // onPress: PropTypes.func.isRequired
-  // }
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     icon: null
-  //   };
+
   const [Icon, setIcon, image, setImage] = useState(null);
   
 
@@ -44,48 +35,6 @@ const ProfileScreen = () => {
 //   }
   
 
-//   pickFromGallery = async ()=>{
-//     const {status} =  await Permissions.askAsync(Permissions.CAMERA_ROLL)
-//     if(status==granted){
-//          let data =  await ImagePicker.launchImageLibraryAsync({
-//               mediaTypes:ImagePicker.MediaTypeOptions.Images,
-//               allowsEditing:true,
-//               aspect:[1,1],
-//               quality:0.5
-//           })
-          
-//           }
-//     else{
-//        Alert.alert("you need to give up permission to work")
-//     }
-//  }
-
-
-  // openImagePickerAsync = async () => {
-  //   let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
-
-  //   if (permissionResult.granted === false) {
-  //     alert("Permission to access camera roll is required!");
-  //     return;
-  //   }
-
-  //   let pickerResult = await ImagePicker.launchImageLibraryAsync();
-  //   console.log(pickerResult);
-  // }
-  // useEffect=(() => {
-  //   (async () => {
-  //     if (Platform.OS !== 'web') {
-  //       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-  //       if (status !== 'granted') {
-  //         alert('Sorry, we need camera roll permissions to make this work!');
-  //       }
-  //     }
-  //   })();
-  // }, []);
-
-
-
-
 // Pick image from gallery
 useEffect (() => {
   (async () => {
@@ -97,7 +46,6 @@ useEffect (() => {
     }
   })();
 }, []);
-
 
 
 const pickImage = async () => {
@@ -138,6 +86,7 @@ const pickFromCamera = async ()=>{
          <View style={styles.titleBar}>
           {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
           <TouchableOpacity >
+            {/* add a modal for the three dots with three buttons one for log out and one for edit pro*/ }
           <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
           </TouchableOpacity>
          </View>
@@ -153,6 +102,7 @@ const pickFromCamera = async ()=>{
            
            <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
                <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
+             
                <View style={styles.modalButtonView}>
                         <Button icon="camera" onPress={pickFromCamera}>
                                 camera
@@ -341,4 +291,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)'
   }
+
 })
