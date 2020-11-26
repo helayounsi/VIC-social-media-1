@@ -18,7 +18,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
-
+import ChatListScreen from '../src/screens/ChatListScreen'
 
 
 // const ProfileStack = createStackNavigator();
@@ -83,7 +83,7 @@ function Root() {
       <Tab.Screen options={{headerShown:true}} name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
-      <Tab.Screen name="Chat" component={ChatScreen}/> 
+      <Tab.Screen name="Chat" component={ChatListScreen}/> 
       <Tab.Screen name="ProfileStack" component={ProfileScreen} />
     </Tab.Navigator>
   );
