@@ -7,7 +7,8 @@ export default class ChatScreen extends Component {
     super(props);
     this.state = {
        chatMessage: "",
-       chatMessages: []
+       chatMessages: [],
+       chatAlert: false
     };
     this.submitChatMessage = this.submitChatMessage.bind(this);
  }
@@ -22,20 +23,39 @@ export default class ChatScreen extends Component {
 }
 submitChatMessage() {
   this.socket.emit('chat message', this.state.chatMessage);
-  this.setState({chatMessage: ''});
+  this.setState({chatMessage: ''},
+  this.setState({chatAlert: true}))
+ console.log(this.state.chatAlert);
+ if (this.state.chatAlert = true) {
+  alert("you have a message")
+ }
 }
+
+// alertm(){
+//   if (this.state.chatAlert = true) {
+//     console.log("you have a message")
+//   }
+// }
+
+
+
+
 render() {
   const chatMessages = this.state.chatMessages.map((chatMessage, i) => (
-    <Text style={{borderWidth: 2, top: 500}} key={i}>{chatMessage}</Text>
+    <Text style={{borderWidth: 1, top: 800, flexDirection:'column'}} key={i}>{chatMessage}</Text>
   ))
  
 return(
   <View style={styles.container}>
     <View>
+      <Text>Reserved for Video call</Text>
+    </View>
+    <ScrollView>
+    <View>
 {chatMessages}
 </View>
 <TextInput 
-style={{height: 40, borderWidth: 2, top: 600}}
+style={{ height: 40, borderColor: '#82b8ff', borderWidth: 1, padding: 20, marginRight: 1, marginTop: 800 }}
 autoCorrect={false}
 value={this.state.chatMessage}
 onSubmitEditing={() => this.submitChatMessage()}
@@ -43,8 +63,9 @@ onChangeText={chatMessage =>{
   this.setState({chatMessage});
 }}
 />
+</ScrollView>
 <Button
-        title="Press me"
+        title="Send"
         onPress={this.submitChatMessage}
       />
   </View>
@@ -53,8 +74,8 @@ onChangeText={chatMessage =>{
 
 const styles = StyleSheet.create({
   container: {
-    height: 400,
+    height: 200,
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#ffffff',
   },
 });
