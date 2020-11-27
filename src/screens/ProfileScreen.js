@@ -16,11 +16,11 @@ const ProfileScreen = () => {
   //     icon: null
   //   };
   
-  let [Icon, setIcon] = useState(null);
+  // let [Icon, setIcon] = useState(null);
 
-   onError = () => {
-    console.log('Popup Error')
-  }
+  //  onError = () => {
+  //   console.log('Popup Error')
+  // }
 
   // onPress = () => {
   //   if (this.state.icon) {
@@ -32,11 +32,11 @@ const ProfileScreen = () => {
   //     )
   //   }
   // }
-  nRef = (icon) => {
-    if (!{Icon}) {
-      setIcon(icon)
-    }
-  }
+  // nRef = (icon) => {
+  //   if (!{Icon}) {
+  //     setIcon(icon)
+  //   }
+  // }
 
  
     return (

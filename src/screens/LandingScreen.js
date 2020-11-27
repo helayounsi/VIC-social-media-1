@@ -1,5 +1,5 @@
-import React from 'react';
-import users from "../../service.js";
+import React,{ useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
     View, 
     Text, 
@@ -16,7 +16,22 @@ import { useTheme } from '@react-navigation/native';
 
 const LandingScreen = ({navigation}) => {
     const { colors } = useTheme();
-    // console.log(users);
+    let [user, setUser]= useState();
+    let data;
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/User')
+        .then((response) => {
+            setUser(response.data);
+            console.log(setUser());
+            data= response.data;
+            console.log("i'm heare ye stack",data)
+            
+             
+          });
+         
+    }, []);
+    
 
     return (
       <View style={styles.container}>

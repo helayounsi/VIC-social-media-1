@@ -1,14 +1,17 @@
-import Axios from 'axios';
+// import Axios from 'axios';
+// const getAllUser = async () => {
+//     let user ;    
+//   await  Axios.get('http://localhost:3000/User')
+//     .then(function (response) {
+//         // console.log("axiox",response);
+//          user = response.data;
+//          console.log(user)
+         
+//       })
+//       .catch(function (error) {
+//        console.log(error);
+//       })
+//       return user;
+// };
 
-const getAllUser = async () => {
-    Axios.get('https://vic-corporation.herokuapp.com')
-    .then(function (response) {
-        // console.log(response);
-      })
-      .catch(function (error) {
-       console.log(error);
-      })
-};
-
-getAllUser();
-export default getAllUser;
+// export default getAllUser();
