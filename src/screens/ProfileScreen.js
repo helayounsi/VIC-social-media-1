@@ -14,6 +14,8 @@ const ProfileScreen = () => {
   const [Icon, setIcon, image, setImage] = useState(null);
   
 
+  // let [Icon, setIcon] = useState(null);
+
   //  onError = () => {
   //   console.log('Popup Error')
   // }
