@@ -7,7 +7,8 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
 import { SocialIcon } from 'react-native-elements'
 
@@ -116,6 +117,7 @@ const LoginScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
+          <ScrollView>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
             <Text style={styles.text_header}>Welcome!</Text>
@@ -280,6 +282,7 @@ const LoginScreen = ({navigation}) => {
           </View>
           </View>
         </Animatable.View>
+        </ScrollView>
       </View>
           );
 };
@@ -354,6 +357,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     iconContainer: {
-        marginTop:110
+        marginTop:10
     }
   });
