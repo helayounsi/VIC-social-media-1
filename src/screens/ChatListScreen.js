@@ -4,15 +4,18 @@ import ChatScreen from './ChatScreen'
 import { List } from 'react-native-paper'
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native';
 import DATA from './DummyMessages'
+import Navigator from '../../navigation/Navigator';
 
-const Item = ({ item, onPress, style }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-      <Text style={styles.message}>{item.message}</Text>
-    </TouchableOpacity>
-  );
+
   
-  const ChatListScreen = () => {
+  const ChatListScreen = ({navigation}) => {
     const [selectedId, setSelectedId] = useState(null);
+
+    const Item = ({ item, style}) => (
+        <TouchableOpacity onPress={()=>navigation.navigate('chatUser')} style={[styles.item, style]}>
+          <Text style={styles.message}>{item.message}</Text>
+        </TouchableOpacity>
+      );
   
     const renderItem = ({ item }) => {
       const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";

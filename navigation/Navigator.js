@@ -102,6 +102,7 @@ export default function MyStack() {
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
+        <Stack.Screen options={{headerShown:false}} name="chatUser" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
