@@ -13,10 +13,13 @@ const LeftContent = () => (
 const onShare = async () => {
   try {
     const result = await Share.share({
-      message: 'React Native | A framework for building native apps using React',
+      message: 'oussama send you a message',
+      titel: "test",
+      url: "https://www.youtube.com/c/KMRScript/videos"
     });
     if (result.action === Share.sharedAction) {
       if (result.activityType) {
+      
         // shared with activity type of result.activityType
       } else {
         // shared
@@ -29,14 +32,10 @@ const onShare = async () => {
   }
 };
 
-class PostComponent extends Component {
-  constructor (props){
-    super(props);
-    this.state={
+const PostComponent = () =>{
 
-    }
-  }
-  render(){
+ 
+  
   return (
   <SafeAreaView>
     <ScrollView>
@@ -147,7 +146,7 @@ class PostComponent extends Component {
   </ScrollView>
   </SafeAreaView>
 )
-}
+
   };
 
 export default PostComponent;
