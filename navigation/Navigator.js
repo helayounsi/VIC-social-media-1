@@ -10,11 +10,13 @@ import ProfileScreen from "../src/screens/ProfileScreen";
 import LoginScreen from "../src/screens/LoginScreen";
 import LandingScreen from '../src/screens/LandingScreen';
 import SignUpScreen from '../src/screens/SignUpScreen';
+import UpdateScreen from "../src/screens/UpdateScreen";
 // import RegisterScreen from "../src/screens/RegisterScreen";
 import OpenCameraScreen from "../src/screens/CameraScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
@@ -98,6 +100,8 @@ export default function MyStack() {
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
+        <Stack.Screen  options={{headerShown:false}}  name="UpdateScreen" component={UpdateScreen} />
+        <Stack.Screen  options={{headerShown:false}}  name="LandingScreen" component={LandingScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -8,11 +8,14 @@ import * as Permissions from 'expo-permissions';
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
+import UpdateScreen from '../screens/UpdateScreen.js';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
 
   const [Icon, setIcon, image, setImage] = useState(null);
-  
+  //const { navigate } = this.props.navigation;
 
   //  onError = () => {
   //   console.log('Popup Error')
@@ -85,44 +88,20 @@ const pickFromCamera = async ()=>{
     return (
      <SafeAreaView style={styles.container}>       
          <Provider>
-          {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
-         
-            {/* add a modal for the three dots with three buttons one for log out and one for edit pro*/ }
-            {/* <Modal visible={modalOpen1} animationType ='slide'  transparent={true}  swipeDirection="down">
-             <View style={{height: '20%', marginTop: '22', backgroundColor:'white'}}> 
-               <Button >Edit profile</Button>
-               <Button>Log out</Button>
-               <Button onPress={()=> setModalOpen1(false)}>cancel</Button>
-                </View>
-          </Modal> */}
           <View style={styles.titleBar}>
-          
-            
-        {/* <View
-          // style={{
-          //   paddingTop: 20,
-          //   flexDirection: 'row',
-          //   justifyContent: 'center'
-          // }}> */}
           <TouchableOpacity>
                     <Menu
             visible={modalOpen1}
             onDismiss={() => setModalOpen1(false)}
             anchor={
-              // <Button name="md-more" size={24} color="#52575D" onPress={()=>setModalOpen1(true)}></Button>
-               
               <Ionicons name="md-more" size={40} color="#52575D" marginLeft='20' onPress={()=> setModalOpen1(true)}></Ionicons>
-            }
-          >
-                 
-            <Menu.Item  title="Edit profile"/>
-            <Menu.Item title="Log out"/>
+            }>      
+            <Menu.Item  onPress={() => navigation.navigate('UpdateScreen')} title="Edit profile"/>
+            <Menu.Item onPress={() => navigation.navigate('LandingScreen')} title="Log out"/>
           </Menu>
           </TouchableOpacity>
       </View>
-          
         
-         {/* </View> */}
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
