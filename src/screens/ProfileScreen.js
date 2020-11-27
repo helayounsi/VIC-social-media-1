@@ -17,6 +17,8 @@ const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   //const { navigate } = this.props.navigation;
 
+  // let [Icon, setIcon] = useState(null);
+
   //  onError = () => {
   //   console.log('Popup Error')
   // }
@@ -58,9 +60,7 @@ const pickImage = async () => {
     aspect: [4, 3],
     quality: 1,
   });
-
   console.log(result);
-
   if (!result.cancelled) {
     setImage(result.uri);
   }

@@ -1,20 +1,25 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-native-fbsdk
+  C:\Program Files\nodejs\node.exe C:\Users\helay\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js
 
 PATH: 
-  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\souio\bin;C:\Users\souio\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\souio\bin;C:\Python38\Scripts;C:\Python38;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files (x86)\Yarn\bin;C:\Users\souio\AppData\Local\Programs\Python\Python39\Scripts;C:\Users\souio\AppData\Local\Programs\Python\Python39;C:\Users\souio\AppData\Local\Microsoft\WindowsApps;C:\Users\souio\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\souio\AppData\Roaming\npm;C:\Program Files\heroku\bin;C:\Users\souio\AppData\Local\Yarn\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\helay\bin;C:\Users\helay\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\helay\bin;C:\Program Files\Python39\Scripts;C:\Program Files\Python39;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\MySQL\MySQL Server 8.0.21.0\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Users\helay\AppData\Roaming\npm;C:\Program Files (x86)\Yarn\bin;C:\Program Files\MongoDB\Server\4.4\bin;C:\Users\helay\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\helay\AppData\Local\Yarn\bin;C:\Program Files\heroku\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
 
 Yarn version: 
-  1.22.5
+  1.22.10
 
 Node version: 
-  14.9.0
+  12.19.0
 
 Platform: 
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, unlink 'C:\Users\souio\Desktop\theeses-project\VIC-social-media\node_modules\@babel\helper-regex\lib'
+  SyntaxError: C:\Users\helay\OneDrive\Bureau\iuSIDE\VIC-social-media-1\package.json: Unexpected token < in JSON at position 519
+      at JSON.parse (<anonymous>)
+      at C:\Users\helay\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\helay\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\helay\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
 
 npm manifest: 
   {
@@ -27,20 +32,24 @@ npm manifest:
       "eject": "expo eject"
     },
     "dependencies": {
-  
-      
-      "@react-navigation/bottom-tabs": "^5.11.1",
-      "@react-navigation/drawer": "^5.11.3",
-      "@react-navigation/material-bottom-tabs": "^5.3.9",    
-      "expo-av": "~8.6.0",  
       "@expo/vector-icons": "^10.2.1",
       "@react-native-community/masked-view": "^0.1.10",
+      "@react-navigation/bottom-tabs": "^5.11.1",
+      "@react-navigation/drawer": "^5.11.3",
+      "@react-navigation/material-bottom-tabs": "^5.3.9",
       "@react-navigation/native": "^5.8.9",
+  <<<<<<< HEAD
+      "@react-navigation/stack": "^5.12.8",
+  =======
       "@react-navigation/stack": "^5.12.6",
-      "expo": "~39.0.2",
+      "axios": "^0.21.0",
+  >>>>>>> 130c80dbdaea3d4b6da1829ad4becb2ab155831a
+      "expo": "^39.0.4",
+      "expo-av": "~8.6.0",
       "expo-camera": "~9.0.0",
-      "expo-image-picker": "~9.1.1",
+      "expo-image-picker": "^9.1.1",
       "expo-linear-gradient": "~8.3.0",
+      "expo-permissions": "^9.3.0",
       "expo-status-bar": "~1.0.2",
       "pod-install": "^0.1.12",
       "react": "16.13.1",
@@ -50,8 +59,10 @@ npm manifest:
       "react-native-elements": "^3.0.0-alpha.1",
       "react-native-fbsdk": "^2.0.0",
       "react-native-gesture-handler": "^1.8.0",
+      "react-native-image-picker": "^2.3.4",
       "react-native-linear-gradient": "^2.5.6",
-      "react-native-paper": "^4.4.0",
+      "react-native-modal": "^11.5.6",
+      "react-native-paper": "^4.4.1",
       "react-native-profile-picture": "^1.0.0",
       "react-native-safe-area-context": "3.1.4",
       "react-native-screens": "^2.15.0",
@@ -59,7 +70,6 @@ npm manifest:
       "react-native-vector-icons": "^7.1.0",
       "react-native-web": "~0.13.12",
       "react-web-vector-icons": "^1.0.2"
-  
     },
     "devDependencies": {
       "@babel/core": "~7.9.0"
@@ -1387,10 +1397,10 @@ Lockfile:
     dependencies:
       nanoid "^3.1.15"
   
-  "@react-navigation/stack@^5.12.6":
-    version "5.12.7"
-    resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-5.12.7.tgz#2e96aceb6bff424d86888f8c70216698d641bfd9"
-    integrity sha512-Jmc35mXlY2UibF32GH+qwSBmiv1H45YNzFxdeEIBD+CNyqo91IVFCaisnewdajaXb5wtY+5Y4Z3ngkNT0KjUlQ==
+  "@react-navigation/stack@^5.12.8":
+    version "5.12.8"
+    resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-5.12.8.tgz#31e54e05d8a3ffaaa3e39a1a9b7969f8316a35bf"
+    integrity sha512-wUJFbU0v606RBXOUxHToCXJNmiwxtFYhN2TFvjxCZ3PJU+OWWx8HTmn99pT3rVH4Ax2cfO5BDUy9v+r74ZrIWw==
     dependencies:
       color "^3.1.3"
       react-native-iphone-x-helper "^1.3.0"
@@ -1937,6 +1947,13 @@ Lockfile:
     integrity sha512-XWX3OX8Onv97LMk/ftVyBibpGwY5a8SmuxZPzeOxqmuEqUCOM9ZE+uIaD1VNJ5QnvU2UQusvmKbuM1FR8QWGfQ==
     dependencies:
       array-filter "^1.0.0"
+  
+  axios@^0.21.0:
+    version "0.21.0"
+    resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
+    integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
+    dependencies:
+      follow-redirects "^1.10.0"
   
   babel-plugin-dynamic-import-node@^2.3.3:
     version "2.3.3"
@@ -3268,7 +3285,7 @@ Lockfile:
       fbjs "1.0.0"
       fontfaceobserver "^2.1.0"
   
-  expo-image-picker@~9.1.1:
+  expo-image-picker@^9.1.1:
     version "9.1.1"
     resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-9.1.1.tgz#42abe9deb595fa9f9d8ac0d2ba8aad2cd6f69581"
     integrity sha512-Etz2OQhRflfx+xFbSdma8QLZsnV/yq0M/yqYlsi3/RLiWAQYM/D/VmRfDDPiG10gm+KX3Xb5iKplNjPrWeTuQg==
@@ -3300,7 +3317,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-9.0.1.tgz#adf93b8adf5e9dcf9570cba1d66c8e3831329156"
     integrity sha512-yl4V2IelxrjG1h3nshkyILwghysNJvvEuR4Of0U7oYAsBrT0cq8NxFuaDemRvqt9Yb19wVFNMoVtYFNpthcqpQ==
   
-  expo-permissions@~9.3.0:
+  expo-permissions@^9.3.0, expo-permissions@~9.3.0:
     version "9.3.0"
     resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-9.3.0.tgz#b90c7e9e411d306c1c7ba2bae18d5c53c201affd"
     integrity sha512-ylSJZVvEGJVFTKsFrUL2S6gCvFt+/o8TJ3xT4WaMjHe2/2Z7R8ng6NR47Kt54t7XBIV/SZ7DIY9uRiR7TPuNYA==
@@ -3325,7 +3342,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.0.2.tgz#2441a77c56be31597898337b0d086981f2adefd8"
     integrity sha512-5313u744GcLzCadxIPXyTkYw77++UXv1dXCuhYDxDbtsEf93iMra7WSvzyE8a7mRQLIIPRuGnBOdrL/V1C7EOQ==
   
-  expo@~39.0.2:
+  expo@^39.0.4:
     version "39.0.4"
     resolved "https://registry.yarnpkg.com/expo/-/expo-39.0.4.tgz#320b7453ac055fc37c64942d5ba442f4e2781993"
     integrity sha512-lyd7VSg0DG+I2CwWtOHwhmMwgANoqggqU1ooWRdO4KdWPYA8hWMMsLC2vBBBemKv3PPwxhl9hhzFxtjJ/MaR7g==
@@ -3590,6 +3607,11 @@ Lockfile:
     dependencies:
       inherits "^2.0.3"
       readable-stream "^2.3.6"
+  
+  follow-redirects@^1.10.0:
+    version "1.13.0"
+    resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
+    integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
   
   fontfaceobserver@^2.1.0:
     version "2.1.0"
@@ -5907,7 +5929,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
     integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
   
-  react-native-animatable@^1.3.3:
+  react-native-animatable@1.3.3, react-native-animatable@^1.3.3:
     version "1.3.3"
     resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.3.tgz#a13a4af8258e3bb14d0a9d839917e9bb9274ec8a"
     integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
@@ -5946,6 +5968,11 @@ Lockfile:
       invariant "^2.2.4"
       prop-types "^15.7.2"
   
+  react-native-image-picker@^2.3.4:
+    version "2.3.4"
+    resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-2.3.4.tgz#1c31dbe9872ade17e2ed6457b0c669d63c322590"
+    integrity sha512-4UHu+zOyDT570r5mIbjH6h1iMrKIq/qfsKiAVUEZwncVegh0usJiEYNyJw4CEVwNeehmye/ia5sLDsa+kzIE4g==
+  
   react-native-iphone-x-helper@^1.3.0:
     version "1.3.1"
     resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
@@ -5956,10 +5983,18 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
     integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
   
-  react-native-paper@^4.4.0:
-    version "4.4.0"
-    resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.4.0.tgz#d22b2a3032a880dbf0f69c4ad9ef065b44102c7e"
-    integrity sha512-yDb9ME9cP+tOoGV/OZcUX6QpD+kN6fcLXkehfMBDKJ/3rKfq3uA2HhT4mOFKLLCLsGkd4oZwIz7POkJpB+k0aw==
+  react-native-modal@^11.5.6:
+    version "11.5.6"
+    resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-11.5.6.tgz#bb25a78c35a5e24f45de060e5f64284397d38a87"
+    integrity sha512-APGNfbvgC4hXbJqcSADu79GLoMKIHUmgR3fDQ7rCGZNBypkStSP8imZ4PKK/OzIZZfjGU9aP49jhMgGbhY9KHA==
+    dependencies:
+      prop-types "^15.6.2"
+      react-native-animatable "1.3.3"
+  
+  react-native-paper@^4.4.1:
+    version "4.4.1"
+    resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.4.1.tgz#b2fb7c0889fd15d52d6fd5c27df13075104ef911"
+    integrity sha512-c2+0XsTg6aAwyJNwumtZLPuFw72/kYyFS2vXDzWZddx5OYF052DbPPUhX4SVom2jxVaI1y9izx88RO5c4hGJEA==
     dependencies:
       "@callstack/react-theme-provider" "^3.0.5"
       color "^3.1.2"
