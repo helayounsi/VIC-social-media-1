@@ -35,7 +35,7 @@ const LoginScreen = ({navigation}) => {
         isValidUser: true,
         isValidPassword: true,
     });
-    
+
 
     const { colors } = useTheme();
 
@@ -50,6 +50,7 @@ const LoginScreen = ({navigation}) => {
                 check_textInputChange: true,
                 isValidUser: true
             });
+
         }else if(val.includes('@')=== true) {
             setData({
                 ...data,
@@ -58,23 +59,24 @@ const LoginScreen = ({navigation}) => {
                 isValidUser: true
             });        
         } 
+
     }
 
     // oncahnge for password
     const handlePasswordChange = (val) => {
-        // if( val.trim().length >= 8 ) {
+        if( val.trim().length >= 8 ) {
             setData({
                 ...data,
                 password: val,
                 isValidPassword: true
             });
-        // } else {
-        //     setData({
-        //         ...data,
-        //         password: val,
-        //         isValidPassword: false
-        //     });
-        // }
+        } else {
+            setData({
+                ...data,
+                password: val,
+                isValidPassword: false
+            });
+        }
     }
 
     const handleConfirmPasswordChange = (val) => {
@@ -148,7 +150,7 @@ const LoginScreen = ({navigation}) => {
         >
             <Text style={[styles.text_footer, {
                 color: colors.text
-            }]}>Username</Text>
+            }]}>Username/e-mail/phone number</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -156,7 +158,7 @@ const LoginScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Username"
+                    placeholder="Username/e-mail/phone number"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
