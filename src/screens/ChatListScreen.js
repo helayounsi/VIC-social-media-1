@@ -1,17 +1,20 @@
 import React from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
+// import axios from 'axios';
 import io from 'socket.io-client';
 import UserDATA from './DummyUsers.js';
-
+import Navigator from '../../navigation/Navigator'
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
    
 
     this.state = {
-      data: UserDATA,
+       UserDATA,
+      
       // userId: props.data.userId ,
       // userName: props.data.userName,
       // userPhoto: props.data.userPhoto,
@@ -88,12 +91,13 @@ class ChatListScreen extends React.Component {
   // };
 
   render() {
-    console.log(this.state.data)
+    console.log(UserDATA)
+    console.log(UserDATA[0].message)
     return (
       <View>
         <Text
           style={{
-            color: '#f4f4f4',
+            color: '#189AD3',
             fontSize: 36,
             padding: '5%',
             paddingLeft: '7%',
@@ -108,15 +112,7 @@ class ChatListScreen extends React.Component {
               marginBottom: '18%',
               paddingBottom: '1.5%',
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.screenProps.homeNavigation.push('Broadcast', {
-                  senderId: this.data.senderId,
-                  senderName: this.data.senderName,
-                  senderPhoto: this.data.senderPhoto,
-                });
-                // console.log(this.props);
-              }}>
+            <TouchableOpacity>
               <View
                 style={{
                   flex: 2,
@@ -142,7 +138,7 @@ class ChatListScreen extends React.Component {
                     style={{
                       fontSize: 18,
                       
-                      color: '#f2f2f2',
+                      color: '#7a7a7a',
                     }}>
                     Broadcast
                   </Text>
@@ -157,19 +153,9 @@ class ChatListScreen extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-            {this.state.data.map(chatItem => (
+            {this.state.UserDATA.map(i => (
               <TouchableOpacity
-                onPress={() => {
-                  this.data.push('Message', {
-                    userName: this.state.userName,
-                    userId: this.state.userId,
-                    userPhoto: this.state.userPhoto,
-                    senderId: this.state.senderId,
-                    senderName: this.state.senderName,
-                    senderPhoto: this.state.senderPhoto,
-                  });
-                  // console.log(this.props);
-                }}>
+              onPress={()=>this.props.navigation.navigate('chatUser')}>
                 <View
                   style={{
                     flex: 2,
@@ -180,9 +166,11 @@ class ChatListScreen extends React.Component {
                   }}>
                   <Image
                     source={{
-                      uri: this.data.userPhoto,
+                      uri: 'https://www.kernmedical.com/wp-content/uploads/male-profile-blank-e1539295013580.png',
+                      
                     }}
                     style={{width: 60, height: 60, borderRadius: 70}}
+                   
                   />
                   <View
                     style={{
@@ -195,17 +183,19 @@ class ChatListScreen extends React.Component {
                       style={{
                         fontSize: 18,
                         
-                        color: '#f2f2f2',
+                        color: '#7a7a7a',
                       }}>
-                      {this.state.us}
+                      {UserDATA[0].userName}
+                      {UserDATA[1].userName}
                     </Text>
                     <Text
                       style={{
                         fontSize: 14,
                         
-                        color: 'lightgrey',
+                        color: 'black',
                       }}>
-                      {this.data.message}
+                      {UserDATA[0].message}
+                      {UserDATA[1].message}
                     </Text>
                   </View>
                 </View>
