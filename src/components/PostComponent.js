@@ -1,7 +1,7 @@
 import  React, { Component } from 'react';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image} from 'react-native'
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView} from 'react-native'
 import { Video, } from 'expo-av';
 
 
@@ -33,7 +33,7 @@ class PostComponent extends Component {
   constructor (props){
     super(props);
     this.state={
-      media: ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"],
+      media: ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"],
     }
   }
 //  mediaList=()=>{
@@ -42,14 +42,23 @@ class PostComponent extends Component {
 //    })
 //  }
   render(){
-    return this.state.media.map(item=>{
-      console.log(item)
-    if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
+      
+          
       return(
+        <SafeAreaView>
+    <ScrollView>
+    
+    <View style={{justifyContent: 'center'}}>
+    {this.state.media.map((item , index)=>{
+      console.log(item);
+      if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
+        return(
     <Card>
-    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-    <Card.Cover key={item.id} source={{uri:item}} />
-<Card.Content>
+    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />    
+      
+      <Card.Cover key={index} source={{uri:item}} />
+      
+      <Card.Content>
 <View style={styles.feed}>
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
  Like
@@ -63,28 +72,24 @@ class PostComponent extends Component {
 </View>
 </Card.Content>
   </Card>
-      )
-    }else{
-  return (
-  <SafeAreaView>
-    <ScrollView>
-    <View style={{justifyContent: 'center'}}>
-  <Card>
-    <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-    
-    <Video
-  key={item.id} source={{ uri: item}}
-  rate={1.0}
-  volume={1.0}
-  isMuted={true}
-  resizeMode="cover"
-  shouldPlay
-  isLooping
-  style={styles.card}
-/>
-
-<Card.Content>
-
+  )
+     }else if(item.includes('.mp4')){       
+       return(
+        <Card>
+        <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
+      <Video
+      key={index}
+      source={{ uri: item}}
+      rate={1.0}
+      volume={1.0}
+      isMuted={true}
+      resizeMode="cover"
+      autoPlay={true}
+      shouldPlay={true}
+      isLooping={true}
+      style={styles.card}
+    />
+     <Card.Content>
 <View style={styles.feed}>
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
  Like
@@ -95,18 +100,22 @@ class PostComponent extends Component {
 <Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
  Share
 </Button>
-
 </View>
 </Card.Content>
-  </Card>  
+  </Card>
+    )
+  }      
+
+  })}
   </View>
+  
   </ScrollView>
   </SafeAreaView>
-)
-  }
-})
-}
-  };
+      )
+
+};
+
+};
 
 export default PostComponent;
 
