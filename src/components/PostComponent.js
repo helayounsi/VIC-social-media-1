@@ -1,4 +1,4 @@
-import  React, { Component } from 'react';
+import  React, { Component, useState, useEffect  } from 'react';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 // import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Animatable from 'react-native-animatable';
@@ -8,7 +8,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput} from 'react-native';
 import { Video, } from 'expo-av';
-
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
 
 
@@ -92,7 +93,8 @@ class PostComponent extends Component {
 //  }
 
 
-  render(){      
+  render(){  
+    const [modalOpen, setModalOpen]=useState(false);    
       return(
         <SafeAreaView>
     <ScrollView>
@@ -101,6 +103,14 @@ class PostComponent extends Component {
       <Text style={[styles.text_footer, {
                 marginTop: 20
             }]}>Share what is in your mind?</Text>
+            <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
+               <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
+             
+               <View style={styles.modalButtonView}>
+                 hello
+                       </View>
+               </View>
+           </Modal>
         <View style={styles.action}>
         <FontAwesome name="pencil-square-o" size={28} color="black" />
       <TextInput 
@@ -110,11 +120,10 @@ class PostComponent extends Component {
                     autoCapitalize="none"
                     onChangeText={(val) => usernameChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                />
+                    onPress={()=> setModalOpen(true)}/>
         </View>
     <View style={{justifyContent: 'center'}}>
     {this.state.media.reverse().map((item , index)=>{
-      // console.log(item);
       if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
         return(
     <Card>
