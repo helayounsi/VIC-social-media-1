@@ -16,6 +16,7 @@ import OpenCameraScreen from "../src/screens/CameraScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import PostComponent from "../src/components/PostComponent"
 
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
@@ -78,7 +79,7 @@ function Root() {
 
 
 
-      <Tab.Screen options={{headerShown:true}} name="Home" component={HomeScreen} />
+      <Tab.Screen options={{headerShown:true}} name="Home" component={PostComponent} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
       <Tab.Screen name="Chat" component={ChatScreen}/> 
