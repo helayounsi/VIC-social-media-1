@@ -1,8 +1,14 @@
 import  React, { Component } from 'react';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView} from 'react-native'
+import * as Animatable from 'react-native-animatable';
+import {LinearGradient} from 'expo-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
+import { useTheme } from 'react-native-paper';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput} from 'react-native';
 import { Video, } from 'expo-av';
+
 
 
 
@@ -29,6 +35,49 @@ const onShare = async () => {
   }
 };
 
+useEffect (() => {
+  (async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  })();
+}, []);
+
+
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  console.log(result);
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+};
+
+// Pick image from camera
+const pickFromCamera = async ()=>{
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status=='granted'){
+       let data =  await ImagePicker.launchCameraAsync({
+            mediaTypes:ImagePicker.MediaTypeOptions.Images,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+  }else{
+     Alert.alert("you need to give up permission to work")
+  }
+}
+ //toggel a model 
+ const [modalOpen, setModalOpen]=useState(false);
+ 
+
 class PostComponent extends Component {
   constructor (props){
     super(props);
@@ -41,22 +90,37 @@ class PostComponent extends Component {
     
 //    })
 //  }
-  render(){
-      
-          
+
+
+  render(){      
       return(
         <SafeAreaView>
     <ScrollView>
-    
+      {/* add a post input */}
+      <View>
+      <Text style={[styles.text_footer, {
+                marginTop: 20
+            }]}>Share what is in your mind?</Text>
+        <View style={styles.action}>
+        <FontAwesome name="pencil-square-o" size={28} color="black" />
+      <TextInput 
+                    placeholder="Add your post here"
+                    placeholderTextColor="#666666"
+                    style={[styles.textInput]}
+                    autoCapitalize="none"
+                    onChangeText={(val) => usernameChange(val)}
+                    // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
+                />
+        </View>
     <View style={{justifyContent: 'center'}}>
-    {this.state.media.map((item , index)=>{
-      console.log(item);
+    {this.state.media.reverse().map((item , index)=>{
+      // console.log(item);
       if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
         return(
     <Card>
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />    
       
-      <Card.Cover key={index} source={{uri:item}} />
+      <Card.Cover key={index.item} source={{uri:item}} />
       
       <Card.Content>
 <View style={styles.feed}>
@@ -78,7 +142,7 @@ class PostComponent extends Component {
         <Card>
         <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
       <Video
-      key={index}
+      key={index.item}
       source={{ uri: item}}
       rate={1.0}
       volume={1.0}
@@ -108,6 +172,7 @@ class PostComponent extends Component {
 
   })}
   </View>
+      </View>
   
   </ScrollView>
   </SafeAreaView>
@@ -136,4 +201,21 @@ const styles = StyleSheet.create({
     width: undefined,
     height: undefined
   },
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5
+},
+text_footer: {
+  color: '#05375a',
+  fontSize: 18
+},
+textInput: {
+  flex: 1,
+  marginTop: Platform.OS === 'ios' ? 0 : -12,
+  paddingLeft: 10,
+  color: '#05375a',
+},
 });
