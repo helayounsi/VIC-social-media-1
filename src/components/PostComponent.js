@@ -6,9 +6,10 @@ import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput, Modal, Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import * as DocumentPicker from 'expo-document-picker';
 import { Video, } from 'expo-av';
 
 
@@ -43,25 +44,90 @@ const PostComponent =({navigation})=>{
     }
   };
 
+  
+useEffect (() => {
+  (async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  })();
+}, []);
+
+// Pick image from gallery
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+  console.log(result);
+  if (!result.cancelled) {
+    setImage(result.uri);
+  }
+};
+
+// Pick image from camera
+const pickFromCamera = async ()=>{
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status=='granted'){
+       let data =  await ImagePicker.launchCameraAsync({
+            mediaTypes:ImagePicker.MediaTypeOptions.Images,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+  }else{
+     Alert.alert("you need to give up permission to work")
+  }
+}
+
+const pickDocument = async () => {
+  let result = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
+  alert(result.uri);
+  console.log(result);
+}
+
+  //toggel a model 
+ const [modalOpen, setModalOpen]=useState(false);
+ const [value, onChangeText] = React.useState("Description");
+
   return(
     <SafeAreaView>
 <ScrollView>
   {/* add a post input */}
-  <View>
+  <View style={{backgroundColor:'#fff'}}>
   <Text style={[styles.text_footer, {
-            marginTop: 20
+            marginTop: 15, marginLeft: 30,
         }]}>Share what is in your mind?</Text>
-    <View style={styles.action}>
-    <FontAwesome name="pencil-square-o" size={28} color="black" />
-  <TextInput 
-                placeholder="Add your post here"
-                placeholderTextColor="#666666"
-                style={[styles.textInput]}
-                autoCapitalize="none"
-                onChangeText={(val) => usernameChange(val)}
-                // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-            />
-    </View>
+    
+    <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
+               <View style={{height: '100%', marginTop: 'auto', backgroundColor:'white'}}>
+               <TextInput style={styles.input}
+      onChangeText={text => onChangeText(text)} value={value} />
+               <View style={styles.modalButtonView}>
+                        <Button icon="camera" onPress={pickFromCamera}>
+                                Add image from camera
+                        </Button>
+                        <Button  icon="image-area" onPress={pickImage}>
+                                Add image from gallery
+                        </Button>
+                        <Button  icon="image-area" onPress={pickDocument }>
+                                Add video from gallery
+                        </Button>
+                  </View>
+                <Button  onPress={()=> setModalOpen(false)}>
+                        Add my Post
+                </Button>
+               </View>
+           </Modal>
+           <Button icon="pencil"  onPress={()=> setModalOpen(true)}>
+                 Add a post    
+                        </Button>
+                        
 <View style={{justifyContent: 'center'}}>
 {media.reverse().map((item , index)=>{
   // console.log(item);
@@ -165,6 +231,15 @@ textInput: {
   paddingLeft: 10,
   color: '#05375a',
 },
+input: {
+  borderWidth:1,
+  borderColor: '#777',
+  width:340,
+  marginLeft: 10,
+  marginTop: 10,
+  height: 300, 
+  marginBottom: 30,
+}
 });
 
 
