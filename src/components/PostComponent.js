@@ -6,11 +6,11 @@ import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput, Modal, Alert} from 'react-native';
+import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput, Modal, Alert, Video} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import * as DocumentPicker from 'expo-document-picker';
-import { Video, } from 'expo-av';
+//import { Video } from 'expo-av';
 
 
 
@@ -85,10 +85,26 @@ const pickFromCamera = async ()=>{
   }
 }
 
+ //pick video from gallery
 const pickDocument = async () => {
   let result = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
   alert(result.uri);
   console.log(result);
+}
+
+// Pick video from camera
+const pickVideoFromCamera = async ()=>{
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status=='granted'){
+       let data =  await DocumentPicker.launchCameraAsync({
+            mediaTypes:DocumentPicker.MediaTypeOptions.Video,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+  }else{
+     Alert.alert("you need to give up permission to work")
+  }
 }
 
   //toggel a model 
@@ -117,6 +133,9 @@ const pickDocument = async () => {
                         </Button>
                         <Button  icon="image-area" onPress={pickDocument }>
                                 Add video from gallery
+                        </Button>
+                        <Button  icon="image-area" onPress={pickVideoFromCamera}>
+                                Add video from camera
                         </Button>
                   </View>
                 <Button  onPress={()=> setModalOpen(false)}>
