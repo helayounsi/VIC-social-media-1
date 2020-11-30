@@ -5,6 +5,7 @@ import {StyleSheet, View, Text, SafeAreaView, Image,
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
@@ -12,6 +13,7 @@ import * as Permissions from 'expo-permissions';
 const ProfileScreen = () => {
 
   const [Icon, setIcon, image, setImage] = useState(null);
+  const [imageCam, setImageCam]= useState("");
   
 
   //  onError = () => {
@@ -52,14 +54,13 @@ const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
-    aspect: [4, 3],
+    aspect: [1, 1],
     quality: 1,
   });
 
-  console.log(result);
 
   if (!result.cancelled) {
-    setImage(result.uri);
+    setImageCam(result.uri);
   }
 };
 
@@ -73,6 +74,8 @@ const pickFromCamera = async ()=>{
             aspect:[1,1],
             quality:0.5
         })
+        setImageCam(data.uri);
+        
   }else{
      Alert.alert("you need to give up permission to work")
   }
@@ -81,6 +84,7 @@ const pickFromCamera = async ()=>{
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
  const [modalOpen1, setModalOpen1]=useState(false);
+
 
     return (
      <SafeAreaView style={styles.container}>       
@@ -126,7 +130,7 @@ const pickFromCamera = async ()=>{
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
-             <Image source={require("../../assets/profile-pic/profile.jpg")} style={styles.image}  resizeMode="center"></Image>
+             <Image source={{uri:imageCam}}  style={styles.image}  resizeMode="center"></Image>
            </View>
            <View style={styles.dm}>
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
