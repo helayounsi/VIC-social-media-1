@@ -36,7 +36,7 @@ const LandingScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
+          <StatusBar  barStyle="light-content"/>
           <View style={styles.video}>
           <Video
       source={require("../../assets/background/videoBackground.mp4")}

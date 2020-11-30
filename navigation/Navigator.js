@@ -22,7 +22,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
-
+import ChatListScreen from '../src/screens/ChatListScreen'
 
 
 // const ProfileStack = createStackNavigator();
@@ -48,11 +48,15 @@ import { Button } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
 function Root() {
+  if (!window.navigator.userAgent) {
+    window.navigator.userAgent = "react-native";
+  }
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
+          
 
           if (route.name === "PostScreen") {
             iconName = "home";
@@ -83,8 +87,12 @@ function Root() {
       <Tab.Screen  name="PostScreen" component={PostComponent} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
-      <Tab.Screen name="Chat" component={ChatScreen}/> 
+
+     
       <Tab.Screen name="Profile" component={ProfileScreen} />
+
+      <Tab.Screen name="Chat" component={ChatListScreen}/> 
+
     </Tab.Navigator>
   );
 }
@@ -102,8 +110,12 @@ export default function MyStack() {
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
+
         <Stack.Screen  options={{headerShown:false}}  name="UpdateScreen" component={UpdateScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="LandingScreen" component={LandingScreen} />
+
+        <Stack.Screen options={{headerShown:false}} name="chatUser" component={ChatScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
