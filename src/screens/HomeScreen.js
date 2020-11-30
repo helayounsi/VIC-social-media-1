@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet, SafeAreaView} from 'react-native'
 import { Video } from 'expo-av';
-import PostComponent from '../components/PostComponent';
+// import PostComponent from '../components/PostComponent';
 
 const HomeScreen = props =>{
   return (
    <SafeAreaView style={styles.container}>
   <View>
-  <PostComponent/>
+  {/* <PostComponent/> */}
   </View>
   
    </SafeAreaView>)
