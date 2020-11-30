@@ -297,6 +297,7 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
+           
         </Animatable.View>
       </View>
     );
