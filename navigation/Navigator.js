@@ -1,8 +1,9 @@
 import React from "react";
 
 // import NotificationsScreen from "../src/screens/NotificationsScreen";
+import PostComponent from "../src/components/PostComponent";
 import SearchScreen from "../src/screens/SearchScreen";
-import HomeScreen from "../src/screens/HomeScreen";
+//import HomeScreen from "../src/screens/HomeScreen";
 import ChatScreen from "../src/screens/ChatScreen";
 import ProfileScreen from "../src/screens/ProfileScreen";
 // import OpenCameraScreen from "../src/screens/OpenCameraScreen";
@@ -16,7 +17,7 @@ import OpenCameraScreen from "../src/screens/CameraScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import PostComponent from "../src/components/PostComponent"
+
 
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
@@ -53,7 +54,7 @@ function Root() {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
+          if (route.name === "PostScreen") {
             iconName = "home";
           } else if (route.name === "Notifications") {
             iconName = "notification";
@@ -63,7 +64,7 @@ function Root() {
             iconName = "wechat";
           } else if (route.name === "OpenCamera") {
             iconName = "camera";
-          } else if (route.name === "ProfileStack") {
+          } else if (route.name === "Profile") {
             iconName = "profile";
           }
 
@@ -79,11 +80,11 @@ function Root() {
 
 
 
-      <Tab.Screen options={{headerShown:true}} name="Home" component={PostComponent} />
+      <Tab.Screen  name="PostScreen" component={PostComponent} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
       <Tab.Screen name="Chat" component={ChatScreen}/> 
-      <Tab.Screen name="ProfileStack" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

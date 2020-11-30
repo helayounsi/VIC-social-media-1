@@ -7,7 +7,7 @@ const HomeScreen = props =>{
   return (
    <SafeAreaView style={styles.container}>
   <View>
-  <PostComponent/>
+  {/* <PostComponent/> */}
   </View>
   
    </SafeAreaView>)
