@@ -91,7 +91,7 @@ const pickFromCamera = async ()=>{
 const pickDocument = async () => {
   let result = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
   alert(result.uri);
-  console.log(result);
+  console.log(result.uri);
 }
 
 // Pick video from camera
@@ -113,13 +113,24 @@ const pickDocument = async () => {
  const [modalOpen, setModalOpen]=useState(false);
  const [value, onChangeText] = React.useState("Description");
 
+ const handelPost = () =>{
+   axios({
+     method: "POST",
+     url: 'http://localhost:3000/upload',
+     data: {
+      urlMedia:''|| data.result.uri
+     }
+   });
+   console.log(data.result.uri);
+ }
+
+
   return(
     <SafeAreaView>
-<ScrollView>
-  {/* add a post input */}
-  <View style={{backgroundColor:'#fff'}}>
+      {/* add a post input */}
+      <View style={{backgroundColor:'#fff'}}>
   <Text style={[styles.text_footer, {
-            marginTop: 15, marginLeft: 30,
+            marginTop: 15, marginLeft: 70,
         }]}>Share what is in your mind?</Text>
     
     <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
@@ -140,7 +151,7 @@ const pickDocument = async () => {
                                 Add video from camera
                         </Button> */}
                   </View>
-                <Button  onPress={()=> setModalOpen(false)}>
+                <Button  onPress={()=> setModalOpen(false), ()=>handelPost()} >
                         Add my Post
                 </Button>
                </View>
@@ -148,7 +159,7 @@ const pickDocument = async () => {
            <Button icon="pencil"  onPress={()=> setModalOpen(true)}>
                  Add a post    
                         </Button>
-                        
+<ScrollView>                      
 <View style={{justifyContent: 'center'}}>
 {media.reverse().map((item , index)=>{
   // console.log(item);
@@ -209,9 +220,10 @@ Share
 
 })}
 </View>
-  </View>
+  
 
 </ScrollView>
+</View>
 </SafeAreaView>
   );
 
@@ -257,8 +269,8 @@ input: {
   borderColor: '#777',
   width:340,
   marginLeft: 10,
-  marginTop: 10,
-  height: 300, 
+  marginTop: 15,
+  height: 400, 
   marginBottom: 30,
 }
 });
