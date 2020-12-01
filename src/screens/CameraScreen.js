@@ -29,15 +29,22 @@ export default class CamerScreen extends React.Component {
             this.camera.stopRecording();
     };
 
-    handleShortCapture = async () => {
-        const photoData = await this.camera.takePictureAsync();
+    handleShortCapture = async () => {        
+        try{          
+          const photoData = await this.camera.takePictureAsync();
         this.setState({ capturing: false, captures: [photoData, ...this.state.captures] });
-        console.log(photoData.uri)
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'vic/')
-        await FileSystem.moveAsync({
-        from: photoData.uri,
-        to: FileSystem.documentDirectory + 'vic/'+ new Date()+ '.png'
-        });
+          console.log(photoData.uri)
+          const local = await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'vic/');
+          console.log(local)
+          await FileSystem.moveAsync({
+          from: photoData.uri,
+          to: FileSystem.documentDirectory + 'vic/'+ "new"+ '.png'
+          });
+
+        }catch(error){
+          return alert(error)
+        }
+       
     };
 
     handleLongCapture = async () => {

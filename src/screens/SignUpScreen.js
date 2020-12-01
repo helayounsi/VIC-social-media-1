@@ -7,7 +7,8 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -138,10 +139,12 @@ const LoginScreen = ({navigation}) => {
 
     return (
       <View style={styles.container}>
+          <ScrollView>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
             <Text style={styles.text_header}>Register Now!</Text>
         </View>
+        
         <Animatable.View 
             animation="fadeInUpBig"
             style={[styles.footer, {
@@ -297,8 +300,9 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
-           
+            
         </Animatable.View>
+        </ScrollView>
       </View>
     );
 };
@@ -322,7 +326,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingVertical: 90
     },
     text_header: {
         color: '#fff',

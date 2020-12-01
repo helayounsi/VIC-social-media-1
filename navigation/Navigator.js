@@ -58,7 +58,7 @@ function Root() {
           let iconName;
           
 
-          if (route.name === "PostScreen") {
+          if (route.name === "Post") {
             iconName = "home";
           } else if (route.name === "Notifications") {
             iconName = "notification";
@@ -66,7 +66,7 @@ function Root() {
             iconName = "search1";
           } else if (route.name === "Chat") {
             iconName = "wechat";
-          } else if (route.name === "OpenCamera") {
+          } else if (route.name === "Camera") {
             iconName = "camera";
           } else if (route.name === "Profile") {
             iconName = "profile";
@@ -84,14 +84,13 @@ function Root() {
 
 
 
-      <Tab.Screen  name="PostScreen" component={PostComponent} />
+      <Tab.Screen  name="Post" component={PostComponent} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
-
-     
+      <Tab.Screen name="Camera" component={OpenCameraScreen} />
+      <Tab.Screen name="Chat" component={ChatListScreen}/>      
       <Tab.Screen name="Profile" component={ProfileScreen} />
 
-      <Tab.Screen name="Chat" component={ChatListScreen}/> 
+      
 
     </Tab.Navigator>
   );
@@ -110,10 +109,8 @@ export default function MyStack() {
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
-
         <Stack.Screen  options={{headerShown:false}}  name="UpdateScreen" component={UpdateScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="LandingScreen" component={LandingScreen} />
-
         <Stack.Screen options={{headerShown:false}} name="chatUser" component={ChatScreen} />
 
       </Stack.Navigator>
