@@ -129,8 +129,8 @@ const LoginScreen = ({navigation}) => {
             data: {
                 phoneNumber:"" || data.phonenumber, 
                 email:"" || data.email,
-              userName: ""||data.username,
-              password: data.password 
+                userName: ""||data.username,
+                password: data.password 
             }
         });
         console.log(data)

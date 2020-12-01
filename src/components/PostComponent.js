@@ -69,11 +69,11 @@ const pickImage = async () => {
     aspect: [4, 3],
     quality: 1,
   });
-  console.log(data);
-  if (!result.cancelled) {
-    setImage(data.uri);
+  if (!data.cancelled) {
+    setImageCam(data.uri);
   }
 };
+console.log(imageCam);
 
 // Pick image from camera
 const pickFromCamera = async ()=>{
@@ -117,16 +117,17 @@ const pickDocument = async () => {
  const [modalOpen, setModalOpen]=useState(false);
  const [modalOpen1, setModalOpen1]=useState(false);
  const [value, onChangeText] = React.useState("");
-
- const handelPost = () =>{
-   axios({
-     method: "POST",
-     url: 'http://localhost:3000/upload',
-     imageCam: {
-      urlMedia:''|| imageCam
-     }
-   });
-   console.log(data.uri);
+//  console.log(imageCam);
+ const handelPost = () =>{   
+  axios({
+    method: 'post',
+    url: 'http://localhost:3000/uploadImage',
+    data: {
+        media: ''|| imageCam
+    }
+});
+  //  console.log(imageCam.uri);
+   setModalOpen(false);
  }
 
 
@@ -152,14 +153,14 @@ const pickDocument = async () => {
                         <Button  icon="image-area" onPress={pickImage}>
                                 Image from gallery
                         </Button>
-                        <Button  icon="video" onPress={pickDocument }>
+                        <Button  icon="video" onPress={pickDocument}>
                                 Video from gallery
                         </Button>
                         {/* <Button  icon="image-area" onPress={pickVideoFromCamera}>
                                 Add video from camera
                         </Button> */}
                   </View>
-                <Button  onPress={()=> setModalOpen(false), ()=>handelPost()} >
+                <Button  onPress={()=> handelPost()} >
                         Add my Post
                 </Button>
                </View>
@@ -186,12 +187,12 @@ Like
 <Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
                <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
                <Text style={[styles.text_footer, {
-            marginTop: 15, marginLeft: 70,
-        }]}>Share it here</Text>
+            marginTop: 15, marginLeft: 80,
+        }]}>Comment it here</Text>
                <TextInput style={styles.inputComment}
       onChangeComment={text => onChangeComment(text)} value={value} />
                 <Button  onPress={()=> setModalOpen1(false)} >
-                        My Comment
+                       Add My Comment
                 </Button>
                </View>
            </Modal>
@@ -228,6 +229,9 @@ Like
 </Button>
 <Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
                <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
+               <Text style={[styles.text_footer, {
+            marginTop: 15, marginLeft: 80,
+        }]}>Comment it here</Text>
                <TextInput style={styles.inputComment}
       onChangeComment={text => onChangeComment(text)} value={value} />
                 <Button  onPress={()=> setModalOpen1(false)} >
