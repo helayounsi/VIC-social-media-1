@@ -147,13 +147,13 @@ const pickDocument = async () => {
       onChangeText={text => onChangeText(text)} value={value} />
                <View style={styles.modalButtonView}>
                         <Button icon="camera" onPress={pickFromCamera}>
-                                Add image from camera
+                                Image from camera
                         </Button>
                         <Button  icon="image-area" onPress={pickImage}>
-                                Add image from gallery
+                                Image from gallery
                         </Button>
-                        <Button  icon="image-area" onPress={pickDocument }>
-                                Add video from gallery
+                        <Button  icon="video" onPress={pickDocument }>
+                                Video from gallery
                         </Button>
                         {/* <Button  icon="image-area" onPress={pickVideoFromCamera}>
                                 Add video from camera
@@ -184,14 +184,14 @@ const pickDocument = async () => {
 Like
 </Button>
 <Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
-               <View style={{height: '50%', marginTop: 'auto', backgroundColor:'white'}}>
+               <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
                <Text style={[styles.text_footer, {
             marginTop: 15, marginLeft: 70,
         }]}>Share it here</Text>
-               <TextInput 
+               <TextInput style={styles.inputComment}
       onChangeComment={text => onChangeComment(text)} value={value} />
                 <Button  onPress={()=> setModalOpen1(false)} >
-                        Add my Comment
+                        My Comment
                 </Button>
                </View>
            </Modal>
@@ -227,7 +227,7 @@ Share
 Like
 </Button>
 <Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
-               <View style={{height: '50%', marginTop: 'auto', backgroundColor:'white'}}>
+               <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
                <TextInput style={styles.inputComment}
       onChangeComment={text => onChangeComment(text)} value={value} />
                 <Button  onPress={()=> setModalOpen1(false)} >
@@ -308,7 +308,7 @@ inputComment: {
   width:340,
   marginLeft: 10,
   marginTop: 10,
-  height: 30, 
+  height: 50, 
   marginBottom: 10,
 }
 });
