@@ -12,6 +12,7 @@ import * as Permissions from 'expo-permissions';
 import UpdateScreen from '../screens/UpdateScreen.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import axios from 'axios';
 
 const ProfileScreen = ({navigation}) => {
 
@@ -88,6 +89,16 @@ const pickFromCamera = async ()=>{
   }
 }
 
+const handelProfileImage = () =>{  
+  console.log(imageCam)
+  const fd = new FormData()
+  fd.append('photo',imageCam)
+return  axios.put(`http://localhost:3000/uploadImage`,fd,{
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }}); 
+}
+
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
  const [modalOpen1, setModalOpen1]=useState(false);
@@ -121,7 +132,7 @@ const pickFromCamera = async ()=>{
            <View style={styles.active}></View>
            
            <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
-               <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
+               <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
              
                <View style={styles.modalButtonView}>
                         <Button icon="camera" onPress={pickFromCamera}>
@@ -133,6 +144,9 @@ const pickFromCamera = async ()=>{
                   </View>
                 <Button onPress={()=> setModalOpen(false)}>
                         cancel
+                </Button>
+                <Button  onPress={()=> handelProfileImage()} >
+                        Add my profileImage
                 </Button>
                </View>
            </Modal>
