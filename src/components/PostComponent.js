@@ -13,15 +13,18 @@ import * as DocumentPicker from 'expo-document-picker';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Video } from 'expo-av';
-
+import axios from 'axios';
 
 
 
 
 
 const PostComponent = ({navigation}) =>{
-  let media= ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"]
+  
+  const [imageCam, setImageCam]= useState("");
 
+  let media= ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"]
+  
 
   const LeftContent = () => (
     <Avatar.Image size={45} source={require('../../assets/profile-photo/me.png')} />
@@ -60,15 +63,15 @@ useEffect (() => {
 
 // Pick image from gallery
 const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
+  let data = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
     aspect: [4, 3],
     quality: 1,
   });
-  console.log(result);
+  console.log(data);
   if (!result.cancelled) {
-    setImage(result.uri);
+    setImage(data.uri);
   }
 };
 
@@ -82,6 +85,7 @@ const pickFromCamera = async ()=>{
             aspect:[1,1],
             quality:0.5
         })
+        setImageCam(data.uri);
   }else{
      Alert.alert("you need to give up permission to work")
   }
@@ -89,9 +93,9 @@ const pickFromCamera = async ()=>{
 
  //pick video from gallery
 const pickDocument = async () => {
-  let result = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
-  alert(result.uri);
-  console.log(result.uri);
+  let data = await DocumentPicker.getDocumentAsync({ type: 'video/*' });
+  
+  setImageCam(data.uri);
 }
 
 // Pick video from camera
@@ -111,17 +115,18 @@ const pickDocument = async () => {
 
   //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
- const [value, onChangeText] = React.useState("Description");
+ const [modalOpen1, setModalOpen1]=useState(false);
+ const [value, onChangeText] = React.useState("");
 
  const handelPost = () =>{
    axios({
      method: "POST",
      url: 'http://localhost:3000/upload',
-     data: {
-      urlMedia:''|| data.result.uri
+     imageCam: {
+      urlMedia:''|| imageCam
      }
    });
-   console.log(data.result.uri);
+   console.log(data.uri);
  }
 
 
@@ -135,6 +140,9 @@ const pickDocument = async () => {
     
     <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
                <View style={{height: '100%', marginTop: 'auto', backgroundColor:'white'}}>
+               <Text style={[styles.text_footer, {
+            marginTop: 15, marginLeft: 70,
+        }]}>Share it here</Text>
                <TextInput style={styles.input}
       onChangeText={text => onChangeText(text)} value={value} />
                <View style={styles.modalButtonView}>
@@ -163,19 +171,31 @@ const pickDocument = async () => {
 <View style={{justifyContent: 'center'}}>
 {media.reverse().map((item , index)=>{
   // console.log(item);
-  if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
+  if(imageCam.includes('.jpg')||imageCam.includes('.jpeg')||imageCam.includes('.png')||imageCam.includes('.gif')){
     return(
 <Card key={index}>
 <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />    
   
-  <Card.Cover key={index} source={{uri:item}} />
+  <Card.Cover key={index} source={{uri:imageCam}} />
   
   <Card.Content>
 <View style={styles.feed}>
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
 Like
 </Button>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
+<Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
+               <View style={{height: '50%', marginTop: 'auto', backgroundColor:'white'}}>
+               <Text style={[styles.text_footer, {
+            marginTop: 15, marginLeft: 70,
+        }]}>Share it here</Text>
+               <TextInput 
+      onChangeComment={text => onChangeComment(text)} value={value} />
+                <Button  onPress={()=> setModalOpen1(false)} >
+                        Add my Comment
+                </Button>
+               </View>
+           </Modal>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'} onPress={()=> setModalOpen1(true)}>
 Comment
 </Button>
 <Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
@@ -191,7 +211,7 @@ Share
     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
   <Video
   key={index}
-  source={{ uri: item}}
+  source={{ uri: imageCam}}
   rate={1.0}
   volume={1.0}
   isMuted={true}
@@ -206,7 +226,16 @@ Share
 <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
 Like
 </Button>
-<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
+<Modal visible={modalOpen1} animationType ='slide'  transparent={true} >
+               <View style={{height: '50%', marginTop: 'auto', backgroundColor:'white'}}>
+               <TextInput style={styles.inputComment}
+      onChangeComment={text => onChangeComment(text)} value={value} />
+                <Button  onPress={()=> setModalOpen1(false)} >
+                        Add my Comment
+                </Button>
+               </View>
+           </Modal>
+<Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'} onPress={()=> setModalOpen1(true)}>
 Comment
 </Button>
 <Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
@@ -270,8 +299,17 @@ input: {
   width:340,
   marginLeft: 10,
   marginTop: 15,
-  height: 400, 
+  height: 300, 
   marginBottom: 30,
+},
+inputComment: {
+  borderWidth:1,
+  borderColor: '#777',
+  width:340,
+  marginLeft: 10,
+  marginTop: 10,
+  height: 30, 
+  marginBottom: 10,
 }
 });
 
