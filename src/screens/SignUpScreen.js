@@ -80,19 +80,19 @@ const LoginScreen = ({navigation}) => {
     }
 
     const handleConfirmPasswordChange = (val) => {
-      // if( val.trim().length >= 8 ) {
+      if( val.trim().length >= 8 ) {
           setData({
               ...data,
               confirm_password: val,
               isValidPassword: true
           });
-      // } else {
-      //     setData({
-      //         ...data,
-      //         password: val,
-      //         isValidPassword: false
-      //     });
-      // }
+      } else {
+          setData({
+              ...data,
+              password: val,
+              isValidPassword: false
+          });
+      }
   }
     const updateSecureTextEntry = () => {
         setData({
@@ -166,7 +166,7 @@ const LoginScreen = ({navigation}) => {
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                />
+                required={true}/>
                 {data.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
@@ -205,7 +205,7 @@ const LoginScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
-                />
+                    required={true}/>
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                 >
@@ -248,7 +248,7 @@ const LoginScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
-                />
+                    required={true} />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
                 >

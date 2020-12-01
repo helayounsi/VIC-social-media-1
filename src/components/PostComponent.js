@@ -118,16 +118,23 @@ const pickDocument = async () => {
  const [modalOpen1, setModalOpen1]=useState(false);
  const [value, onChangeText] = React.useState("");
 //  console.log(imageCam);
- const handelPost = () =>{   
-  axios({
-    method: 'post',
-    url: 'http://localhost:3000/uploadImage',
-    data: {
-        media: ''|| imageCam
-    }
-});
+ const handelPost = () =>{  
+  const fd = new FormData()
+  fd.append('photo',imageCam)
+return  axios.put(`http://localhost:3000/uploadImage`,fd,{
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }}); 
+  setModalOpen(false);
+//   axios({
+//     method: 'post',
+//     url: 'http://localhost:3000/uploadImage',
+//     data: {
+//         media: ''|| imageCam
+//     }
+// });
   //  console.log(imageCam.uri);
-   setModalOpen(false);
+   
  }
 
 
@@ -136,13 +143,13 @@ const pickDocument = async () => {
       {/* add a post input */}
       <View style={{backgroundColor:'#fff'}}>
   <Text style={[styles.text_footer, {
-            marginTop: 15, marginLeft: 70,
+            marginTop: 15, marginLeft: 40,
         }]}>Share what is in your mind?</Text>
     
     <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
                <View style={{height: '100%', marginTop: 'auto', backgroundColor:'white'}}>
                <Text style={[styles.text_footer, {
-            marginTop: 15, marginLeft: 70,
+            marginTop: 15, marginLeft: 40,
         }]}>Share it here</Text>
                <TextInput style={styles.input}
       onChangeText={text => onChangeText(text)} value={value} />
@@ -305,6 +312,7 @@ input: {
   marginTop: 15,
   height: 300, 
   marginBottom: 30,
+  borderRadius:8,
 },
 inputComment: {
   borderWidth:1,
@@ -314,6 +322,7 @@ inputComment: {
   marginTop: 10,
   height: 50, 
   marginBottom: 10,
+  borderRadius:8,
 }
 });
 
