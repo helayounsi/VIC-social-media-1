@@ -20,6 +20,9 @@ import {
   Send,
   Composer,
 } from 'react-native-gifted-chat';
+import Navigator from '../../navigation/Navigator'
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
@@ -168,6 +171,11 @@ submitChatMessage() {
                 style={{color: '#F2F2F2'}}
               />
             </TouchableOpacity>
+            <Icon
+              name="ios-call"
+              size={32}
+              style={{color: '#F2F2F2'}}
+              onPress={()=>this.props.navigation.navigate('chatUser')} />
             <Text
               name="ios-home"
               style={{

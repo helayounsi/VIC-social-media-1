@@ -19,6 +19,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 import ChatListScreen from '../src/screens/ChatListScreen'
+import videocallScreen from '../src/screens/videocallScreen'
 
 
 // const ProfileStack = createStackNavigator();
@@ -103,6 +104,7 @@ export default function MyStack() {
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
         <Stack.Screen options={{headerShown:false}} name="chatUser" component={ChatScreen} />
+        {/* <Stack.Screen options={{headerShown:false}} name="videocall" component={videocallScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
