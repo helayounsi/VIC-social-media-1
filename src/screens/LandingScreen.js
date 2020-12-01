@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
     View, 
     Text, 
@@ -12,13 +13,42 @@ import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
+import { Video } from 'expo-av';
 
 const LandingScreen = ({navigation}) => {
     const { colors } = useTheme();
+    let [user, setUser]= useState();
+    let data;
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/User')
+        .then((response) => {
+            setUser(response.data);
+            console.log(setUser());
+            data= response.data;
+            console.log("i'm heare ye stack",data)
+            
+             
+          });
+         
+    }, []);
+    
 
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
+          <StatusBar  barStyle="light-content"/>
+          <View style={styles.video}>
+          <Video
+      source={require("../../assets/background/videoBackground.mp4")}
+      style={styles.backgroundVideo}
+      rate={1}
+      shouldPlay={true}
+      isLooping
+      volume={1}
+      muted={true}
+      resizeMode="cover"
+      />
+      </View>
         <View style={styles.header}>
             <Animatable.Image 
                 animation="bounceIn"
@@ -109,5 +139,10 @@ const styles = StyleSheet.create({
   textSign: {
       color: 'white',
       fontWeight: 'bold'
+  },
+  backgroundVideo: {
+    position: 'absolute',
+   width: 500,
+   height: 420
   }
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
 import { 
     View, 
     Text, 
@@ -13,6 +13,7 @@ import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import axios from 'axios';
 
 import { useTheme } from 'react-native-paper';
 
@@ -21,10 +22,12 @@ import { useTheme } from 'react-native-paper';
 // import Users from '../model/users';
 
 const LoginScreen = ({navigation}) => {
-
+  
     const [data, setData] = React.useState({
         username: '',
+        email : '',
         password: '',
+        phonenumber: '',
         confirm_password: '',
         check_textInputChange: false,
         secureTextEntry: true,
@@ -33,58 +36,63 @@ const LoginScreen = ({navigation}) => {
         isValidPassword: true,
     });
 
+
     const { colors } = useTheme();
 
     // const { signIn } = React.useContext(AuthContext);
 
+//is like onchange in React it takes the value entered by the user in the input text
     const textInputChange = (val) => {
-        if( val.length !== 0 ) {
+        if( val.length !== 0 && val.includes('@')=== false ) {
             setData({
                 ...data,
                 username: val,
                 check_textInputChange: true,
                 isValidUser: true
             });
-        } else {
+
+        }else if(val.includes('@')=== true) {
             setData({
                 ...data,
-                username: val,
-                check_textInputChange: false,
-                isValidUser: false
-            });
-        }
+                email: val,
+                check_textInputChange: true,
+                isValidUser: true
+            });        
+        } 
+
     }
 
+    // oncahnge for password
     const handlePasswordChange = (val) => {
-        // if( val.trim().length >= 8 ) {
+        if( val.trim().length >= 8 ) {
             setData({
                 ...data,
                 password: val,
                 isValidPassword: true
             });
-        // } else {
-        //     setData({
-        //         ...data,
-        //         password: val,
-        //         isValidPassword: false
-        //     });
-        // }
+        } else {
+            setData({
+                ...data,
+                password: val,
+                isValidPassword: false
+            });
+        }
     }
 
     const handleConfirmPasswordChange = (val) => {
-      // if( val.trim().length >= 8 ) {
+      if( val.trim().length >= 8 ) {
           setData({
               ...data,
               confirm_password: val,
               isValidPassword: true
           });
-      // } else {
-      //     setData({
-      //         ...data,
-      //         password: val,
-      //         isValidPassword: false
-      //     });
-      // }
+      } else {
+          setData({
+              ...data,
+              password: val,
+              isValidPassword: false
+          });
+      }
   }
     const updateSecureTextEntry = () => {
         setData({
@@ -114,27 +122,19 @@ const LoginScreen = ({navigation}) => {
     //     }
     // }
 
-    // const loginHandle = (userName, password) => {
-
-    //     const foundUser = Users.filter( item => {
-    //         return userName == item.username && password == item.password;
-    //     } );
-
-    //     if ( data.username.length == 0 || data.password.length == 0 ) {
-    //         Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-    //             {text: 'Okay'}
-    //         ]);
-    //         return;
-    //     }
-
-    //     if ( foundUser.length == 0 ) {
-    //         Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-    //             {text: 'Okay'}
-    //         ]);
-    //         return;
-    //     }
-    //     signIn(foundUser);
-    // }
+    const loginHandle = () => {
+        axios({
+            method: 'post',
+            url: 'http://localhost:3000/User/SignUp',
+            data: {
+                phoneNumber:"" || data.phonenumber, 
+                email:"" || data.email,
+                userName: ""||data.username,
+                password: data.password 
+            }
+        });
+        console.log(data)
+    }
 
     return (
       <View style={styles.container}>
@@ -150,7 +150,7 @@ const LoginScreen = ({navigation}) => {
         >
             <Text style={[styles.text_footer, {
                 color: colors.text
-            }]}>Username</Text>
+            }]}>Username/e-mail/phone number</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -158,7 +158,7 @@ const LoginScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Username"
+                    placeholder="Username/e-mail/phone number"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
@@ -166,7 +166,7 @@ const LoginScreen = ({navigation}) => {
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                />
+                required={true}/>
                 {data.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
@@ -205,7 +205,7 @@ const LoginScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
-                />
+                    required={true}/>
                 <TouchableOpacity
                     onPress={updateSecureTextEntry}
                 >
@@ -248,7 +248,7 @@ const LoginScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
-                />
+                    required={true} />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
                 >

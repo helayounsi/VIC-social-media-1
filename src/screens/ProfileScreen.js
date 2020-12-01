@@ -1,62 +1,158 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
+import {TextInput, Button, Paragraph, Menu, Divider, Provider} from 'react-native-paper';
 import {StyleSheet, View, Text, SafeAreaView, Image,
- ScrollView, TouchableOpacity, UIManager, findNodeHandle} from 'react-native';
+ ScrollView, TouchableOpacity, UIManager, findNodeHandle, Alert, Modal} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import ImagePicker from '../components/ImagePicker'
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
 
-class ProfileScreen extends Component {
-  static propTypes = {
-    // array of strings, will be list items of Menu
-    // actions:  PropTypes.arrayOf(PropTypes.string).isRequired,
-    // onPress: PropTypes.func.isRequired
-  }
-  constructor(props) {
-    super(props);
-    this.state = {
-      icon: null
-    };
-  }
+//import Modal from 'react-native-modal';
+//import ImagePicker from '../components/ImagePicker'
+//import ImagePicker from 'react-native-image-picker';
+import UpdateScreen from '../screens/UpdateScreen.js';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import axios from 'axios';
 
-  onError () {
-    console.log('Popup Error')
-  }
+const ProfileScreen = ({navigation}) => {
 
-  onPress = () => {
-    if (this.state.icon) {
-      UIManager.showPopupMenu(
-        findNodeHandle(this.state.icon),
-        this.props.actions,
-        this.onError,
-        this.props.onPress
-      )
+  const [Icon, setIcon, image, setImage] = useState(null);
+
+  const [imageCam, setImageCam]= useState("");
+
+
+  // let [Icon, setIcon] = useState(null);
+
+  //  onError = () => {
+  //   console.log('Popup Error')
+  // }
+
+  // onPress = () => {
+  //   if (this.state.icon) {
+  //     UIManager.showPopupMenu(
+  //       findNodeHandle(this.state.icon),
+  //       this.props.actions,
+  //       this.onError,
+  //       this.props.onPress
+  //     )
+  //   }
+  // }
+//   nRef = (icon) => {
+//     if (!{Icon}) {
+//       setIcon(icon)
+//     }
+//   }
+  
+
+// Pick image from gallery
+useEffect (() => {
+  (async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
     }
-  }
-  nRef = icon => {
-    if (!this.state.icon) {
-      this.setState({icon})
-    }
-  }
+  })();
+}, []);
 
-  render() {
+
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    setImageCam(result.uri);
+  }
+};
+
+// Pick image from camera
+const pickFromCamera = async ()=>{
+  const {status} =  await Permissions.askAsync(Permissions.CAMERA)
+  if(status=='granted'){
+       let data =  await ImagePicker.launchCameraAsync({
+            mediaTypes:ImagePicker.MediaTypeOptions.Images,
+            allowsEditing:true,
+            aspect:[1,1],
+            quality:0.5
+        })
+        setImageCam(data.uri);
+        
+  }else{
+     Alert.alert("you need to give up permission to work")
+  }
+}
+
+const handelProfileImage = () =>{  
+  console.log(imageCam)
+  const fd = new FormData()
+  fd.append('photo',imageCam)
+return  axios.put(`http://localhost:3000/uploadImage`,fd,{
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }}); 
+}
+
+ //toggel a model 
+ const [modalOpen, setModalOpen]=useState(false);
+ const [modalOpen1, setModalOpen1]=useState(false);
+
+
     return (
      <SafeAreaView style={styles.container}>       
-         <View style={styles.titleBar}>
-          {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
-          <TouchableOpacity onPress={this.onPress}>
-          <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
+         <Provider>
+          <View style={styles.titleBar}>
+          <TouchableOpacity>
+                    <Menu
+            visible={modalOpen1}
+            onDismiss={() => setModalOpen1(false)}
+            anchor={
+              <Ionicons name="md-more" size={40} color="#52575D" marginLeft='20' onPress={()=> setModalOpen1(true)}></Ionicons>
+            }>      
+            <Menu.Item  onPress={() => navigation.navigate('UpdateScreen')} title="Edit profile"/>
+            <Menu.Item onPress={() => navigation.navigate('LandingScreen')} title="Log out"/>
+          </Menu>
           </TouchableOpacity>
-         </View>
+      </View>
+        
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
-             <Image source={require("../../assets/profile-pic/profile.jpg")} style={styles.image}  resizeMode="center"></Image>
+             <Image source={{uri:imageCam}}  style={styles.image}  resizeMode="center"></Image>
            </View>
            <View style={styles.dm}>
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
            </View>
            <View style={styles.active}></View>
+           
+           <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
+               <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
+             
+               <View style={styles.modalButtonView}>
+                        <Button icon="camera" onPress={pickFromCamera}>
+                                camera
+                        </Button>
+                        <Button  icon="image-area" onPress={pickImage}>
+                                gallery
+                        </Button>
+                  </View>
+                <Button onPress={()=> setModalOpen(false)}>
+                        cancel
+                </Button>
+                <Button  onPress={()=> handelProfileImage()} >
+                        Add my profileImage
+                </Button>
+               </View>
+           </Modal>
+           
            <View style={styles.add}>
-             <Ionicons name="ios-add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}}></Ionicons>
+             <MaterialIcons name="add" size={48} color="#DFD8D8" style={{marginTop: 6, marginLeft: 2}} onPress={()=> setModalOpen(true)}></MaterialIcons>
            </View>
          </View>
          <View style={styles.infoContainer}>
@@ -79,7 +175,7 @@ class ProfileScreen extends Component {
            </View>
          </View>
          <View style={{marginTop: 32}}>
-           {/* <ScrollView > */}
+           <ScrollView >
            <View style={styles.med}>
              <View style={styles.mediaImagecontainer}>
                <Image source={require("../../assets/profile-photo/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
@@ -118,13 +214,13 @@ class ProfileScreen extends Component {
              </View>
              </View>
 
-           {/* </ScrollView> */}
+           </ScrollView>
          </View>
        </ScrollView>
-
+       </Provider>
      </SafeAreaView>
     );
-  }
+ 
 }
 
 export default ProfileScreen;
@@ -150,6 +246,7 @@ const styles = StyleSheet.create({
     height: undefined
   },
   titleBar: {
+    paddingTop: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 24,
@@ -209,8 +306,8 @@ const styles = StyleSheet.create({
   mediaImagecontainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: 180,
-    height: 250,
+    width: 160,
+    height: 150,
     borderRadius: 12,
     overflow: "hidden",
     marginHorizontal: 10
@@ -218,6 +315,16 @@ const styles = StyleSheet.create({
   med:{
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10
+    paddingVertical: 15,
+  },
+  modalContent:{
+    flex: 1,
+    backgroundColor: 'grey',
+    padding: 2,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)'
   }
+
 })

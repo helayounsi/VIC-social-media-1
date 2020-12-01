@@ -1,222 +1,110 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
-import { Camera } from "expo-camera";
-import { Video } from "expo-av";
-const WINDOW_HEIGHT = Dimensions.get("window").height;
-const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
-const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Camera } from 'expo-camera';
+import Toolbar from '../components/Toolbar.js';
+import Gallery from '../components/Gallery.js';
+import * as Permissions from 'expo-permissions';
+import * as FileSystem from 'expo-file-system';
 
-export default function CamereScreen() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
-  const [isPreview, setIsPreview] = useState(false);
-  const [isCameraReady, setIsCameraReady] = useState(false);
-  const [isVideoRecording, setIsVideoRecording] = useState(false);
-  const [videoSource, setVideoSource] = useState(null);
-  const cameraRef = useRef();
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-  const onCameraReady = () => {
-    setIsCameraReady(true);
-  };
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true, skipProcessing: true };
-      const data = await cameraRef.current.takePictureAsync(options);
-      const source = data.uri;
-      if (source) {
-        await cameraRef.current.pausePreview();
-        setIsPreview(true);
-        console.log("picture source", source);
-      }
-    }
-  };
-  const recordVideo = async () => {
-    if (cameraRef.current) {
-      try {
-        const videoRecordPromise = cameraRef.current.recordAsync();
-        if (videoRecordPromise) {
-          setIsVideoRecording(true);
-          const data = await videoRecordPromise;
-          const source = data.uri;
-          if (source) {
-            setIsPreview(true);
-            console.log("video source", source);
-            setVideoSource(source);
-          }
+
+const { width: winWidth, height: winHeight } = Dimensions.get('window');
+
+export default class CamerScreen extends React.Component {
+    camera = null;
+
+    state = {
+      captures: [],
+      flashMode: Camera.Constants.FlashMode.off,
+        capturing: null,
+        cameraType: Camera.Constants.Type.front,
+        hasCameraPermission: null,
+    };
+
+    setFlashMode = (flashMode) => this.setState({ flashMode });
+    setCameraType = (cameraType) => this.setState({ cameraType });
+    handleCaptureIn = () => this.setState({ capturing: true });
+
+    handleCaptureOut = () => {
+        if (this.state.capturing)
+            this.camera.stopRecording();
+    };
+
+    handleShortCapture = async () => {
+        const photoData = await this.camera.takePictureAsync();
+        this.setState({ capturing: false, captures: [photoData, ...this.state.captures] });
+        console.log(photoData.uri)
+        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'vic/')
+        await FileSystem.moveAsync({
+        from: photoData.uri,
+        to: FileSystem.documentDirectory + 'vic/'+ new Date()+ '.png'
+        });
+    };
+
+    handleLongCapture = async () => {
+        const videoData = await this.camera.recordAsync()
+        this.setState({ capturing: false, captures: [videoData, ...this.state.captures] });
+    };
+
+    async componentDidMount() {
+        const camera = await Permissions.askAsync(Permissions.CAMERA);
+        const audio = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+        const hasCameraPermission = (camera.status === 'granted' && audio.status === 'granted');
+
+        this.setState({ hasCameraPermission });
+    };
+
+    render() {
+      // console.log(this.state.captures)
+        const { hasCameraPermission, flashMode, cameraType, capturing, captures } = this.state;
+
+        if (hasCameraPermission === null) {
+            return <View />;
+        } else if (hasCameraPermission === false) {
+            return <Text>Access to camera has been denied.</Text>;
         }
-      } catch (error) {
-        console.warn(error);
+
+        return (
+          // <React.Fragment >
+            <View style={styles.container}>
+            <View>
+                <Camera
+                   type={cameraType}
+                   flashMode={flashMode}
+                   style={styles.preview}
+                   ref={camera => this.camera = camera}
+                />
+            </View>
+            {this.state.captures.length > 0 && <Gallery captures={captures} />}
+            <Toolbar                 
+                 capturing={capturing}
+                 flashMode={flashMode}
+                 cameraType={cameraType}
+                 setFlashMode={this.setFlashMode}
+                 setCameraType={this.setCameraType}
+                 onCaptureIn={this.handleCaptureIn}
+                 onCaptureOut={this.handleCaptureOut}
+                 onLongCapture={this.handleLongCapture}
+                 onShortCapture={this.handleShortCapture}
+            />
+            </View>
+            // </React.Fragment>
+        );
+      };
+    };
+
+    const styles= StyleSheet.create({
+      preview: {
+          height: (winHeight/4)*3,
+          width: winWidth,
+          // position: 'absolute',
+          left: 0,
+          top: 30,
+          right: 0,
+          bottom: 0,
+      },
+      container:{
+        backgroundColor: 'black',
+        height: winHeight
       }
-    }
-  };
-  const stopVideoRecording = () => {
-    if (cameraRef.current) {
-      setIsPreview(false);
-      setIsVideoRecording(false);
-      cameraRef.current.stopRecording();
-    }
-  };
-  const switchCamera = () => {
-    if (isPreview) {
-      return;
-    }
-    setCameraType((prevCameraType) =>
-      prevCameraType === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back
-    );
-  };
-  const cancelPreview = async () => {
-    await cameraRef.current.resumePreview();
-    setIsPreview(false);
-    setVideoSource(null);
-  };
-  const renderCancelPreviewButton = () => (
-    <TouchableOpacity onPress={cancelPreview} style={styles.closeButton}>
-      <View style={[styles.closeCross, { transform: [{ rotate: "45deg" }] }]} />
-      <View
-        style={[styles.closeCross, { transform: [{ rotate: "-45deg" }] }]}
-      />
-    </TouchableOpacity>
-  );
-  const renderVideoPlayer = () => (
-    <Video
-      source={{ uri: videoSource }}
-      shouldPlay={true}
-      style={styles.media}
-    />
-  );
-  const renderVideoRecordIndicator = () => (
-    <View style={styles.recordIndicatorContainer}>
-      <View style={styles.recordDot} />
-      <Text style={styles.recordTitle}>{"Recording..."}</Text>
-    </View>
-  );
-  const renderCaptureControl = () => (
-    <View style={styles.control}>
-      <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
-        <Text style={styles.text}>{"Flip"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        disabled={!isCameraReady}
-        onLongPress={recordVideo}
-        onPressOut={stopVideoRecording}
-        onPress={takePicture}
-        style={styles.capture}
-      />
-      <TouchableOpacity      
-      style={styles.edit}
-      onPress={()=>navigation.navigate('Login')}>
-      <Text style={styles.text}>{"Edit"}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text style={styles.text}>No access to camera</Text>;
-  }
-  return (
-    <SafeAreaView style={styles.container}>
-      <Camera
-        ref={cameraRef}
-        style={styles.container}
-        type={cameraType}
-        flashMode={Camera.Constants.FlashMode.on}
-        onCameraReady={onCameraReady}
-        onMountError={(error) => {
-          console.log("cammera error", error);
-        }}
-      />
-      <View style={styles.container}>
-        {isVideoRecording && renderVideoRecordIndicator()}
-        {videoSource && renderVideoPlayer()}
-        {isPreview && renderCancelPreviewButton()}
-        {!videoSource && !isPreview && renderCaptureControl()}
-      </View>
-    </SafeAreaView>
-  );
-}
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    marginTop: 20,
-    marginBottom: 15
-  },
-  closeButton: {
-    position: "absolute",
-    top: 35,
-    left: 15,
-    height: closeButtonSize,
-    width: closeButtonSize,
-    borderRadius: Math.floor(closeButtonSize / 2),
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#c4c5c4",
-    opacity: 0.7,
-    zIndex: 2,
-  },
-  media: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  closeCross: {
-    width: "68%",
-    height: 1,
-    backgroundColor: "black",
-  },
-  control: {
-    position: "absolute",
-    flexDirection: "row",
-    bottom: 38,
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  capture: {
-    backgroundColor: "#f5f6f5",
-    borderRadius: 5,
-    height: captureSize,
-    width: captureSize,
-    borderRadius: Math.floor(captureSize / 2),
-    marginHorizontal: 31,
-  },
-  recordIndicatorContainer: {
-    flexDirection: "row",
-    position: "absolute",
-    top: 25,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-    opacity: 0.7,
-  },
-  recordTitle: {
-    fontSize: 14,
-    color: "#ffffff",
-    textAlign: "center",
-  },
-  recordDot: {
-    borderRadius: 3,
-    height: 6,
-    width: 6,
-    backgroundColor: "#ff0000",
-    marginHorizontal: 5,
-  },
-  text: {
-    color: "#fff",
-  },
-});
+    
+  });
