@@ -1,6 +1,7 @@
 import React, { Component, useState, useEffect } from "react";
 import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
 // import { SafeAreaView } from 'react-native-safe-area-context';
+
 import * as Animatable from "react-native-animatable";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -43,6 +44,7 @@ const PostComponent = ({ navigation }) => {
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   ];
 
+
   const LeftContent = () => (
     <Avatar.Image
       size={45}
@@ -69,6 +71,7 @@ const PostComponent = ({ navigation }) => {
       alert(error.message);
     }
   };
+
 
   const getPosts = () => {
     tracker
@@ -112,6 +115,7 @@ const PostComponent = ({ navigation }) => {
     }
   };
   //console.log(imageCam);
+
 
   // Pick image from camera
   const pickFromCamera = async () => {
