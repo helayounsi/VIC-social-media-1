@@ -127,7 +127,7 @@ const PostComponent = ({ navigation }) => {
         quality: 0.5,
         base64: true,
       });
-      setImageCam(data.uri);
+      setImageCam(data);
       if (!data.cancelled) {
         handelPost();
       }
@@ -142,7 +142,7 @@ const PostComponent = ({ navigation }) => {
   const pickDocument = async () => {
     let data = await DocumentPicker.getDocumentAsync({ type: "video/*" });
 
-    setImageCam(data.uri);
+    setImageCam(data);
   };
 
 
@@ -152,24 +152,7 @@ const PostComponent = ({ navigation }) => {
   const [value, onChangeText] = React.useState("");
  
 
-  //  const handelPost = () =>{
-  //   const fd = new FormData()
-  //   fd.append('photo',imageCam)
-  // return  axios.put(`https://vic-corporation.herokuapp.com/uploadImage`,fd,{
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data'
-  //   }
-
-  // });
-
-  //   axios({
-  //     method: 'post',
-  //     url: 'http://localhost:3000/uploadImage',
-  //     data: {
-  //         media: ''|| imageCam
-  //     }
-  // });
-  //  console.log(imageCam.uri);
+  
 
   const handelPost = () => {
     console.log(imageCam);
@@ -211,7 +194,7 @@ const PostComponent = ({ navigation }) => {
             getPosts()
           })
           .catch((err) => {
-            console.log(123);
+            //console.log(123);
             console.log(err);
           });
       })

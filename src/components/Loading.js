@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       width:100,
       height:100,
-      marginLeft:150,
+      marginLeft:200,
   },
   footer: {
       flex: 1,
