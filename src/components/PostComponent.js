@@ -109,6 +109,7 @@ const PostComponent = ({ navigation }) => {
       quality: 1,
       base64: true,
     });
+    setImageCam(data);
     if (!data.cancelled) {
       handelPost();
     }
@@ -126,9 +127,9 @@ const PostComponent = ({ navigation }) => {
         quality: 0.5,
         base64: true,
       });
-      //setImageCam(data.uri);
+      setImageCam(data.uri);
       if (!data.cancelled) {
-        //handelPost();
+        handelPost();
       }
     } else {
       Alert.alert("you need to give up permission to work");
@@ -174,7 +175,7 @@ const PostComponent = ({ navigation }) => {
     console.log(imageCam);
 
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-    console.log(imageCam.base64Img);
+    console.log('img'+imageCam.base64Img);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -186,7 +187,7 @@ const PostComponent = ({ navigation }) => {
     })
       .then(async (res) => {
         let r = await res.json();
-        console.log(r);
+        console.log('r'+r);
         setModalOpen(false);
 
         // podt new post
@@ -206,7 +207,7 @@ const PostComponent = ({ navigation }) => {
         tracker
           .post("/addPost",body,config)
           .then((res) => {
-            console.log(res.data);
+            console.log('hi'+res.data);
             getPosts()
           })
           .catch((err) => {

@@ -32,30 +32,21 @@ export default function Loading() {
       <View style={styles.container}>
           <StatusBar  barStyle="light-content"/>
         <View style={styles.header}>
-            <Animatable.Image 
-                animation="bounceIn"
-                duraton="1500"
-               source={require('../../assets/LogoImage/VIC.png')}
-               style={styles.logo}
-               resizeMode="stretch"
-            />
+        <Video
+      source={require('../../assets/LogoAnimated/Untitled-3.mp4')}
+      style={styles.backgroundVideo}
+      rate={1}
+      shouldPlay={true}
+      isLooping={true}
+      volume={1}
+      muted={true}
+      resizeMode="cover"
+      />
         </View>
-        {/* <Animatable.View 
-            style={[styles.footer, {
-                backgroundColor: colors.background
-            }]}
-            animation="fadeInUpBig"
-        >
-            <Text style={[styles.title, {
-                color: colors.text
-            }]}>Loading wait for a second!</Text>
-            <Text style={styles.text}>Stay connected</Text>
-        </Animatable.View> */}
       </View>
     );
 };
 
-// export default Loading;
 
 const {height} = Dimensions.get("screen");
 const height_logo = height * 0.28;
@@ -66,9 +57,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#189ad3'
   },
   header: {
-      flex: 2,
+      flex: 1,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      width:100,
+      height:100,
+      marginLeft:150,
   },
   footer: {
       flex: 1,
@@ -109,7 +103,8 @@ const styles = StyleSheet.create({
   },
   backgroundVideo: {
     position: 'absolute',
-   width: 500,
-   height: 420
+   width: 200,
+   height: 200,
+   //marginLeft:200
   }
 });

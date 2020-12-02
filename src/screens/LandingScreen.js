@@ -20,18 +20,18 @@ const LandingScreen = ({navigation}) => {
     let [user, setUser]= useState();
     let data;
 
-    useEffect(() => {
-        axios.get('http://localhost:3000/User')
-        .then((response) => {
-            setUser(response.data);
-            console.log(setUser());
-            data= response.data;
-            console.log("i'm heare ye stack",data)
+    // useEffect(() => {
+    //     axios.get('http://localhost:3000/User')
+    //     .then((response) => {
+    //         setUser(response.data);
+    //         console.log(setUser());
+    //         data= response.data;
+    //         console.log("i'm heare ye stack",data)
             
              
-          });
+    //       });
          
-    }, []);
+    // }, []);
     
 
     return (
@@ -43,7 +43,7 @@ const LandingScreen = ({navigation}) => {
       style={styles.backgroundVideo}
       rate={1}
       shouldPlay={true}
-      isLooping
+      isLooping={true}
       volume={1}
       muted={true}
       resizeMode="cover"
@@ -52,8 +52,8 @@ const LandingScreen = ({navigation}) => {
         <View style={styles.header}>
             <Animatable.Image 
                 animation="bounceIn"
-                duraton="1500"
-            // source={require('../assets/logo.png')}
+                duraton="50000"
+            source={require("../../assets/LogoImage/VIC.png")}
             style={styles.logo}
             resizeMode="stretch"
             />
@@ -91,7 +91,7 @@ const LandingScreen = ({navigation}) => {
 export default LandingScreen;
 
 const {height} = Dimensions.get("screen");
-const height_logo = height * 0.28;
+const height_logo = height * 0.20;
 
 const styles = StyleSheet.create({
   container: {
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   header: {
       flex: 2,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
   },
   footer: {
       flex: 1,
