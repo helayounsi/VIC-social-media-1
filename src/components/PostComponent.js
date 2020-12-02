@@ -33,7 +33,7 @@ import tracker from "../api/tracker";
 const PostComponent = ({ navigation }) => {
   const [imageCam, setImageCam] = useState(null);
   const [posts, setPosts] = useState(null);
-  let media = [
+  let post = [
     "https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320",
     "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922",
     "https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg",
@@ -159,10 +159,10 @@ const PostComponent = ({ navigation }) => {
   
 
   const handelPost = () => {
-    console.log(imageCam);
-
+    let cloudres='';
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-    console.log('img'+imageCam.base64Img);
+    // console.log('base64Img '+base64Img);
+    // console.log('imageCam: '+imageCam);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -174,7 +174,7 @@ const PostComponent = ({ navigation }) => {
     })
       .then(async (res) => {
         let r = await res.json();
-        console.log('r'+r);
+       //console.log('res '+r.secure_url);
         setModalOpen(false);
 
         // podt new post
@@ -185,30 +185,35 @@ const PostComponent = ({ navigation }) => {
           },
         };
         const body = JSON.stringify({
-          content: "message",
-          userId: 1,
-          fileUrl: r.secure_url,
+          content: "",
+          userId: null,
+          //this is the url from cloudinary that we have to send to the server then to the DB
+          
+           fileUrl: r.secure_url,
          
         });
-
-        tracker
-          .post("/addPost",body,config)
-          .then((res) => {
-            console.log('hi'+res.data);
+       console.log('fileUrl:' +r.secure_url)
+       cloudres=r.secure_url
+       tracker.post("/post/addPost", body, config)
+       .then((res) => {
+            console.log(res.data);
             getPosts()
           })
           .catch((err) => {
-            //console.log(123);
-            console.log(err);
+           console.log('err:' +err);
           });
+          
       })
       .catch((err) => console.log(err));
+      
+        // console.log(resp)
   };
 
-  return !posts ? (
+   
+  return ( !posts ? (
     <Loading></Loading>
   ) : (
-    <SafeAreaView>
+   <SafeAreaView>
       {/* add a post input */}
       <View style={{ backgroundColor: "#fff" }}>
         <Text
@@ -272,10 +277,10 @@ const PostComponent = ({ navigation }) => {
             {posts.reverse().map((item, index) => {
               // console.log(item);
               if (
-                item.includes(".jpg") ||
-                item.includes(".jpeg") ||
-                item.includes(".png") ||
-                item.includes(".gif")
+                item.fileUrl.includes(".jpg") ||
+                item.fileUrl.includes(".jpeg") ||
+                item.fileUrl.includes(".png") ||
+                item.fileUrl.includes(".gif")
               ) {
                 return (
                   <Card key={index}>
@@ -285,7 +290,7 @@ const PostComponent = ({ navigation }) => {
                       left={LeftContent}
                     />
 
-                    <Card.Cover key={index} source={{ uri: item }} />
+                    <Card.Cover key={index} source={{ uri: item.fileUrl }} />
 
                     <Card.Content>
                       <View style={styles.feed}>
@@ -349,7 +354,7 @@ const PostComponent = ({ navigation }) => {
                     </Card.Content>
                   </Card>
                 );
-              } else if (item.includes(".mp4")) {
+              } else if (item.fileUrl.includes(".mp4")) {
                 return (
                   <Card key={index}>
                     <Card.Title
@@ -359,7 +364,7 @@ const PostComponent = ({ navigation }) => {
                     />
                     <Video
                       key={index}
-                      source={{ uri: item }}
+                      source={{ uri: item.fileUrl }}
                       rate={1.0}
                       volume={1.0}
                       isMuted={true}
@@ -436,7 +441,8 @@ const PostComponent = ({ navigation }) => {
         </ScrollView>
       </View>
     </SafeAreaView>
-  );
+  )
+  )
 };
 export default PostComponent;
 
