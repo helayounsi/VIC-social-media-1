@@ -17,8 +17,6 @@ import OpenCameraScreen from "../src/screens/CameraScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-
-
 // import Ionicons from "react-native-vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
@@ -59,7 +57,7 @@ function Root() {
           let iconName;
           
 
-          if (route.name === "PostScreen") {
+          if (route.name === "Post") {
             iconName = "home";
           } else if (route.name === "Notifications") {
             iconName = "notification";
@@ -67,7 +65,7 @@ function Root() {
             iconName = "search1";
           } else if (route.name === "Chat") {
             iconName = "wechat";
-          } else if (route.name === "OpenCamera") {
+          } else if (route.name === "Camera") {
             iconName = "camera";
           } else if (route.name === "Profile") {
             iconName = "profile";
@@ -85,14 +83,13 @@ function Root() {
 
 
 
-      <Tab.Screen  name="PostScreen" component={PostComponent} />
+      <Tab.Screen  name="Post" component={PostComponent} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="OpenCamera" component={OpenCameraScreen} />
-
-     
+      <Tab.Screen name="Camera" component={OpenCameraScreen} />
+      <Tab.Screen name="Chat" component={ChatListScreen}/>      
       <Tab.Screen name="Profile" component={ProfileScreen} />
 
-      <Tab.Screen name="Chat" component={ChatListScreen}/> 
+      
 
     </Tab.Navigator>
   );
@@ -111,10 +108,8 @@ export default function MyStack() {
         <Stack.Screen options={{headerShown:false}} name="Login" component={LoginScreen} />
         <Stack.Screen  options={{headerShown:false}} name="SignUp" component={SignUpScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="Root" component={Root} />
-
         <Stack.Screen  options={{headerShown:false}}  name="UpdateScreen" component={UpdateScreen} />
         <Stack.Screen  options={{headerShown:false}}  name="LandingScreen" component={LandingScreen} />
-
         <Stack.Screen options={{headerShown:false}} name="chatUser" component={ChatScreen} />
         {/* <Stack.Screen options={{headerShown:false}} name="videocall" component={videocallScreen} /> */}
       </Stack.Navigator>

@@ -31,27 +31,27 @@ export default class ChatScreen extends Component {
        chatMessages: [],
        chatAlert: false
     };
-    this.submitChatMessage = this.submitChatMessage.bind(this);
+    // this.submitChatMessage = this.submitChatMessage.bind(this);
  }
 
- componentDidMount() {
-  this.socket = io("http://192.168.1.7:3000");
-   this.socket.on("chat message", msg => {
-         this.setState({ chatMessages: [...this.state.chatMessages, msg] 
+//  componentDidMount() {
+//   this.socket = io("http://192.168.1.7:3000");
+//    this.socket.on("chat message", msg => {
+//          this.setState({ chatMessages: [...this.state.chatMessages, msg] 
             
-    });
-    // console.log(msg)
- });
-}
-submitChatMessage() {
-  this.socket.emit('chat message', this.state.chatMessage);
-  this.setState({chatMessage: ''},
-  this.setState({chatAlert: true}))
- console.log(this.state.chatAlert);
- if (this.state.chatAlert = true) {
-  alert("you have a message")
- }
-}
+//     });
+//     // console.log(msg)
+//  });
+// }
+// submitChatMessage() {
+//   this.socket.emit('chat message', this.state.chatMessage);
+//   this.setState({chatMessage: ''},
+//   this.setState({chatAlert: true}))
+//  console.log(this.state.chatAlert);
+//  if (this.state.chatAlert = true) {
+//   alert("you have a message")
+//  }
+// }
 
   //styling chat bubbles
   renderBubble = props => {
@@ -134,7 +134,7 @@ submitChatMessage() {
               marginBottom: '30%',
             }}
             size={32}
-            onPress={this.submitChatMessage}
+            // onPress={this.submitChatMessage}
           />
         </Send>
       </>
