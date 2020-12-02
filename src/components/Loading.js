@@ -35,12 +35,12 @@ export default function Loading() {
             <Animatable.Image 
                 animation="bounceIn"
                 duraton="1500"
-            source={require('../../assets/LogoAnimated/Untitled-2.mp4')}
-            style={styles.logo}
-            resizeMode="stretch"
+               source={require('../../assets/LogoImage/VIC.png')}
+               style={styles.logo}
+               resizeMode="stretch"
             />
         </View>
-        <Animatable.View 
+        {/* <Animatable.View 
             style={[styles.footer, {
                 backgroundColor: colors.background
             }]}
@@ -50,19 +50,12 @@ export default function Loading() {
                 color: colors.text
             }]}>Loading wait for a second!</Text>
             <Text style={styles.text}>Stay connected</Text>
-            <TouchableOpacity>
-                <LinearGradient
-                    colors={['#189ad3', '#71c7ec']}
-                    style={styles.signIn}
-                >
-                </LinearGradient>
-            </TouchableOpacity>
-        </Animatable.View>
+        </Animatable.View> */}
       </View>
     );
 };
 
-export default Loading;
+// export default Loading;
 
 const {height} = Dimensions.get("screen");
 const height_logo = height * 0.28;

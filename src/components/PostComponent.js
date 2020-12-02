@@ -128,7 +128,7 @@ const PostComponent = ({ navigation }) => {
       });
       //setImageCam(data.uri);
       if (!data.cancelled) {
-        handelPost();
+        //handelPost();
       }
     } else {
       Alert.alert("you need to give up permission to work");
@@ -144,26 +144,12 @@ const PostComponent = ({ navigation }) => {
     setImageCam(data.uri);
   };
 
-  // Pick video from camera
-  // const pickVideoFromCamera = async ()=>{
-  //   const {status} =  await Permissions.askAsync(Permissions.CAMERA)
-  //   if(status=='granted'){
-  //        let data =  await DocumentPicker.launchCameraAsync({
-  //             mediaTypes:DocumentPicker.MediaTypeOptions.Video,
-  //             allowsEditing:true,
-  //             aspect:[1,1],
-  //             quality:0.5
-  //         })
-  //   }else{
-  //      Alert.alert("you need to give up permission to work")
-  //   }
-  // }
 
   //toggel a model
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen1, setModalOpen1] = useState(false);
   const [value, onChangeText] = React.useState("");
-  //  console.log(imageCam);
+ 
 
   //  const handelPost = () =>{
   //   const fd = new FormData()
@@ -188,6 +174,7 @@ const PostComponent = ({ navigation }) => {
     console.log(imageCam);
 
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
+    console.log(imageCam.base64Img);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -269,8 +256,11 @@ const PostComponent = ({ navigation }) => {
             </Text>
             <TextInput
               style={styles.input}
+              multiline={true}
+              numberOfLines={6}
               onChangeText={(text) => onChangeText(text)}
               value={value}
+              placeholder="Add description"
             />
             <View style={styles.modalButtonView}>
               <Button icon="camera" onPress={pickFromCamera}>
@@ -282,9 +272,6 @@ const PostComponent = ({ navigation }) => {
               <Button icon="video" onPress={pickDocument}>
                 Video from gallery
               </Button>
-              {/* <Button  icon="image-area" onPress={pickVideoFromCamera}>
-                                Add video from camera
-                        </Button> */}
             </View>
             <Button onPress={() => handelPost()}>Add my Post</Button>
           </View>
@@ -346,10 +333,9 @@ const PostComponent = ({ navigation }) => {
                             </Text>
                             <TextInput
                               style={styles.inputComment}
-                              multiline={true}
-                              numberOfLines={6}
                               onChangeComment={(text) => onChangeComment(text)}
                               value={value}
+                              placeholder="Comment"
                             />
                             <Button onPress={() => setModalOpen1(false)}>
                               Add My Comment
@@ -505,7 +491,6 @@ const styles = StyleSheet.create({
     width: 340,
     marginLeft: 10,
     marginTop: 15,
-    height: 300,
     marginBottom: 30,
     borderRadius: 8,
   },
