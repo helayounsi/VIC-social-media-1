@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 // import axios from 'axios';
 import io from 'socket.io-client';
 import UserDATA from './DummyUsers.js';
-import Navigator from '../../navigation/Navigator'
+// import Navigator from '../../navigation/Navigator'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 class ChatListScreen extends React.Component {
