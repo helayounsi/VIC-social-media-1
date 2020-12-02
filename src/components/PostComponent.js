@@ -155,10 +155,10 @@ const PostComponent = ({ navigation }) => {
   
 
   const handelPost = () => {
-    console.log(imageCam);
 
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-    console.log('img'+imageCam.base64Img);
+    // console.log('base64Img '+base64Img);
+    // console.log('imageCam: '+imageCam);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -170,7 +170,7 @@ const PostComponent = ({ navigation }) => {
     })
       .then(async (res) => {
         let r = await res.json();
-        console.log('r'+r);
+       // console.log('res'+r.secure_url);
         setModalOpen(false);
 
         // podt new post
@@ -183,19 +183,20 @@ const PostComponent = ({ navigation }) => {
         const body = JSON.stringify({
           content: "message",
           userId: 1,
+          //this is the url from cloudinary that we have to send to the server then to the DB
           fileUrl: r.secure_url,
          
         });
+        console.log('fileUrl:' +r.secure_url)
 
-        tracker
-          .post("/addPost",body,config)
+        tracker.post("/addPost",body,config)
           .then((res) => {
-            console.log('hi'+res.data);
+            console.log('hi:'+res);
             getPosts()
           })
           .catch((err) => {
             //console.log(123);
-            console.log(err);
+            console.log('err:' +err);
           });
       })
       .catch((err) => console.log(err));
