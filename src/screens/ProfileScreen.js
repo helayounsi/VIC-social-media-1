@@ -6,8 +6,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { AsyncStorage } from 'react-native';
-
-
+import tracker from "../api/tracker";
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
@@ -16,14 +15,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import axios from 'axios';
 
+
 const ProfileScreen = ({navigation}) => {
-
   const [Icon, setIcon, image, setImage] = useState(null);
-
   const [imageCam, setImageCam]= useState("");
   const [userid, setUserid]=useState(null);
-
-
+  
+  
 //catch the current user id
   useEffect(() => {
   AsyncStorage.getItem('UserId', (err, data)=>{
@@ -66,21 +64,24 @@ useEffect (() => {
       }
     }
   })();
+  getProfileImag();
 }, []);
 
 
 const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
+  let data = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
     aspect: [1, 1],
     quality: 1,
+    base64: true,
   });
 
-  console.log(result);
+  setImageCam(data);
+  console.log(data);
 
-  if (!result.cancelled) {
-    setImageCam(result.uri);
+  if (!data.cancelled) {
+    handelProfileImage();
   }
 };
 
@@ -92,24 +93,84 @@ const pickFromCamera = async ()=>{
             mediaTypes:ImagePicker.MediaTypeOptions.Images,
             allowsEditing:true,
             aspect:[1,1],
-            quality:0.5
+            quality:0.5,
+            base64: true,
         })
-        setImageCam(data.uri);
-        
+        setImageCam(data);
+        if (!data.cancelled) {
+          handelProfileImage ();
+        }
   }else{
      Alert.alert("you need to give up permission to work")
   }
 }
 
-const handelProfileImage = () =>{  
-  console.log(imageCam)
-  const fd = new FormData()
-  fd.append('photo',imageCam)
-return  axios.put(`http://localhost:3000/uploadImage`,fd,{
-  headers: {
-    'Content-Type': 'multipart/form-data'
-  }}); 
-}
+const handelProfileImage = () =>{
+  console.log('img:'+ imageCam.uri);
+
+  let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
+  console.log('img'+imageCam.base64Img);
+    const data = {
+      file: base64Img,
+      upload_preset: "postInMainPage",
+    };
+    fetch("https://api.cloudinary.com/v1_1/vic2021/image/upload", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    })
+      .then(async (res) => {
+        let r = await res.json();
+        console.log('r'+r);
+        setModalOpen(false);
+
+        const config = {
+          headers: {
+            "Content-Type": "Application/json",
+          },
+        };
+        const body = JSON.stringify({
+          //content: "message",
+          userId: 1,
+          fileUrl: r.secure_url,
+         
+        });
+
+        tracker
+          .post("/:id",body,config)
+          .then((res) => {
+            console.log('hi'+res.data);
+            getProfileImag()
+          })
+          .catch((err) => {
+            //console.log(123);
+            console.log(err);
+          });
+      })
+      .catch((err) => console.log(err));
+  };
+  
+  const getProfileImag = () => {
+    tracker
+      .get("/:id")
+      .then((res) => {
+        console.log(res.data);
+        setPosts(res.data);
+      })
+      .catch((err) => {
+        console.log(123);
+        console.log(err);
+      });
+  };
+
+//   console.log(imageCam)
+//   const fd = new FormData()
+//   fd.append('photo',imageCam)
+// return  axios.put(`http://localhost:3000/uploadImage`,fd,{
+//   headers: {
+//     'Content-Type': 'multipart/form-data'
+//   }}); 
+
 
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
@@ -136,7 +197,7 @@ return  axios.put(`http://localhost:3000/uploadImage`,fd,{
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
-             <Image source={{uri:imageCam}}  style={styles.image}  resizeMode="center"></Image>
+             <Image source={{uri:imageCam.uri}}  style={styles.image}  resizeMode="center"></Image>
            </View>
            <View style={styles.dm}>
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -158,7 +219,7 @@ return  axios.put(`http://localhost:3000/uploadImage`,fd,{
                         cancel
                 </Button>
                 <Button  onPress={()=> handelProfileImage()} >
-                        Add my profileImage
+                        Add profile Image
                 </Button>
                </View>
            </Modal>
