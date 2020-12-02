@@ -83,6 +83,8 @@ const PostComponent = ({ navigation }) => {
       });
   };
 
+
+  //sending image to cloudinary
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
@@ -108,7 +110,7 @@ const PostComponent = ({ navigation }) => {
       base64: true,
     });
     if (!data.cancelled) {
-      setImageCam(data);
+      handelPost();
     }
   };
   //console.log(imageCam);
@@ -133,7 +135,7 @@ const PostComponent = ({ navigation }) => {
     }
   };
 
-  //sending image to cloudinary
+  
 
   //pick video from gallery
   const pickDocument = async () => {
@@ -215,7 +217,7 @@ const PostComponent = ({ navigation }) => {
         });
 
         tracker
-          .post("/addpost",body,config)
+          .post("/addPost",body,config)
           .then((res) => {
             console.log(res.data);
             getPosts()
@@ -292,7 +294,7 @@ const PostComponent = ({ navigation }) => {
         </Button>
         <ScrollView>
           <View style={{ justifyContent: "center" }}>
-            {media.reverse().map((item, index) => {
+            {posts.reverse().map((item, index) => {
               // console.log(item);
               if (
                 item.includes(".jpg") ||
@@ -344,6 +346,8 @@ const PostComponent = ({ navigation }) => {
                             </Text>
                             <TextInput
                               style={styles.inputComment}
+                              multiline={true}
+                              numberOfLines={6}
                               onChangeComment={(text) => onChangeComment(text)}
                               value={value}
                             />
@@ -511,110 +515,8 @@ const styles = StyleSheet.create({
     width: 340,
     marginLeft: 10,
     marginTop: 10,
-    height: 50,
     marginBottom: 10,
     borderRadius: 8,
   },
 });
 
-// class PostComponent extends Component {
-//   constructor (props){
-//     super(props);
-//     this.state={
-//       media: ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"],
-//     }
-//   }
-// //  mediaList=()=>{
-// //    return this.state.media.map(item=>{
-
-// //    })
-// //  }
-// //   render(){
-// //       return(
-// //         <SafeAreaView>
-// //     <ScrollView>
-// //       {/* add a post input */}
-// //       <View>
-// //       <Text style={[styles.text_footer, {
-// //                 marginTop: 20
-// //             }]}>Share what is in your mind?</Text>
-// //         <View style={styles.action}>
-// //         <FontAwesome name="pencil-square-o" size={28} color="black" />
-// //       <TextInput
-// //                     placeholder="Add your post here"
-// //                     placeholderTextColor="#666666"
-// //                     style={[styles.textInput]}
-// //                     autoCapitalize="none"
-// //                     onChangeText={(val) => usernameChange(val)}
-// //                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-// //                 />
-// //         </View>
-// //     <View style={{justifyContent: 'center'}}>
-// //     {this.state.media.reverse().map((item , index)=>{
-// //       // console.log(item);
-// //       if(item.includes('.jpg')||item.includes('.jpeg')||item.includes('.png')||item.includes('.gif')){
-// //         return(
-// //     <Card>
-// //     <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-
-// //       <Card.Cover key={index.item} source={{uri:item}} />
-
-// //       <Card.Content>
-// // <View style={styles.feed}>
-// // <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
-// //  Like
-// // </Button>
-// // <Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
-// //  Comment
-// // </Button>
-// // <Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
-// //  Share
-// // </Button>
-// // </View>
-// // </Card.Content>
-// //   </Card>
-// //   )
-// //      }else if(item.includes('.mp4')){
-// //        return(
-// //         <Card>
-// //         <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} />
-// //       <Video
-// //       key={index.item}
-// //       source={{ uri: item}}
-// //       rate={1.0}
-// //       volume={1.0}
-// //       isMuted={true}
-// //       resizeMode="cover"
-// //       autoPlay={true}
-// //       shouldPlay={true}
-// //       isLooping={true}
-// //       style={styles.card}
-// //     />
-// //      <Card.Content>
-// // <View style={styles.feed}>
-// // <Button style={styles.feed} icon={require('../../assets/profile-photo/like.png')} color={'#189ad3'}>
-// //  Like
-// // </Button>
-// // <Button style={styles.feed} icon={require('../../assets/profile-photo/Comment.png')} color={'#189ad3'}>
-// //  Comment
-// // </Button>
-// // <Button icon={require('../../assets/profile-photo/share.png')} onPress={onShare} color={'#189ad3'}>
-// //  Share
-// // </Button>
-// // </View>
-// // </Card.Content>
-// //   </Card>
-// //     )
-// //   }
-
-// //   })}
-// //   </View>
-// //       </View>
-
-// //   </ScrollView>
-// //   </SafeAreaView>
-// //       )
-
-// };
-
-// };
