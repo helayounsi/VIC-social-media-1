@@ -90,7 +90,9 @@ const SignUpScreen = ({navigation}) => {
     }
 
     const handleConfirmPasswordChange = (val) => {
+
       if( val.length >= 8 ) {
+
           setData({
               ...data,
               confirm_password: val,
@@ -133,6 +135,7 @@ const SignUpScreen = ({navigation}) => {
     // }
 
     const loginHandle = () => {
+
         console.log(data.password)
         const config = {
             headers: {
@@ -144,6 +147,7 @@ const SignUpScreen = ({navigation}) => {
         email:data.email,
           userName:data.username,
           password: data.password 
+
         });
         console.log(body);
         console.log(data);
@@ -188,7 +192,7 @@ const SignUpScreen = ({navigation}) => {
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                />
+                required={true}/>
                 {data.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
@@ -227,7 +231,7 @@ const SignUpScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handlePasswordChange(val)}
-                />
+                    required={true}/>
                 <TouchableOpacity
                     onPress={ updateSecureTextEntry}
                 >
@@ -270,7 +274,7 @@ const SignUpScreen = ({navigation}) => {
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
-                />
+                    required={true} />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
                 >
