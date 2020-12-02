@@ -270,13 +270,13 @@ const PostComponent = ({ navigation }) => {
         </Button>
         <ScrollView>
           <View style={{ justifyContent: "center" }}>
-            {post.reverse().map((item, index) => {
+            {posts.reverse().map((item, index) => {
               // console.log(item);
               if (
-                item.includes(".jpg") ||
-                item.includes(".jpeg") ||
-                item.includes(".png") ||
-                item.includes(".gif")
+                item.fileUrl.includes(".jpg") ||
+                item.fileUrl.includes(".jpeg") ||
+                item.fileUrl.includes(".png") ||
+                item.fileUrl.includes(".gif")
               ) {
                 return (
                   <Card key={index}>
@@ -286,7 +286,7 @@ const PostComponent = ({ navigation }) => {
                       left={LeftContent}
                     />
 
-                    <Card.Cover key={index} source={{ uri: item }} />
+                    <Card.Cover key={index} source={{ uri: item.fileUrl }} />
 
                     <Card.Content>
                       <View style={styles.feed}>
@@ -350,7 +350,7 @@ const PostComponent = ({ navigation }) => {
                     </Card.Content>
                   </Card>
                 );
-              } else if (item.includes(".mp4")) {
+              } else if (item.fileUrl.includes(".mp4")) {
                 return (
                   <Card key={index}>
                     <Card.Title
@@ -360,7 +360,7 @@ const PostComponent = ({ navigation }) => {
                     />
                     <Video
                       key={index}
-                      source={{ uri: item }}
+                      source={{ uri: item.fileUrl }}
                       rate={1.0}
                       volume={1.0}
                       isMuted={true}
