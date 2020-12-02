@@ -4,9 +4,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 // import axios from 'axios';
 import io from 'socket.io-client';
 import UserDATA from './DummyUsers.js';
+import { AsyncStorage } from 'react-native';
 // import Navigator from '../../navigation/Navigator'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+
+
+
+
+
 class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -22,10 +28,21 @@ class ChatListScreen extends React.Component {
       // senderName: props.data.senderName,
       // senderPhoto: props.data.senderPhoto,
       chats: [],
+      currentuserid: null
       
     };
   }
-
+  //catch the current user id
+  componentDidMount() {
+    AsyncStorage.getItem('UserId') 
+      .then((data)=>{        
+        this.setState({currentuserid: data});
+      })
+      .catch((err)=>{
+        console.log(err);
+      })      
+  
+  }
   // componentDidMount() {
   //   //get previous messages
   //   this.getMessages();
@@ -91,8 +108,9 @@ class ChatListScreen extends React.Component {
   // };
 
   render() {
-    console.log(UserDATA)
-    console.log(UserDATA[0].message)
+    console.log(this.state.currentuserid)
+    // console.log(UserDATA)
+    // console.log(UserDATA[0].message)
     return (
       <View>
         <Text

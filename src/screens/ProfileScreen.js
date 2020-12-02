@@ -5,6 +5,8 @@ import {StyleSheet, View, Text, SafeAreaView, Image,
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import { AsyncStorage } from 'react-native';
+
 
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
@@ -19,6 +21,16 @@ const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
 
   const [imageCam, setImageCam]= useState("");
+  const [userid, setUserid]=useState(null);
+
+
+//catch the current user id
+  useEffect(() => {
+  AsyncStorage.getItem('UserId', (err, data)=>{
+    setUserid(data);
+    console.log(userid)
+})
+})
 
 
   // let [Icon, setIcon] = useState(null);
