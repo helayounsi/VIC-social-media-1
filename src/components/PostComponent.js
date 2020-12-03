@@ -73,33 +73,33 @@ const PostComponent = ({ navigation }) => {
   };
 
 
-  const getPosts = () => {
-    tracker
-      .get("/post")
-      .then((res) => {
-        console.log(res.data);
-        setPosts(res.data);
-      })
-      .catch((err) => {
-        console.log(123);
-        console.log(err);
-      });
-  };
+  // const getPosts = () => {
+  //   tracker
+  //     .get("/post")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setPosts(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(123);
+  //       console.log(err);
+  //     });
+  // };
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== "web") {
-        const {
-          status,
-        } = await ImagePicker.requestCameraRollPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-    })();
+  // useEffect(() => {
+  //   (async () => {
+  //     if (Platform.OS !== "web") {
+  //       const {
+  //         status,
+  //       } = await ImagePicker.requestCameraRollPermissionsAsync();
+  //       if (status !== "granted") {
+  //         alert("Sorry, we need camera roll permissions to make this work!");
+  //       }
+  //     }
+  //   })();
 
-    getPosts();
-  }, []);
+  //   getPosts();
+  // }, []);
 
   // Pick image from gallery
   const pickImage = async () => {

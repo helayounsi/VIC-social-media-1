@@ -116,19 +116,19 @@ const LoginScreen = ({navigation}) => {
         tracker.post("/user/login", body, config)
        .then((res) => { 
         // console.log(res.data.userName)
-           if(res){ async () => {
-             await AsyncStorage.setItem("idUser:", response.data.id);            
-            navigation.navigate('Root')
+        //    if(res){ async () => {
+        //      await AsyncStorage.setItem("idUser:", response.data.id);            
+        //     navigation.navigate('Root')
             
-        }        
-           }
+        // }        
+        //    }
             
         }).catch((err) => {
             if(err){
             alert("Incorrect Email or Password")
             }
         })
-          
+        navigation.navigate('Root')
     }
 
     return (

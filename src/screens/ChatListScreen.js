@@ -3,29 +3,40 @@ import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import axios from 'axios';
 import io from 'socket.io-client';
-import UserDATA from './DummyUsers.js';
+// import UserDATA from './DummyUsers.js';
+import setdata from './LoginScreen'
 // import Navigator from '../../navigation/Navigator'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import tracker from '../api/tracker';
 class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
    
 
     this.state = {
-       UserDATA,
+       setdata
       
-      // userId: props.data.userId ,
+      ,
       // userName: props.data.userName,
-      // userPhoto: props.data.userPhoto,
+      //  userPhoto: props.data.userPhoto,
       // senderId: props.data.senderId,
-      // senderName: props.data.senderName,
+      //  senderName: props.data.senderName,
       // senderPhoto: props.data.senderPhoto,
       chats: [],
       
     };
   }
+componentDidMount(){
+  tracker.get('/34')
+    .then((res) => {
+      console.log(res.data.username)
+    }).catch((err) => {
+      console.log(err)
+    })
 
+   
+}
   // componentDidMount() {
   //   //get previous messages
   //   this.getMessages();
@@ -91,8 +102,8 @@ class ChatListScreen extends React.Component {
   // };
 
   render() {
-    console.log(UserDATA)
-    console.log(UserDATA[0].message)
+    console.log(setdata)
+    
     return (
       <View>
         <Text
