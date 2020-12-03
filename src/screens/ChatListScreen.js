@@ -3,12 +3,13 @@ import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import axios from 'axios';
 import io from 'socket.io-client';
-import UserDATA from './DummyUsers.js';
+
 import { AsyncStorage } from 'react-native';
 // import Navigator from '../../navigation/Navigator'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import tracker from '../api/tracker.js';
+import Loading from '../components/Loading';
+import tracker from '../api/tracker';
 
 
 
@@ -17,39 +18,58 @@ import tracker from '../api/tracker.js';
 class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
-   
-      
+  
     this.state = {
-      
-      UserDATA,
-      
-      // userName: props.data.userName,
-      //  userPhoto: props.data.userPhoto,
-      // senderId: props.data.senderId,
-      //  senderName: props.data.senderName,
-      // senderPhoto: props.data.senderPhoto,
+       UserDATA:null,
+       ConvDATA:null,
       chats: [],
-      currentuserid: null,
-      currentusername: null ,
+      UserId: null
       
     };
+
+    this.getUsers = this.getUsers.bind(this);
+    this.getConversation = this.getConversation.bind(this);
+  }
+
+
+  getConversation = () =>{      
+      tracker
+      .get(`/Conversation/myConversation/${this.state.UserId}`)
+      .then((res) => {
+        console.log(res.data);
+       this.setState({ConvDATA: res.data})
+      })
+      .catch((err) => {
+        
+        console.log(err);
+      });
+      
+    }
+  
+
+  
+  getUsers = () =>{ 
+      
+      tracker
+      .get(`/user`)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({UserDATA: res.data.filter(u => u.id!==this.state.UserId)})
+      })
+      .catch((err) => {
+        
+        console.log(err);
+      });
+      
+  
   }
   //catch the current user id
   componentDidMount() {
     AsyncStorage.getItem('UserId') 
-      .then((data)=>{        
-        this.setState({currentuserid: data});
-        console.log(data)
-        tracker.get(`/user/${data}`)
-        .then((res) => {
-          console.log(res.data)
-          console.log(res.data.userName)
-          this.setState({currentusername : res.data.userName})
-        })
-        
-        .catch((err) => {
-          console.log(err)
-        })
+      .then((UserId)=>{        
+        this.setState({UserId: UserId});
+        this.getUsers()
+       // this.getConversation()
       })
       .catch((err)=>{
         console.log(err);
@@ -121,11 +141,9 @@ class ChatListScreen extends React.Component {
   // };
 
   render() {
-    console.log(this.state.currentuserid)
-    console.log(this.currentusername)
-    // console.log(UserDATA)
-    // console.log(UserDATA[0].message)
-    return (
+    
+    
+    return !this.state.UserDATA  ? <Loading></Loading> :  (
       <View>
         <Text
           style={{
@@ -185,7 +203,7 @@ class ChatListScreen extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-            {this.state.UserDATA.map(i => (
+            {this.state.UserDATA.map(user => (
               <TouchableOpacity
               onPress={()=>this.props.navigation.navigate('chatUser')}>
                 <View
@@ -198,8 +216,7 @@ class ChatListScreen extends React.Component {
                   }}>
                   <Image
                     source={{
-                      uri: 'https://www.kernmedical.com/wp-content/uploads/male-profile-blank-e1539295013580.png',
-                      
+                      uri: user.profileImage,                      
                     }}
                     style={{width: 60, height: 60, borderRadius: 70}}
                    
@@ -217,8 +234,8 @@ class ChatListScreen extends React.Component {
                         
                         color: '#7a7a7a',
                       }}>
-                      {UserDATA[0].userName}
-                      {UserDATA[1].userName}
+                      {user.userName}
+                      
                     </Text>
                     <Text
                       style={{
@@ -226,8 +243,8 @@ class ChatListScreen extends React.Component {
                         
                         color: 'black',
                       }}>
-                      {UserDATA[0].message}
-                      {UserDATA[1].message}
+                      {user.message}
+                     
                     </Text>
                   </View>
                 </View>

@@ -417,9 +417,9 @@ const PostComponent = ({ navigation }) => {
               } else if (item.fileUrl.includes(".mp4")) {
                 return (
                   <Card key={index}>
-                    <Card.Title
-                       title={item.userId}
-                       subtitle={item.content} 
+                      <Card.Title
+                      title={item.User.userName}
+                      subtitle={item.content}
                       left={()=>LeftContent(item.User.profileImage)}
                     />
                     <Video
