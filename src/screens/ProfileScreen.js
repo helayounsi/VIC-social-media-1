@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { AsyncStorage } from 'react-native';
 import tracker from "../api/tracker";
+import Loading from "../components/Loading";
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
@@ -19,16 +20,36 @@ import axios from 'axios';
 const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
-  const [userid, setUserid]=useState(null);
+  const [user, setUser]=useState({
+      userName: "",
+      profileImage: "",
+  });
   
   
 //catch the current user id
   useEffect(() => {
   AsyncStorage.getItem('UserId', (err, data)=>{
-    setUserid(data);
-    console.log(userid)
+    tracker
+    .get(`/user`, {
+      params:{
+        id: data
+      }
+    })
+    .then((res) => {
+      // console.log(res.data);
+      setUser({
+        ...user,
+        userName:res.data.userName,
+        profileImage:res.data.profileImage,
+      });
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+    
 })
-})
+},[])
 
 
   // let [Icon, setIcon] = useState(null);
@@ -64,7 +85,7 @@ useEffect (() => {
       }
     }
   })();
-  getProfileImag();
+ // getProfileImag();
 }, []);
 
 
@@ -78,7 +99,7 @@ const pickImage = async () => {
   });
 
   setImageCam(data);
-  console.log(data);
+  //console.log(data);
 
   if (!data.cancelled) {
     handelProfileImage();
@@ -140,28 +161,28 @@ const handelProfileImage = () =>{
           .post("/:id",body,config)
           .then((res) => {
             console.log('hi'+res.data);
-            getProfileImag()
+            //getProfileImag()
           })
           .catch((err) => {
-            //console.log(123);
+           
             console.log(err);
           });
       })
       .catch((err) => console.log(err));
   };
   
-  const getProfileImag = () => {
-    tracker
-      .get("/:id")
-      .then((res) => {
-        console.log(res.data);
-        setPosts(res.data);
-      })
-      .catch((err) => {
-        console.log(123);
-        console.log(err);
-      });
-  };
+  // const getProfileImag = () => {
+  //   tracker
+  //     .get("/:id")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setPosts(res.data);
+  //     })
+  //     .catch((err) => {
+        
+  //       console.log(err);
+  //     });
+  // };
 
 //   console.log(imageCam)
 //   const fd = new FormData()
@@ -177,7 +198,7 @@ const handelProfileImage = () =>{
  const [modalOpen1, setModalOpen1]=useState(false);
 
 
-    return (
+    return !user ? <Loading></Loading> :  (
      <SafeAreaView style={styles.container}>       
          <Provider>
           <View style={styles.titleBar}>

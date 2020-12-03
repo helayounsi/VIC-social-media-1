@@ -1,13 +1,3 @@
-// import React from 'react'
-// import { View, Text } from 'react-native'
-
-// export default function Loading() {
-//     return (
-//         <View>
-//             <Text>loading</Text>
-//         </View>
-//     )
-// }
 import React,{ useState, useEffect } from 'react';
 import { 
     View, 
@@ -18,11 +8,10 @@ import {
     StatusBar,
     Image
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import {LinearGradient} from 'expo-linear-gradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 import { Video } from 'expo-av';
+
+
 
 export default function Loading() {
     const { colors } = useTheme();

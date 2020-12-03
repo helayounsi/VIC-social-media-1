@@ -19,7 +19,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import tracker from '../api/tracker';
 
-import { AuthContext } from '../components/context';
+// import { AuthContext } from '../components/context';
 
 // import Users from '../model/users';
 
