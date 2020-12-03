@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useCallback } from "react";
 import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
 import {
   View,
@@ -17,7 +17,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import * as DocumentPicker from 'expo-document-picker';
 import { Video } from 'expo-av';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage ,RefreshControl} from 'react-native';
 import Loading from "./Loading";
 import tracker from "../api/tracker";
 
@@ -34,6 +34,26 @@ const PostComponent = ({ navigation }) => {
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   ];
+
+
+  const [refreshing, setRefreshing] = useState(false);
+  
+ 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    tracker
+    .get("/post")
+    .then((res) => {
+      console.log(res.data);
+      setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
+      setRefreshing(false)
+    })
+    .catch((err) => { 
+      //console.log(123);
+      // console.log(err);
+    });
+ 
+  }, []);
 
   // let media= ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"]
 
@@ -198,6 +218,9 @@ const PostComponent = ({ navigation }) => {
   }
 
   const handelPost = () => {
+    if(imageCam){
+
+   
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
     const data = {
       file: base64Img,
@@ -228,7 +251,7 @@ const PostComponent = ({ navigation }) => {
          
         });
       //  console.log('fileUrl:' +r.secure_url)
-       cloudres=r.secure_url
+       //cloudres=r.secure_url
        //send a opost request to clever cloud DB
        tracker.post("/post/addPost", body, config)
        .then((res) => {
@@ -241,6 +264,7 @@ const PostComponent = ({ navigation }) => {
           
       })
       .catch((err) => console.log(err));
+     }
   };
 
    
@@ -307,9 +331,9 @@ const PostComponent = ({ navigation }) => {
         <Button icon="pencil" onPress={() => setModalOpen(true)}>
           Add a post
         </Button>
-        <ScrollView>
+        <ScrollView fadingEdgeLength={100}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
           <View style={{ justifyContent: "center" }}>
-            {posts.map((item, index) => {
+            {posts.filter(post => post.fileUrl).map((item, index) => {
               // console.log(item);
               if ( 
                 item.fileUrl.includes(".jpg") ||
@@ -322,7 +346,7 @@ const PostComponent = ({ navigation }) => {
                     <Card.Title
                       title={item.User.userName}
                       subtitle={item.content}
-                      left={LeftContent(item.User.profileImage)}
+                      left={()=>LeftContent(item.User.profileImage)}
                     />
 
                     <Card.Cover key={index} source={{ uri: item.fileUrl }} />
@@ -395,8 +419,8 @@ const PostComponent = ({ navigation }) => {
                   <Card key={index}>
                     <Card.Title
                        title={item.userId}
-                       subtitle={item.content}
-                      left={LeftContent}
+                       subtitle={item.content} 
+                      left={()=>LeftContent(item.User.profileImage)}
                     />
                     <Video
                       key={index}
