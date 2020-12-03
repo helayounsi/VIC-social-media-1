@@ -208,9 +208,7 @@ const PostComponent = ({ navigation }) => {
       .then ((res)=>{
         console.log(res.data);
       })
-      .catch((err)=>{
-        console.log(err);
-      })
+ 
       .catch((err)=>{
         console.log(err);
       })
@@ -326,6 +324,7 @@ const PostComponent = ({ navigation }) => {
               </Button>
             </View>
             <Button onPress={() => handelPost()}>Add my Post</Button>
+            <Button onPress={() =>setModalOpen(false) }>Cancel</Button>
           </View>
         </Modal>
         <Button icon="pencil" onPress={() => setModalOpen(true)}>
@@ -385,10 +384,10 @@ const PostComponent = ({ navigation }) => {
                               Comment it here
                             </Text>
                             <TextInput
-                              style={styles.inputComment}
-                              onChangeComment={(text) => onChangeComment(text)}
+                              style={styles.inputComment}                              
                               value={value}
                               placeholder="Comment"
+                              onChangeComment={(text) => onChangeComment(text)}
                             />
                             <Button onPress={() => setModalOpen1(false)}>
                               Add My Comment

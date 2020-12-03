@@ -4,9 +4,9 @@
     "slug": "vic",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/LogoImage/VIC.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/LogoImage/VIC.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +23,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.vic_corporation.vic",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
