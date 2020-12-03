@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { 
     View, 
     Text, 
@@ -8,14 +8,18 @@ import {
     StyleSheet ,
     StatusBar,
     Alert,
-    ScrollView
+    ScrollView,
+     
 } from 'react-native';
-import { SocialIcon } from 'react-native-elements'
+import { AsyncStorage } from 'react-native';
+// import {AsyncStorage} from '@react-native-async-storage/async-storage';
+import { SocialIcon } from 'react-native-elements';
 
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import tracker from '../api/tracker';
 
 import { useTheme } from 'react-native-paper';
 
@@ -25,9 +29,11 @@ import { useTheme } from 'react-native-paper';
 
 const LoginScreen = ({navigation}) => {
 
-    const [data, setData] = React.useState({
+    const [data, setData] = useState({
         username: '',
         password: '',
+        email : '',
+        phonenumber: null,
         check_textInputChange: false,
         secureTextEntry: true,
         isValidUser: true,
@@ -37,39 +43,42 @@ const LoginScreen = ({navigation}) => {
     const { colors } = useTheme();
 
     // const { signIn } = React.useContext(AuthContext);
-
+   
     const textInputChange = (val) => {
-        if( val.length !== 0 ) {
+        if( val.length !== 0 && val.includes('@')=== false ) {
             setData({
                 ...data,
                 username: val,
                 check_textInputChange: true,
                 isValidUser: true
             });
-        } else {
+
+        }else if(val.includes('@')=== true) {
             setData({
                 ...data,
-                username: val,
-                check_textInputChange: false,
-                isValidUser: false
-            });
-        }
+                email: val,
+                check_textInputChange: true,
+                
+            });        
+        }else if(typeof(val) === "number"){
+            setData({
+                ...data,
+                phoneNumber: val,
+                check_textInputChange: true,
+                
+            });     
+        } 
+
     }
 
     const handlePasswordChange = (val) => {
-        // if( val.trim().length >= 8 ) {
+        if( val.trim().length >= 8 ) {
             setData({
                 ...data,
                 password: val,
                 isValidPassword: true
             });
-        // } else {
-        //     setData({
-        //         ...data,
-        //         password: val,
-        //         isValidPassword: false
-        //     });
-        // }
+        } 
     }
 
     const updateSecureTextEntry = () => {
@@ -79,46 +88,65 @@ const LoginScreen = ({navigation}) => {
         });
     }
 
-    // const handleValidUser = (val) => {
-    //     if( val.trim().length >= 4 ) {
-    //         setData({
-    //             ...data,
-    //             isValidUser: true
-    //         });
-    //     } else {
-    //         setData({
-    //             ...data,
-    //             isValidUser: false
-    //         });
+
+    // const checkUser = async () =>{
+    //     const res= null;
+    //     try{
+    //     const config = {
+    //         headers: {
+    //             "Content-Type": "Application/json",
+    //         },
+    //     };
+    //     const body = JSON.stringify({
+    //       phoneNumber:data.phonenumber, 
+    //       email:data.email,
+    //       userName:data.username,
+    //       password: data.password 
+    //     });
+    //     // console.log(body);
+    //     // console.log(data);          
+    //      res = await tracker.post("/user/login", body, config)
+    //     console.log(res.data)
+    //     navigation.navigate('Root')
+             
+          
+          
+          
+    //     }catch(err) {            
+    //         console.log (err.message);            
     //     }
+    //     AsyncStorage.setItem('idUser',res.data);
     // }
 
-    // const loginHandle = (userName, password) => {
-
-    //     const foundUser = Users.filter( item => {
-    //         return userName == item.username && password == item.password;
-    //     } );
-
-    //     if ( data.username.length == 0 || data.password.length == 0 ) {
-    //         Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-    //             {text: 'Okay'}
-    //         ]);
-    //         return;
-    //     }
-
-    //     if ( foundUser.length == 0 ) {
-    //         Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-    //             {text: 'Okay'}
-    //         ]);
-    //         return;
-    //     }
-    //     signIn(foundUser);
-    // }
+    const checkUser = () =>{
+        const config = {
+                    headers: {
+                        "Content-Type": "Application/json",
+                    },
+                };
+                const body = JSON.stringify({
+                  phoneNumber:data.phonenumber, 
+                  email:data.email,
+                  userName:data.username,
+                  password: data.password 
+                });
+                tracker.post("/user/login", body, config)
+                .then((res)=>{
+                    console.log(res.data)
+                    navigation.navigate('Root')
+                    AsyncStorage.setItem('UserId',res.data.id.toString());
+                    
+                })
+                .catch((err)=>{
+                    console.log(err.message)
+                })
+    }
 
     return (
       <View style={styles.container}>
-          <ScrollView>
+          
           <StatusBar  barStyle="light-content"/>
+          <ScrollView>
         <View style={styles.header}>
             <Text style={styles.text_header}>Welcome!</Text>
         </View>
@@ -138,7 +166,7 @@ const LoginScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Username"
+                    placeholder="Username/e-mail/phone number"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
@@ -218,8 +246,9 @@ const LoginScreen = ({navigation}) => {
                 <TouchableOpacity
                     style={styles.signIn}
                     // onPress={() => {loginHandle( data.username, data.password )}}
-                    onPress={() => navigation.navigate('Root')}
+                    onPress={() => checkUser() }
                 >
+                    
                 <LinearGradient
                     colors={['#189ad3', '#71c7ec']}
                     style={styles.signIn}
@@ -229,7 +258,7 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign In</Text>
                 </LinearGradient>
                 </TouchableOpacity>
-
+            
                 <TouchableOpacity
                     onPress={() => navigation.navigate('SignUp')}
                     style={[styles.signIn, {
@@ -243,17 +272,7 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
-        <View style={styles.iconContainer}>
-            <View style={styles.icon}>
-            <SocialIcon
-              title="Sign In Google Plus"
-              button
-              type="google-plus-official"
-              onPress={() => {
-                alert('google');
-              }}
-            />
-          </View>
+        <View style={styles.iconContainer}>            
             <View style={{width: '100%', flexDirection: 'column'}}>
             <SocialIcon
               //Social Icon using react-native-elements
@@ -263,10 +282,10 @@ const LoginScreen = ({navigation}) => {
               //Title of Social Button
               type="facebook"
               //Type of Social Icon
-              onPress={() => {
+            //   onPress={() => {
                 //Action to perform on press of Social Icon
-                alert('facebook');
-              }}
+                // alert('facebook');
+            //   }}
             />
           </View>
           <View style={{width: '100%', flexDirection: 'column'}}>
@@ -275,9 +294,9 @@ const LoginScreen = ({navigation}) => {
               button
               type="twitter"
               
-              onPress={() => {
-                alert('twitter');
-              }}
+            //   onPress={() => {
+            //     alert('twitter');
+            //   }}
             />
           </View>
           </View>
@@ -306,7 +325,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingVertical: 49
     },
     text_header: {
         color: '#fff',
@@ -360,3 +379,41 @@ const styles = StyleSheet.create({
         marginTop:10
     }
   });
+
+
+
+      // const handleValidUser = (val) => {
+    //     if( val.trim().length >= 4 ) {
+    //         setData({
+    //             ...data,
+    //             isValidUser: true
+    //         });
+    //     } else {
+    //         setData({
+    //             ...data,
+    //             isValidUser: false
+    //         });
+    //     }
+    // }
+
+    // const loginHandle = (userName, password) => {
+
+    //     const foundUser = Users.filter( item => {
+    //         return userName == item.username && password == item.password;
+    //     } );
+
+    //     if ( data.username.length == 0 || data.password.length == 0 ) {
+    //         Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
+    //             {text: 'Okay'}
+    //         ]);
+    //         return;
+    //     }
+
+    //     if ( foundUser.length == 0 ) {
+    //         Alert.alert('Invalid User!', 'Username or password is incorrect.', [
+    //             {text: 'Okay'}
+    //         ]);
+    //         return;
+    //     }
+    //     signIn(foundUser);
+    // }
