@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { AsyncStorage } from 'react-native';
 import tracker from "../api/tracker";
+import Loading from "../components/Loading";
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
@@ -19,17 +20,29 @@ import axios from 'axios';
 const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
-  const [userid, setUserid]=useState(null);
+  const [user, setUser]=useState(null);
   
   
 //catch the current user id
   useEffect(() => {
+    getProfile()
+},[])
+const getProfile = () =>{
   AsyncStorage.getItem('UserId', (err, data)=>{
-    setUserid(data);
-    console.log(userid)
+    console.log(data)
+    tracker
+    .get(`/user/${data}`)
+    .then((res) => {
+      console.log(res.data);
+      setUser(res.data);
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+    
 })
-})
-
+}
 
   // let [Icon, setIcon] = useState(null);
 
@@ -64,7 +77,7 @@ useEffect (() => {
       }
     }
   })();
-  getProfileImag();
+ // getProfileImag();
 }, []);
 
 
@@ -78,10 +91,10 @@ const pickImage = async () => {
   });
 
   setImageCam(data);
-  console.log(data);
+  //console.log(data);
 
   if (!data.cancelled) {
-    handelProfileImage();
+   // handelProfileImage();
   }
 };
 
@@ -96,9 +109,9 @@ const pickFromCamera = async ()=>{
             quality:0.5,
             base64: true,
         })
-        setImageCam(data);
+        await setImageCam(data);
         if (!data.cancelled) {
-          handelProfileImage ();
+         // handelProfileImage ();
         }
   }else{
      Alert.alert("you need to give up permission to work")
@@ -106,10 +119,10 @@ const pickFromCamera = async ()=>{
 }
 
 const handelProfileImage = () =>{
-  console.log('img:'+ imageCam.uri);
+  //console.log('img:'+ imageCam.uri);
 
   let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-  console.log('img'+imageCam.base64Img);
+ // console.log('img'+base64Img);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -121,7 +134,7 @@ const handelProfileImage = () =>{
     })
       .then(async (res) => {
         let r = await res.json();
-        console.log('r'+r);
+        console.log(r);
         setModalOpen(false);
 
         const config = {
@@ -130,38 +143,40 @@ const handelProfileImage = () =>{
           },
         };
         const body = JSON.stringify({
-          //content: "message",
-          userId: 1,
-          fileUrl: r.secure_url,
+          
+
+          profileImage: r.secure_url,
          
         });
-
+ 
         tracker
-          .post("/:id",body,config)
+          .put(`/user/${user.id}`,body,config)
           .then((res) => {
-            console.log('hi'+res.data);
-            getProfileImag()
+            console.log(res.data);
+            //getProfileImag()
+    getProfile()
+
           })
           .catch((err) => {
-            //console.log(123);
+           
             console.log(err);
           });
       })
       .catch((err) => console.log(err));
   };
   
-  const getProfileImag = () => {
-    tracker
-      .get("/:id")
-      .then((res) => {
-        console.log(res.data);
-        setPosts(res.data);
-      })
-      .catch((err) => {
-        console.log(123);
-        console.log(err);
-      });
-  };
+  // const getProfileImag = () => {
+  //   tracker
+  //     .get("/:id")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setPosts(res.data);
+  //     })
+  //     .catch((err) => {
+        
+  //       console.log(err);
+  //     });
+  // };
 
 //   console.log(imageCam)
 //   const fd = new FormData()
@@ -177,7 +192,7 @@ const handelProfileImage = () =>{
  const [modalOpen1, setModalOpen1]=useState(false);
 
 
-    return (
+    return !user ? <Loading></Loading> :  (
      <SafeAreaView style={styles.container}>       
          <Provider>
           <View style={styles.titleBar}>
@@ -186,10 +201,10 @@ const handelProfileImage = () =>{
             visible={modalOpen1}
             onDismiss={() => setModalOpen1(false)}
             anchor={
-              <Ionicons name="md-more" size={40} color="#52575D" marginLeft='20' onPress={()=> setModalOpen1(true)}></Ionicons>
+              <Ionicons name="md-more" size={40} color="#52575D"  style={{paddingHorizontal:20}} onPress={()=> setModalOpen1(true)}></Ionicons>
             }>      
             <Menu.Item  onPress={() => navigation.navigate('UpdateScreen')} title="Edit profile"/>
-            <Menu.Item onPress={() => navigation.navigate('LandingScreen')} title="Log out"/>
+            <Menu.Item onPress={async() => { await AsyncStorage.clear(); navigation.navigate('LandingScreen')}} title="Log out"/>
           </Menu>
           </TouchableOpacity>
       </View>
@@ -197,7 +212,7 @@ const handelProfileImage = () =>{
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
-             <Image source={{uri:imageCam.uri}}  style={styles.image}  resizeMode="center"></Image>
+             <Image source={{uri:user.profileImage}}  style={styles.image}  resizeMode="center"></Image>
            </View>
            <View style={styles.dm}>
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -229,8 +244,8 @@ const handelProfileImage = () =>{
            </View>
          </View>
          <View style={styles.infoContainer}>
-           <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>User Name</Text>
-           <Text style={[styles.text, {color: "#AEB5BC", fontSize: 14}]}>description</Text>
+          <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>{user.userName}</Text>
+           <Text style={[styles.text, {color: "#AEB5BC", fontSize: 14}]}>{user.description}</Text>
          </View>
 
          <View style={styles.statsContainer}>

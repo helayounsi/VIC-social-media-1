@@ -1,30 +1,5 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useCallback } from "react";
 import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
-// import { SafeAreaView } from 'react-native-safe-area-context';
-
-import * as Animatable from 'react-native-animatable';
-import {LinearGradient} from 'expo-linear-gradient';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
-import { useTheme } from 'react-native-paper';
-import {View, Text, StyleSheet, SafeAreaView, ScrollView, Share, Image, KeyboardAvoidingView, TextInput, Modal, Alert} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import * as DocumentPicker from 'expo-document-picker';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Video } from 'expo-av';
-import axios from 'axios';
-// import {AsyncStorage} from '@react-native-async-storage/async-storage';
-import { AsyncStorage } from 'react-native';
-
-
-
-import * as Animatable from "react-native-animatable";
-import { LinearGradient } from "expo-linear-gradient";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Feather from "react-native-vector-icons/Feather";
-import { useTheme } from "react-native-paper";
 import {
   View,
   Text,
@@ -38,13 +13,11 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
-import * as DocumentPicker from "expo-document-picker";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { Video } from "expo-av";
-import axios from "axios";
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import * as DocumentPicker from 'expo-document-picker';
+import { Video } from 'expo-av';
+import { AsyncStorage ,RefreshControl} from 'react-native';
 import Loading from "./Loading";
 import tracker from "../api/tracker";
 
@@ -63,10 +36,26 @@ const PostComponent = ({ navigation }) => {
   ];
 
 
+  const [refreshing, setRefreshing] = useState(false);
+  
+ 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    tracker
+    .get("/post")
+    .then((res) => {
+      console.log(res.data);
+      setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
+      setRefreshing(false)
+    })
+    .catch((err) => { 
+      //console.log(123);
+      // console.log(err);
+    });
+ 
+  }, []);
 
-
-const PostComponent = ({navigation}) =>{
-  let media= ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"]
+  // let media= ["https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320", "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922","https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg", "https://photolemur.com/img/home/top-slider/after-1440.jpg","https://photolemur.com/uploads/blog/unnamed.jpg","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4","http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4", "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"]
 
   // useEffect (() => {
   //   axios.get('http://localhost:3000/User')
@@ -88,14 +77,17 @@ const PostComponent = ({navigation}) =>{
   //catch the current user id
   useEffect(() => {
   AsyncStorage.getItem('UserId', (err, data)=>{
-    
     setUserid(data);
-    console.log(userid)
+    // console.log(userid)
 })
 })
 
 
-  const LeftContent = () => (
+  const LeftContent = (img) => (
+    img? <Avatar.Image
+    size={45}
+    source={{uri:img}}
+  />:
     <Avatar.Image
       size={45}
       source={require("../../assets/profile-photo/me.png")}
@@ -128,11 +120,11 @@ const PostComponent = ({navigation}) =>{
       .get("/post")
       .then((res) => {
         console.log(res.data);
-        setPosts(res.data);
+        setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
       })
-      .catch((err) => {
-        console.log(123);
-        console.log(err);
+      .catch((err) => { 
+        //console.log(123);
+        // console.log(err);
       });
   };
 
@@ -204,38 +196,32 @@ const PostComponent = ({navigation}) =>{
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen1, setModalOpen1] = useState(false);
   const [value, onChangeText] = React.useState("");
- 
+  // const [text, onChangeText] = React.useState("");
 
-
-
-//  const handelPost = () =>{
-//    axios({
-//      method: "POST",
-//      url: 'http://localhost:3000/upload',
-//      data: {
-//       urlMedia:''|| data.result.uri
-//      }
-//    });
-//    console.log(data.result.uri);
-//  }
- 
-
-
-  //   axios({
-  //     method: 'post',
-  //     url: 'http://localhost:3000/uploadImage',
-  //     data: {
-  //         media: ''|| imageCam
-  //     }
-  // });
-  //  console.log(imageCam.uri);
-
+  //onchange comment
+  const onChangeComment = (text) => {
+     console.log(text);
+      const data ={
+        comment: text,
+      }
+      tracker.post("/comment/addComment", body, config)
+      .then ((res)=>{
+        console.log(res.data);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+      
+  }
 
   const handelPost = () => {
-    let cloudres='';
+    if(imageCam){
+
+   
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-    // console.log('base64Img '+base64Img);
-    // console.log('imageCam: '+imageCam);
     const data = {
       file: base64Img,
       upload_preset: "postInMainPage",
@@ -250,7 +236,7 @@ const PostComponent = ({navigation}) =>{
        //console.log('res '+r.secure_url);
         setModalOpen(false);
 
-        // podt new post
+        // add new post
 
         const config = {
           headers: {
@@ -258,18 +244,18 @@ const PostComponent = ({navigation}) =>{
           },
         };
         const body = JSON.stringify({
-          content: "",
-          userId: null,
+          content: value,
+          userId:userid,
           //this is the url from cloudinary that we have to send to the server then to the DB
-          
            fileUrl: r.secure_url,
          
         });
-       console.log('fileUrl:' +r.secure_url)
-       cloudres=r.secure_url
+      //  console.log('fileUrl:' +r.secure_url)
+       //cloudres=r.secure_url
+       //send a opost request to clever cloud DB
        tracker.post("/post/addPost", body, config)
        .then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
             getPosts()
           })
           .catch((err) => {
@@ -278,8 +264,7 @@ const PostComponent = ({navigation}) =>{
           
       })
       .catch((err) => console.log(err));
-      
-        // console.log(resp)
+     }
   };
 
    
@@ -346,11 +331,11 @@ const PostComponent = ({navigation}) =>{
         <Button icon="pencil" onPress={() => setModalOpen(true)}>
           Add a post
         </Button>
-        <ScrollView>
+        <ScrollView fadingEdgeLength={100}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
           <View style={{ justifyContent: "center" }}>
-            {posts.reverse().map((item, index) => {
+            {posts.filter(post => post.fileUrl).map((item, index) => {
               // console.log(item);
-              if (
+              if ( 
                 item.fileUrl.includes(".jpg") ||
                 item.fileUrl.includes(".jpeg") ||
                 item.fileUrl.includes(".png") ||
@@ -359,15 +344,23 @@ const PostComponent = ({navigation}) =>{
                 return (
                   <Card key={index}>
                     <Card.Title
-                      title="Card Title"
-                      subtitle="Card Subtitle"
-                      left={LeftContent}
+                      title={item.User.userName}
+                      subtitle={item.content}
+                      left={()=>LeftContent(item.User.profileImage)}
                     />
 
                     <Card.Cover key={index} source={{ uri: item.fileUrl }} />
-
-
+                    <Card.Content>
+                      <View style={styles.feed}>
+                        <Button
+                          style={styles.feed}
+                          icon={require("../../assets/profile-photo/like.png")}
+                          color={"#189ad3"}
+                        >
+                          Like
                         </Button>
+
+                        {/* </Button> */}
                         <Modal
                           visible={modalOpen1}
                           animationType="slide"
@@ -424,10 +417,10 @@ const PostComponent = ({navigation}) =>{
               } else if (item.fileUrl.includes(".mp4")) {
                 return (
                   <Card key={index}>
-                    <Card.Title
-                      title="Card Title"
-                      subtitle="Card Subtitle"
-                      left={LeftContent}
+                      <Card.Title
+                      title={item.User.userName}
+                      subtitle={item.content}
+                      left={()=>LeftContent(item.User.profileImage)}
                     />
                     <Video
                       key={index}
@@ -564,5 +557,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 8,
   },
-});
+})
 
