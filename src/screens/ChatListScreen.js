@@ -29,7 +29,8 @@ class ChatListScreen extends React.Component {
       //  senderName: props.data.senderName,
       // senderPhoto: props.data.senderPhoto,
       chats: [],
-      currentuserid: null
+      currentuserid: null,
+      currentusername: null ,
       
     };
   }
@@ -41,8 +42,11 @@ class ChatListScreen extends React.Component {
         console.log(data)
         tracker.get(`/user/${data}`)
         .then((res) => {
-          console.log(res)
+          console.log(res.data)
+          console.log(res.data.userName)
+          this.setState({currentusername : res.data.userName})
         })
+        
         .catch((err) => {
           console.log(err)
         })
@@ -118,6 +122,7 @@ class ChatListScreen extends React.Component {
 
   render() {
     console.log(this.state.currentuserid)
+    console.log(this.currentusername)
     // console.log(UserDATA)
     // console.log(UserDATA[0].message)
     return (
