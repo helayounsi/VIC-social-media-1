@@ -20,28 +20,18 @@ import axios from 'axios';
 const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
-  const [user, setUser]=useState({
-      userName: "",
-      profileImage: "",
-  });
+  const [user, setUser]=useState(null);
   
   
 //catch the current user id
   useEffect(() => {
   AsyncStorage.getItem('UserId', (err, data)=>{
+    console.log(data)
     tracker
-    .get(`/user`, {
-      params:{
-        id: data
-      }
-    })
+    .get(`/user/${data}`)
     .then((res) => {
-      // console.log(res.data);
-      setUser({
-        ...user,
-        userName:res.data.userName,
-        profileImage:res.data.profileImage,
-      });
+      console.log(res.data);
+      setUser(res.data);
     })
     .catch((err) => {
       
@@ -152,7 +142,7 @@ const handelProfileImage = () =>{
         };
         const body = JSON.stringify({
           //content: "message",
-          userId: 1,
+          userId: user.id,
           fileUrl: r.secure_url,
          
         });

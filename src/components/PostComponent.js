@@ -63,7 +63,11 @@ const PostComponent = ({ navigation }) => {
 })
 
 
-  const LeftContent = () => (
+  const LeftContent = (img) => (
+    img? <Avatar.Image
+    size={45}
+    source={{uri:img}}
+  />:
     <Avatar.Image
       size={45}
       source={require("../../assets/profile-photo/me.png")}
@@ -96,9 +100,9 @@ const PostComponent = ({ navigation }) => {
       .get("/post")
       .then((res) => {
         console.log(res.data);
-        setPosts(res.data);
+        setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
       })
-      .catch((err) => {
+      .catch((err) => { 
         //console.log(123);
         // console.log(err);
       });
@@ -181,7 +185,15 @@ const PostComponent = ({ navigation }) => {
         comment: text,
       }
       tracker.post("/comment/addComment", body, config)
-      .then ((res))
+      .then ((res)=>{
+        console.log(res.data);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
       
   }
 
@@ -209,8 +221,8 @@ const PostComponent = ({ navigation }) => {
           },
         };
         const body = JSON.stringify({
-          content: "",
-          userId: null,
+          content: value,
+          userId:userid,
           //this is the url from cloudinary that we have to send to the server then to the DB
            fileUrl: r.secure_url,
          
@@ -297,9 +309,9 @@ const PostComponent = ({ navigation }) => {
         </Button>
         <ScrollView>
           <View style={{ justifyContent: "center" }}>
-            {posts.reverse().map((item, index) => {
+            {posts.map((item, index) => {
               // console.log(item);
-              if (
+              if ( 
                 item.fileUrl.includes(".jpg") ||
                 item.fileUrl.includes(".jpeg") ||
                 item.fileUrl.includes(".png") ||
@@ -308,9 +320,9 @@ const PostComponent = ({ navigation }) => {
                 return (
                   <Card key={index}>
                     <Card.Title
-                      title={item.userId}
+                      title={item.User.userName}
                       subtitle={item.content}
-                      left={LeftContent}
+                      left={LeftContent(item.User.profileImage)}
                     />
 
                     <Card.Cover key={index} source={{ uri: item.fileUrl }} />
