@@ -1,13 +1,3 @@
-// import React from 'react'
-// import { View, Text } from 'react-native'
-
-// export default function Loading() {
-//     return (
-//         <View>
-//             <Text>loading</Text>
-//         </View>
-//     )
-// }
 import React,{ useState, useEffect } from 'react';
 import { 
     View, 
@@ -18,11 +8,10 @@ import {
     StatusBar,
     Image
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import {LinearGradient} from 'expo-linear-gradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 import { Video } from 'expo-av';
+
+
 
 export default function Loading() {
     const { colors } = useTheme();
@@ -33,7 +22,7 @@ export default function Loading() {
           <StatusBar  barStyle="light-content"/>
         <View style={styles.header}>
         <Video
-      source={require('../../assets/LogoAnimated/Untitled-3.mp4')}
+      source={require('../../assets/LogoAnimated/Untitled-4.mp4')}
       style={styles.backgroundVideo}
       rate={1}
       shouldPlay={true}
