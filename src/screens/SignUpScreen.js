@@ -19,7 +19,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import tracker from '../api/tracker';
 
-// import { AuthContext } from '../components/context';
+import { AuthContext } from '../components/context';
 
 // import Users from '../model/users';
 
@@ -38,6 +38,18 @@ const SignUpScreen = ({navigation}) => {
         isValidPassword: true,
     });
 
+    // useEffect(()=>{
+    //     try {
+    //         const value = await AsyncStorage.getItem("idUser");
+    //         if (value !== null) {
+    //           // We have data!!
+    //           console.log(value);
+    //         }
+    //       } catch (error) {
+    //         // Error retrieving data
+    //         console.log(error);
+    //       }
+    // })
 
     const { colors } = useTheme();
 
@@ -75,18 +87,13 @@ const SignUpScreen = ({navigation}) => {
     const handlePasswordChange = (val) => {
         console.log(val)
         if( val.length >= 8 ) {
-            setData({
+            setData({                
                 ...data,
                 password: val,
                 isValidPassword: true
             });
-        } else {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: false
-            });
-        }
+        } 
+        console.log(val)
     }
 
     const handleConfirmPasswordChange = (val) => {
@@ -94,17 +101,11 @@ const SignUpScreen = ({navigation}) => {
       if( val.length >= 8 ) {
 
           setData({
-              ...data,
+            ...data,
               confirm_password: val,
               isValidPassword: true
           });
-      } else {
-          setData({
-              ...data,
-              password: val,
-              isValidPassword: false
-          });
-      }
+      } 
   }
     const updateSecureTextEntry = () => {
         setData({
@@ -230,8 +231,10 @@ const SignUpScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
+
                     onChangeText={(val) => handlePasswordChange(val)}
                     required={true}/>
+
                 <TouchableOpacity
                     onPress={ updateSecureTextEntry}
                 >
