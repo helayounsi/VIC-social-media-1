@@ -8,6 +8,7 @@ import { AsyncStorage } from 'react-native';
 // import Navigator from '../../navigation/Navigator'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import tracker from '../api/tracker.js';
 
 
 
@@ -17,11 +18,11 @@ class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
    
-
-    this.state = {
-       setdata
       
-      ,
+    this.state = {
+      
+      UserDATA,
+      
       // userName: props.data.userName,
       //  userPhoto: props.data.userPhoto,
       // senderId: props.data.senderId,
@@ -37,6 +38,14 @@ class ChatListScreen extends React.Component {
     AsyncStorage.getItem('UserId') 
       .then((data)=>{        
         this.setState({currentuserid: data});
+        console.log(data)
+        tracker.get(`/user/${data}`)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       })
       .catch((err)=>{
         console.log(err);

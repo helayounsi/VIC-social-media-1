@@ -142,8 +142,8 @@ const PostComponent = ({ navigation }) => {
       }
     })();
 
-  //   getPosts();
-  // }, []);
+     getPosts();
+   }, []);
 
   // Pick image from gallery
   const pickImage = async () => {
