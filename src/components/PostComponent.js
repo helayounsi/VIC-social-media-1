@@ -78,7 +78,7 @@ const PostComponent = ({ navigation }) => {
         setPosts(res.data);
       })
       .catch((err) => {
-        console.log(123);
+        //console.log(123);
         console.log(err);
       });
   };
@@ -155,7 +155,7 @@ const PostComponent = ({ navigation }) => {
   
 
   const handelPost = () => {
-    let cloudres='';
+    //let cloudres='';
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
     // console.log('base64Img '+base64Img);
     // console.log('imageCam: '+imageCam);
@@ -281,8 +281,8 @@ const PostComponent = ({ navigation }) => {
                 return (
                   <Card key={index}>
                     <Card.Title
-                      title="Card Title"
-                      subtitle="Card Subtitle"
+                      title={item.userId}
+                      subtitle={item.content}
                       left={LeftContent}
                     />
 
@@ -354,8 +354,8 @@ const PostComponent = ({ navigation }) => {
                 return (
                   <Card key={index}>
                     <Card.Title
-                      title="Card Title"
-                      subtitle="Card Subtitle"
+                       title={item.userId}
+                       subtitle={item.content}
                       left={LeftContent}
                     />
                     <Video

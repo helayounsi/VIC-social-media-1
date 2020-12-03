@@ -33,7 +33,7 @@ export default function Loading() {
           <StatusBar  barStyle="light-content"/>
         <View style={styles.header}>
         <Video
-      source={require('../../assets/LogoAnimated/Untitled-3.mp4')}
+      source={require('../../assets/LogoAnimated/Untitled-4.mp4')}
       style={styles.backgroundVideo}
       rate={1}
       shouldPlay={true}
