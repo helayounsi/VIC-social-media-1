@@ -142,8 +142,8 @@ const PostComponent = ({ navigation }) => {
       }
     })();
 
-    getPosts();
-  }, []);
+     getPosts();
+   }, []);
 
   // Pick image from gallery
   const pickImage = async () => {
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    marginTop: Platform.OS === "ios" ? 0 : -12,
+    // marginTop: Platform.OS === "ios" ? 0 : -12,
     paddingLeft: 10,
     color: "#05375a",
   },
