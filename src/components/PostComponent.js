@@ -126,6 +126,7 @@ const PostComponent = ({ navigation }) => {
     })();
 
     getPosts();
+    getComments();
   }, []);
 
   // Pick image from gallery
@@ -176,7 +177,7 @@ const PostComponent = ({ navigation }) => {
   const [modalOpen1, setModalOpen1] = useState(false);
 
   //setting input
-  const [comment, setComment] = useState("");
+  const [commen, setComment] = useState("");
   const [value, setText] = useState("");
 
 
@@ -196,14 +197,14 @@ const PostComponent = ({ navigation }) => {
 
   //handeling the changes added in the commentInput
   const handelCommentChange = (val) => {
-    // console.log(val);
+    //console.log(val);
     setComment(val);
 
   };
 
   //onchange comment
   const handelComment = comment => {
-    // console.log(comment);
+    //  console.log(comment);
     setModalOpen1(false);
     const config = {
       headers: {
@@ -211,14 +212,16 @@ const PostComponent = ({ navigation }) => {
       },
     };
     const body = JSON.stringify({
-      content: comment,
+     
+      content: commen,
       userId: userid,
       PostId: Postid,
     });
+    console.log(commen)
     tracker
       .post("/comment/addComment", body, config)
       .then((res) => {
-        // console.log(res.data);
+       // console.log(res.data);
         getComments();
       })
       .catch((err) => {
@@ -393,15 +396,15 @@ const PostComponent = ({ navigation }) => {
                                     <View>
                                      
                                       {comments.map((comment, index) => {
-                                        <View
-                                          username={comment.User.userName}
-                                          comment={comment.content}
-                                          left={() =>
+                                        <View>
+                                         <Text>{comment.User.userName}}</Text> 
+                                         <Text>{comment.content}</Text>
+                                         <Text   left={() =>
                                             LeftContent(
                                               comment.User.profileImage
                                             )
-                                          }
-                                        ></View>;
+                                          }></Text>
+                                        </View>;
                                       })}
                                     </View>
                                   )}
