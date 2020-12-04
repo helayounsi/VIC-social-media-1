@@ -21,7 +21,7 @@ const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
   const [user, setUser]=useState(null);
-  const [userPosts, setUserposts]=useState(null);
+  const [Posts, setPosts]=useState(null);
   
   
 //catch the current user id
@@ -48,7 +48,7 @@ const getProfile = () =>{
     .get(`/myPost/${Data}`)
     .then((res) => {
       console.log(res.data);
-      setUserposts(res.data);
+      setPosts(res.data);
     })
     .catch((err) => {
       
@@ -60,9 +60,9 @@ const getProfile = () =>{
 
 // const getUserposts = () => {
 //   AsyncStorage.getItem('UserId', (err, data)=>{
-//     console.log(data)
+//     // console.log(data)
 //     tracker
-//     .get(`/myPost/${data}`)
+//     .get(`Post/userPost/${data}`)
 //     .then((res) => {
 //       console.log(res.data);
 //       setUserposts(res.data);
@@ -293,17 +293,15 @@ const handelProfileImage = () =>{
              <Text style={[styles.text, styles.subText]}>Likes</Text>
            </View>
          </View>
-         {userPosts.map((post, index) =>
-         <View style={{marginTop: 32}}>
-         
+         {Posts.map((post, index) =>
+         <View style={{marginTop: 32}}>         
            <ScrollView >             
            <View key={index} style={styles.med} >
              <View style={styles.mediaImagecontainer}>
                <Image source={{uri:post.fileUrl}} style={styles.image} resizeMode= "cover"></Image>
              </View>             
             </View>           
-           </ScrollView>
-            
+           </ScrollView>            
          </View>
           )} 
        </ScrollView>
