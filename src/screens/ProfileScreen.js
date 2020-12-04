@@ -5,16 +5,75 @@ import {StyleSheet, View, Text, SafeAreaView, Image,
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-
+import { AsyncStorage } from 'react-native';
+import tracker from "../api/tracker";
+import Loading from "../components/Loading";
 //import Modal from 'react-native-modal';
 //import ImagePicker from '../components/ImagePicker'
 //import ImagePicker from 'react-native-image-picker';
+import UpdateScreen from '../screens/UpdateScreen.js';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import axios from 'axios';
 
-const ProfileScreen = () => {
 
+const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
+  const [user, setUser]=useState(null);
+  const [userPosts, setUserposts]=useState(null);
   
+  
+//catch the current user id
+  useEffect(() => {
+    getProfile()
+    // getUserposts()
+},[])
+
+const getProfile = () =>{
+  AsyncStorage.getItem('UserId', (err, Data)=>{
+    console.log(Data)
+    tracker
+    .get(`/user/${Data}`)
+    .then((res) => {
+      // console.log(res.data);
+      setUser(res.data);
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+
+    tracker
+    .get(`/myPost/${Data}`)
+    .then((res) => {
+      console.log(res.data);
+      setUserposts(res.data);
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+    
+})
+}
+
+// const getUserposts = () => {
+//   AsyncStorage.getItem('UserId', (err, data)=>{
+//     console.log(data)
+//     tracker
+//     .get(`/myPost/${data}`)
+//     .then((res) => {
+//       console.log(res.data);
+//       setUserposts(res.data);
+//     })
+//     .catch((err) => {
+      
+//       console.log(err);
+//     });
+    
+// })
+// }
 
   // let [Icon, setIcon] = useState(null);
 
@@ -49,20 +108,24 @@ useEffect (() => {
       }
     }
   })();
+ // getProfileImag();
 }, []);
 
 
 const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
+  let data = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
     aspect: [1, 1],
     quality: 1,
+    base64: true,
   });
 
+  setImageCam(data);
+  //console.log(data);
 
-  if (!result.cancelled) {
-    setImageCam(result.uri);
+  if (!data.cancelled) {
+   // handelProfileImage();
   }
 };
 
@@ -74,65 +137,113 @@ const pickFromCamera = async ()=>{
             mediaTypes:ImagePicker.MediaTypeOptions.Images,
             allowsEditing:true,
             aspect:[1,1],
-            quality:0.5
+            quality:0.5,
+            base64: true,
         })
-        setImageCam(data.uri);
-        
+        await setImageCam(data);
+        if (!data.cancelled) {
+         // handelProfileImage ();
+        }
   }else{
      Alert.alert("you need to give up permission to work")
   }
 }
+
+const handelProfileImage = () =>{
+  //console.log('img:'+ imageCam.uri);
+
+  let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
+ // console.log('img'+base64Img);
+    const data = {
+      file: base64Img,
+      upload_preset: "postInMainPage",
+    };
+    fetch("https://api.cloudinary.com/v1_1/vic2021/image/upload", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "content-type": "application/json" },
+    })
+      .then(async (res) => {
+        let r = await res.json();
+        console.log(r);
+        setModalOpen(false);
+
+        const config = {
+          headers: {
+            "Content-Type": "Application/json",
+          },
+        };
+        const body = JSON.stringify({
+          
+
+          profileImage: r.secure_url,
+         
+        });
+ 
+        tracker
+          .put(`/user/${user.id}`,body,config)
+          .then((res) => {
+            console.log(res.data);
+            //getProfileImag()
+    getProfile()
+
+          })
+          .catch((err) => {
+           
+            console.log(err);
+          });
+      })
+      .catch((err) => console.log(err));
+  };
+  
+  // const getProfileImag = () => {
+  //   tracker
+  //     .get("/:id")
+  //     .then((res) => {
+  //       console.log(res.data);
+  //       setPosts(res.data);
+  //     })
+  //     .catch((err) => {
+        
+  //       console.log(err);
+  //     });
+  // };
+
+//   console.log(imageCam)
+//   const fd = new FormData()
+//   fd.append('photo',imageCam)
+// return  axios.put(`http://localhost:3000/uploadImage`,fd,{
+//   headers: {
+//     'Content-Type': 'multipart/form-data'
+//   }}); 
+
 
  //toggel a model 
  const [modalOpen, setModalOpen]=useState(false);
  const [modalOpen1, setModalOpen1]=useState(false);
 
 
-    return (
+    return !user ? <Loading></Loading> :  (
      <SafeAreaView style={styles.container}>       
          <Provider>
-          {/* <Ionicons name="ios-arrow-back" size={24} color="#52575D" ></Ionicons> */}
-         
-            {/* add a modal for the three dots with three buttons one for log out and one for edit pro*/ }
-            {/* <Modal visible={modalOpen1} animationType ='slide'  transparent={true}  swipeDirection="down">
-             <View style={{height: '20%', marginTop: '22', backgroundColor:'white'}}> 
-               <Button >Edit profile</Button>
-               <Button>Log out</Button>
-               <Button onPress={()=> setModalOpen1(false)}>cancel</Button>
-                </View>
-          </Modal> */}
           <View style={styles.titleBar}>
-          
-            
-        {/* <View
-          // style={{
-          //   paddingTop: 20,
-          //   flexDirection: 'row',
-          //   justifyContent: 'center'
-          // }}> */}
           <TouchableOpacity>
                     <Menu
             visible={modalOpen1}
             onDismiss={() => setModalOpen1(false)}
             anchor={
-              // <Button name="md-more" size={24} color="#52575D" onPress={()=>setModalOpen1(true)}></Button>
-               
-              <Ionicons name="md-more" size={40} color="#52575D" marginLeft='20' onPress={()=> setModalOpen1(true)}></Ionicons>
-            }
-          >
-                 
-            <Menu.Item  title="Edit profile"/>
-            <Menu.Item title="Log out"/>
+              <Ionicons name="md-more" size={40} color="#52575D"  style={{paddingHorizontal:20}} onPress={()=> setModalOpen1(true)}></Ionicons>
+            }>      
+            <Menu.Item  onPress={() => navigation.navigate('UpdateScreen')} title="Edit profile"/>
+            <Menu.Item onPress={async() => { await AsyncStorage.clear(); navigation.navigate('LandingScreen')}} title="Log out"/>
           </Menu>
           </TouchableOpacity>
       </View>
-          
         
-         {/* </View> */}
          <ScrollView showVerticalScrollIndicator={false}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
-             <Image source={{uri:imageCam}}  style={styles.image}  resizeMode="center"></Image>
+             <Image source={{uri:user.profileImage}}  style={styles.image}  resizeMode="center"></Image>
            </View>
            <View style={styles.dm}>
              <MaterialIcons name="chat" size={18} color="#DFD8C8"></MaterialIcons>
@@ -140,7 +251,7 @@ const pickFromCamera = async ()=>{
            <View style={styles.active}></View>
            
            <Modal visible={modalOpen} animationType ='slide'  transparent={true} >
-               <View style={{height: '20%', marginTop: 'auto', backgroundColor:'white'}}>
+               <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
              
                <View style={styles.modalButtonView}>
                         <Button icon="camera" onPress={pickFromCamera}>
@@ -153,6 +264,9 @@ const pickFromCamera = async ()=>{
                 <Button onPress={()=> setModalOpen(false)}>
                         cancel
                 </Button>
+                <Button  onPress={()=> handelProfileImage()} >
+                        Add profile Image
+                </Button>
                </View>
            </Modal>
            
@@ -161,8 +275,8 @@ const pickFromCamera = async ()=>{
            </View>
          </View>
          <View style={styles.infoContainer}>
-           <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>User Name</Text>
-           <Text style={[styles.text, {color: "#AEB5BC", fontSize: 14}]}>description</Text>
+          <Text style={[styles.text, {fontWeight: "200", fontSize: 36}]}>{user.userName}</Text>
+           <Text style={[styles.text, {color: "#AEB5BC", fontSize: 14}]}>{user.description}</Text>
          </View>
 
          <View style={styles.statsContainer}>
@@ -179,48 +293,19 @@ const pickFromCamera = async ()=>{
              <Text style={[styles.text, styles.subText]}>Likes</Text>
            </View>
          </View>
+         {userPosts.map((post, index) =>
          <View style={{marginTop: 32}}>
-           <ScrollView >
-           <View style={styles.med}>
+         
+           <ScrollView >             
+           <View key={index} style={styles.med} >
              <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/7.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/8.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/9.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-
+               <Image source={{uri:post.fileUrl}} style={styles.image} resizeMode= "cover"></Image>
+             </View>             
+            </View>           
            </ScrollView>
+            
          </View>
+          )} 
        </ScrollView>
        </Provider>
      </SafeAreaView>
@@ -333,3 +418,39 @@ const styles = StyleSheet.create({
   }
 
 })
+
+
+
+
+{/* <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/7.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/8.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/9.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View> */}

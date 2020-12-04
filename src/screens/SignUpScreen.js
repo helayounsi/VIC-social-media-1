@@ -7,23 +7,25 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ScrollView
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import axios from 'axios';
+// import axios from 'axios';
 
 import { useTheme } from 'react-native-paper';
+import tracker from '../api/tracker';
 
 // import { AuthContext } from '../components/context';
 
 // import Users from '../model/users';
 
-const LoginScreen = ({navigation}) => {
+const SignUpScreen = ({navigation}) => {
   
-    const [data, setData] = React.useState({
+    const [data, setData] = useState({
         username: '',
         email : '',
         password: '',
@@ -31,11 +33,23 @@ const LoginScreen = ({navigation}) => {
         confirm_password: '',
         check_textInputChange: false,
         secureTextEntry: true,
-        confirm_secureTextEntry: true,
+        confirmsecureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
     });
 
+    // useEffect(()=>{
+    //     try {
+    //         const value = await AsyncStorage.getItem("idUser");
+    //         if (value !== null) {
+    //           // We have data!!
+    //           console.log(value);
+    //         }
+    //       } catch (error) {
+    //         // Error retrieving data
+    //         console.log(error);
+    //       }
+    // })
 
     const { colors } = useTheme();
 
@@ -56,43 +70,42 @@ const LoginScreen = ({navigation}) => {
                 ...data,
                 email: val,
                 check_textInputChange: true,
-                isValidUser: true
+                
             });        
+        }else if(typeof(val) === Number){
+            setData({
+                ...data,
+                phoneNumber: val,
+                check_textInputChange: true,
+                
+            });     
         } 
 
     }
 
     // oncahnge for password
     const handlePasswordChange = (val) => {
-        if( val.trim().length >= 8 ) {
-            setData({
+        console.log(val)
+        if( val.length >= 8 ) {
+            setData({                
                 ...data,
                 password: val,
                 isValidPassword: true
             });
-        } else {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: false
-            });
-        }
+        } 
+        console.log(val)
     }
 
     const handleConfirmPasswordChange = (val) => {
-      // if( val.trim().length >= 8 ) {
+
+      if( val.length >= 8 ) {
+
           setData({
-              ...data,
+            ...data,
               confirm_password: val,
               isValidPassword: true
           });
-      // } else {
-      //     setData({
-      //         ...data,
-      //         password: val,
-      //         isValidPassword: false
-      //     });
-      // }
+      } 
   }
     const updateSecureTextEntry = () => {
         setData({
@@ -104,7 +117,7 @@ const LoginScreen = ({navigation}) => {
     const updateConfirmSecureTextEntry = () => {
       setData({
           ...data,
-          confirm_secureTextEntry: !data.confirm_secureTextEntry
+          confirmsecureTextEntry: !data.confirmsecureTextEntry
       });
   }
 
@@ -123,25 +136,39 @@ const LoginScreen = ({navigation}) => {
     // }
 
     const loginHandle = () => {
-        axios({
-            method: 'post',
-            url: 'http://localhost:3000/User/SignUp',
-            data: {
-                phoneNumber:"" || data.phonenumber, 
-                email:"" || data.email,
-              userName: ""||data.username,
-              password: data.password 
-            }
+
+        console.log(data.password)
+        const config = {
+            headers: {
+                "Content-Type": "Application/json",
+            },
+        };
+        const body = JSON.stringify({
+        phoneNumber:data.phonenumber, 
+        email:data.email,
+          userName:data.username,
+          password: data.password 
+
         });
-        console.log(data)
+        console.log(body);
+        console.log(data);
+        tracker.post("/user/signup", body, config)
+       .then((res) => {
+            console.log(res.data)
+        }).catch((err) => {
+            
+            console.log(err)
+        })
     }
 
     return (
       <View style={styles.container}>
+          <ScrollView>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
         <View style={styles.header}>
             <Text style={styles.text_header}>Register Now!</Text>
         </View>
+        
         <Animatable.View 
             animation="fadeInUpBig"
             style={[styles.footer, {
@@ -150,7 +177,7 @@ const LoginScreen = ({navigation}) => {
         >
             <Text style={[styles.text_footer, {
                 color: colors.text
-            }]}>Username/e-mail/phone number</Text>
+            }]}>Username</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -166,7 +193,7 @@ const LoginScreen = ({navigation}) => {
                     autoCapitalize="none"
                     onChangeText={(val) => textInputChange(val)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                />
+                required={true}/>
                 {data.check_textInputChange ? 
                 <Animatable.View
                     animation="bounceIn"
@@ -181,7 +208,7 @@ const LoginScreen = ({navigation}) => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
+            <Text style={styles.errorMsg}>Input must be 4 characters long.</Text>
             </Animatable.View>
             }
             
@@ -204,10 +231,12 @@ const LoginScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
+
                     onChangeText={(val) => handlePasswordChange(val)}
-                />
+                    required={true}/>
+
                 <TouchableOpacity
-                    onPress={updateSecureTextEntry}
+                    onPress={ updateSecureTextEntry}
                 >
                     {data.secureTextEntry ? 
                     <Feather 
@@ -242,17 +271,17 @@ const LoginScreen = ({navigation}) => {
                 <TextInput 
                     placeholder="Confirm Your Password"
                     placeholderTextColor="#666666"
-                    confirm_secureTextEntry={data.confirm_secureTextEntry ? true : false}
+                    secureTextEntry={data.confirmsecureTextEntry ? true : false}
                     style={[styles.textInput, {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
                     onChangeText={(val) => handleConfirmPasswordChange(val)}
-                />
+                    required={true} />
                 <TouchableOpacity
                     onPress={updateConfirmSecureTextEntry}
                 >
-                    {data.confirm_secureTextEntry ? 
+                    {data.confirmsecureTextEntry ? 
                     <Feather 
                         name="eye-off"
                         color="grey"
@@ -297,13 +326,14 @@ const LoginScreen = ({navigation}) => {
                     }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
-           
+            
         </Animatable.View>
+        </ScrollView>
       </View>
     );
 };
 
-export default LoginScreen;
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -322,7 +352,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30
+        paddingVertical: 90
     },
     text_header: {
         color: '#fff',

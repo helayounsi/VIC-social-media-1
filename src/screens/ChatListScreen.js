@@ -1,30 +1,101 @@
-import React from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React from "react";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 // import axios from 'axios';
-import io from 'socket.io-client';
-import UserDATA from './DummyUsers.js';
-import Navigator from '../../navigation/Navigator'
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import io from "socket.io-client";
+
+import { AsyncStorage } from "react-native";
+// import Navigator from '../../navigation/Navigator'
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import Loading from "../components/Loading";
+import tracker from "../api/tracker";
+import { Avatar } from "react-native-paper";
+
 class ChatListScreen extends React.Component {
   constructor(props) {
     super(props);
-   
 
     this.state = {
-       UserDATA,
-      
-      // userId: props.data.userId ,
-      // userName: props.data.userName,
-      // userPhoto: props.data.userPhoto,
-      // senderId: props.data.senderId,
-      // senderName: props.data.senderName,
-      // senderPhoto: props.data.senderPhoto,
+      UserDATA: null,
+      ConvDATA: null,
       chats: [],
-      
+      UserId: null,
     };
+
+    this.getUsers = this.getUsers.bind(this);
+    this.getConversation = this.getConversation.bind(this);
+    this.handleUserConv = this.handleUserConv.bind(this)
+    this.handleConv = this.handleConv.bind(this)
   }
+
+  getConversation = () => {
+    tracker
+      .get(`/Conversation/myConversation/${this.state.UserId}`)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ ConvDATA: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  getUsers = () => {
+    tracker
+      .get(`/user`)
+      .then((res) => {
+        //console.log(res.data);
+        this.setState({
+          UserDATA: res.data.filter((u) => u.id !== this.state.UserId),
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  //catch the current user id
+  componentDidMount() {
+    AsyncStorage.getItem("UserId")
+      .then((UserId) => {
+        this.setState({ UserId: UserId });
+        this.getUsers();
+        this.getConversation();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+
+
+  handleUserConv(idUser){
+    //console.log(idUser)
+    const config = {
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    };
+    const body=JSON.stringify({
+      targetId:idUser,
+      userId:this.state.UserId
+    })
+    tracker
+    .post(`/conversation/addconversation`,body,config)
+    .then((res) => {
+      console.log(res.data);
+      this.handleConv(res.data)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  }
+
+  handleConv(idConv){
+    this.props.navigation.navigate("chatUser",{idConv})
+  }
+
 
   // componentDidMount() {
   //   //get previous messages
@@ -91,111 +162,111 @@ class ChatListScreen extends React.Component {
   // };
 
   render() {
-    console.log(UserDATA)
-    console.log(UserDATA[0].message)
-    return (
-      <View>
+    return !this.state.UserDATA || !this.state.ConvDATA ? (
+      <Loading></Loading>
+    ) : (
+      <View style={{ flex: 1 }}>
         <Text
           style={{
-            color: '#189AD3',
+            color: "#189AD3",
             fontSize: 36,
-            padding: '5%',
-            paddingLeft: '7%',
-           
-          }}>
+            padding: "5%",
+            paddingLeft: "7%",
+          }}
+        >
           Conversations
         </Text>
-        <View>
+
+        <View
+          style={{
+           
+            flex: 0.6,
+            borderRadius: 10,
+          }}
+        >
+          <ScrollView horizontal={true}>
+            
+            {
+              this.state.UserDATA.map(user=>(
+                <TouchableOpacity
+                style={{
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  alignItems: "center",
+                  paddingHorizontal:15
+                }}  
+                onPress={()=>this.handleUserConv(user.id)}
+              >
+                <Avatar.Image
+                
+                  source={{
+                    uri: user.profileImage,
+                  }}
+                />
+                <Text style = {{fontSize:11, marginTop:5}}>{user.userName}</Text>
+              </TouchableOpacity>
+              ))
+            }
+
+         
+
+          
+
+          </ScrollView>
+        </View>
+        <View style={{ flex: 3, backgroundColor: "blue" }}>
           <ScrollView
             style={{
-              paddingHorizontal: '7%',
-              marginBottom: '18%',
-              paddingBottom: '1.5%',
-            }}>
-            <TouchableOpacity>
-              <View
-                style={{
-                  flex: 2,
-                  flexDirection: 'row',
-                  marginVertical: '2%',
-                  paddingVertical: '4%',
-                  borderRadius: 10,
-                }}>
-                <Image
-                  source={{
-                    uri: 'https://i.imgur.com/4vzW11a.png',
-                  }}
-                  style={{width: 60, height: 60, borderRadius: 70}}
-                />
-                <View
-                  style={{
-                    flex: 2,
-                    flexDirection: 'column',
-                    marginHorizontal: '5%',
-                    marginTop: '1%',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      
-                      color: '#7a7a7a',
-                    }}>
-                    Broadcast
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      
-                      color: 'lightgrey',
-                    }}>
-                    Chat with the global community
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            {this.state.UserDATA.map(i => (
+              paddingHorizontal: "7%",
+              marginBottom: "18%",
+              paddingBottom: "1.5%",
+            }}
+          >
+            {this.state.ConvDATA.map((conv, index) => (
               <TouchableOpacity
-              onPress={()=>this.props.navigation.navigate('chatUser')}>
+                onPress={() => this.handleConv(conv.id)}
+              >
                 <View
+                  key={{ index }}
                   style={{
                     flex: 2,
-                    flexDirection: 'row',
-                    marginVertical: '2%',
-                    paddingVertical: '4%',
+                    flexDirection: "row",
+                    marginVertical: "2%",
+                    paddingVertical: "4%",
                     borderRadius: 10,
-                  }}>
+                  }}
+                >
                   <Image
                     source={{
-                      uri: 'https://www.kernmedical.com/wp-content/uploads/male-profile-blank-e1539295013580.png',
-                      
+                      uri: conv.profileImage,
                     }}
-                    style={{width: 60, height: 60, borderRadius: 70}}
-                   
+                    style={{ width: 60, height: 60, borderRadius: 70 }}
                   />
                   <View
                     style={{
                       flex: 2,
-                      flexDirection: 'column',
-                      marginHorizontal: '5%',
-                      marginTop: '1%',
-                    }}>
+                      flexDirection: "column",
+                      marginHorizontal: "5%",
+                      marginTop: "1%",
+                    }}
+                  >
                     <Text
                       style={{
                         fontSize: 18,
-                        
-                        color: '#7a7a7a',
-                      }}>
-                      {UserDATA[0].userName}
-                      {UserDATA[1].userName}
+
+                        color: "#7a7a7a",
+                      }}
+                    >
+                      {conv.userName}
                     </Text>
                     <Text
                       style={{
                         fontSize: 14,
-                        
-                        color: 'black',
-                      }}>
-                      {UserDATA[0].message}
-                      {UserDATA[1].message}
+
+                        color: "black",
+                      }}
+                    >
+                      {conv.messageId}
                     </Text>
                   </View>
                 </View>
