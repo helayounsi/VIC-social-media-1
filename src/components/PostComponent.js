@@ -44,13 +44,13 @@ const PostComponent = ({ navigation }) => {
     tracker
     .get("/post")
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
       setRefreshing(false)
     })
     .catch((err) => { 
       //console.log(123);
-      // console.log(err);
+      console.log(err);
     });
  
   }, []);
@@ -413,9 +413,9 @@ const PostComponent = ({ navigation }) => {
               } else if (item.fileUrl.includes(".mp4")) {
                 return (
                   <Card key={index}>
-                    <Card.Title
-                       title={item.userId}
-                       subtitle={item.content} 
+                      <Card.Title
+                      title={item.User.userName}
+                      subtitle={item.content}
                       left={()=>LeftContent(item.User.profileImage)}
                     />
                     <Video
