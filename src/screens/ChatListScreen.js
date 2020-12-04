@@ -33,8 +33,10 @@ class ChatListScreen extends React.Component {
     tracker
       .get(`/Conversation/myConversation/${this.state.UserId}`)
       .then((res) => {
-        console.log(res.data);
-        this.setState({ ConvDATA: res.data });
+        console.log(123);
+        //console.log(res.data);
+        const v = res.data.filter(c=>c.id != this.state.UserId)
+        this.setState({ ConvDATA:  v });
       })
       .catch((err) => {
         console.log(err);
@@ -47,7 +49,7 @@ class ChatListScreen extends React.Component {
       .then((res) => {
         //console.log(res.data);
         this.setState({
-          UserDATA: res.data.filter((u) => u.id !== this.state.UserId),
+          UserDATA: res.data.filter((u) => u.id != this.state.UserId),
         });
       })
       .catch((err) => {
@@ -187,8 +189,9 @@ class ChatListScreen extends React.Component {
           <ScrollView horizontal={true}>
             
             {
-              this.state.UserDATA.map(user=>(
+              this.state.UserDATA.map((user, index)=>(
                 <TouchableOpacity
+                key={index}
                 style={{
                   justifyContent: "center",
                   alignSelf: "center",
@@ -214,7 +217,7 @@ class ChatListScreen extends React.Component {
 
           </ScrollView>
         </View>
-        <View style={{ flex: 3, backgroundColor: "blue" }}>
+        <View style={{ flex: 3}}>
           <ScrollView
             style={{
               paddingHorizontal: "7%",
@@ -224,7 +227,7 @@ class ChatListScreen extends React.Component {
           >
             {this.state.ConvDATA.map((conv, index) => (
               <TouchableOpacity
-                onPress={() => this.handleConv(conv.id)}
+                onPress={() => this.handleConv(conv.Conversations[0].id)}
               >
                 <View
                   key={{ index }}

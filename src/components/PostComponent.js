@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Modal,
-  Alert,
+  Alert  
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
