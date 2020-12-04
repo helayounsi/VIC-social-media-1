@@ -21,20 +21,34 @@ const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
   const [user, setUser]=useState(null);
+  const [userPosts, setUserposts]=useState(null);
   
   
 //catch the current user id
   useEffect(() => {
     getProfile()
+    // getUserposts()
 },[])
+
 const getProfile = () =>{
-  AsyncStorage.getItem('UserId', (err, data)=>{
-    console.log(data)
+  AsyncStorage.getItem('UserId', (err, Data)=>{
+    console.log(Data)
     tracker
-    .get(`/user/${data}`)
+    .get(`/user/${Data}`)
+    .then((res) => {
+      // console.log(res.data);
+      setUser(res.data);
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+
+    tracker
+    .get(`/myPost/${Data}`)
     .then((res) => {
       console.log(res.data);
-      setUser(res.data);
+      setUserposts(res.data);
     })
     .catch((err) => {
       
@@ -43,6 +57,23 @@ const getProfile = () =>{
     
 })
 }
+
+// const getUserposts = () => {
+//   AsyncStorage.getItem('UserId', (err, data)=>{
+//     console.log(data)
+//     tracker
+//     .get(`/myPost/${data}`)
+//     .then((res) => {
+//       console.log(res.data);
+//       setUserposts(res.data);
+//     })
+//     .catch((err) => {
+      
+//       console.log(err);
+//     });
+    
+// })
+// }
 
   // let [Icon, setIcon] = useState(null);
 
@@ -262,48 +293,19 @@ const handelProfileImage = () =>{
              <Text style={[styles.text, styles.subText]}>Likes</Text>
            </View>
          </View>
+         {userPosts.map((post, index) =>
          <View style={{marginTop: 32}}>
-           <ScrollView >
-           <View style={styles.med}>
+         
+           <ScrollView >             
+           <View key={index} style={styles.med} >
              <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/1.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/7.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/8.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-             <View style={styles.med}>
-             <View style={styles.mediaImagecontainer}>
-               <Image source={require("../../assets/profile-photo/9.jpg")} style={styles.image} resizeMode= "cover"></Image>
-             </View>
-             </View>
-
+               <Image source={{uri:post.fileUrl}} style={styles.image} resizeMode= "cover"></Image>
+             </View>             
+            </View>           
            </ScrollView>
+            
          </View>
+          )} 
        </ScrollView>
        </Provider>
      </SafeAreaView>
@@ -416,3 +418,39 @@ const styles = StyleSheet.create({
   }
 
 })
+
+
+
+
+{/* <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/2.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/3.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/4.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/5.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/6.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/7.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/8.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View>
+             </View>
+             <View style={styles.med}>
+             <View style={styles.mediaImagecontainer}>
+               <Image source={require("../../assets/profile-photo/9.jpg")} style={styles.image} resizeMode= "cover"></Image>
+             </View> */}
