@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableHighlight,
+  AsyncStorage,
 } from "react-native";
 import React, { Component } from "react";
 import io from "socket.io-client";
@@ -20,11 +21,12 @@ import {
   Send,
   Composer,
 } from "react-native-gifted-chat";
-import Navigator from "../../navigation/Navigator";
+// import Navigator from "../../navigation/Navigator";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import tracker from "../api/tracker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loading from "../components/Loading";
+
 export default class ChatScreen extends Component {
   constructor(props) {
     super(props);
@@ -35,78 +37,83 @@ export default class ChatScreen extends Component {
       chatMessages: [],
       chatAlert: false,
     };
-    // this.submitChatMessage = this.submitChatMessage.bind(this);
+    //this.submitChatMessage = this.submitChatMessage.bind(this);
     this.transformMsg = this.transformMsg.bind(this);
   }
 
   transformMsg(msgs) {
-    return msgs.map((m) => ({
+    const mm = msgs.map((m, index) => ({
       _id: m.id,
       text: m.content,
       createdAt: m.createdAt,
-      user: { _id: m.User.id, avatar: m.User.profileImage },
+      user: {
+        _id: m.userId,
+        name: m.User.userName,
+        avatar: m.User.profileImage,
+      },
     }));
+    return mm;
   }
 
   componentDidMount() {
     AsyncStorage.getItem("UserId").then((data) => {
       this.setState({ convId: this.props.route.params.idConv, userId: data });
-
+      console.log(this.state.userId);
       tracker
         .get(`/message/mymessage/${this.state.convId}`)
         .then((res) => {
-          console.log(this.transformMsg(res.data));
-          this.setState({ chatMessages: this.transformMsg(res.data) });
+          //console.log(res.data);
+          const msg = this.transformMsg(res.data);
+          // console.log(msg);
+          this.setState({ chatMessages: msg });
         })
         .catch((err) => {
           console.log(err);
         });
     });
 
-    /*
-  this.socket = io("http://192.168.1.7:3000");
-   this.socket.on("chat message", msg => {
-         this.setState({ chatMessages: [...this.state.chatMessages, msg] 
-            
+    this.socket = io("wss://vic-corporation.herokuapp.com/");
+
+    this.socket.on("chat message", (msg) => {
+     
+      this.setState((previousState) => ({
+        chatMessages: GiftedChat.append(previousState.chatMessages, msg),
+      }));
     });
-    // console.log(msg)
- });*/
   }
-  submitChatMessage() {
+  submitChatMessage(message) {
+    console.log(message);
+    this.setState((previousState) => ({
+      chatMessages: GiftedChat.append(previousState.chatMessages, message),
+    }));
+    //console.log(this.state.convId);
     const config = {
       headers: {
         "Content-Type": "Application/json",
       },
     };
     const body = JSON.stringify({
-      content: this.state.chatMessage,
+      content: message.text,
       conversationId: this.state.convId,
       userId: this.state.userId,
     });
     tracker
-      .post(`/conversation/addconversation`, body, config)
+      .post(`/message/addmessage`, body, config)
       .then((res) => {
         console.log(res.data);
-        this.handleConv(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
 
-    /*
-    this.socket.emit("chat message", this.state.chatMessage);
-    this.setState({ chatMessage: "" }, this.setState({ chatAlert: true }));
-    console.log(this.state.chatAlert);
-    if ((this.state.chatAlert = true)) {
-      alert("you have a message");
-    }*/
+    this.socket.emit("chat message", message);
   }
 
   //styling chat bubbles
   renderBubble = (props) => {
     return (
       <Bubble
-        {...chatMessages}
+        {...this.state.chatMessages}
         textStyle={{
           right: {
             color: "#fff",
@@ -198,7 +205,9 @@ export default class ChatScreen extends Component {
         {chatMessage}
       </Text>
     ));*/
-    return (
+    return !this.state.userId ? (
+      <Loading></Loading>
+    ) : (
       <>
         <StatusBar backgroundColor="#189ad3" barStyle="light-content" />
 
@@ -249,14 +258,15 @@ export default class ChatScreen extends Component {
                 backgroundColor: "#F2F2F2",
               },
             }}
+            user={{ _id: +this.state.userId }}
             alwaysShowSend={true}
             messages={this.state.chatMessages}
-            renderBubble={this.renderBubble}
             renderInputToolbar={this.renderInputToolbar}
-            renderSend={this.renderSend}
+            renderUsernameOnMessage={true}
             value={this.state.chatMessage}
-            onSubmitEditing={() => this.submitChatMessage()}
-            onChangeText={(chatMessage) => {
+            onSend={(message) => this.submitChatMessage(message)}
+            onInputTextChanged={(chatMessage) => {
+              
               this.setState({ chatMessage });
             }}
           />
