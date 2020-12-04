@@ -57,6 +57,7 @@ const PostComponent = ({ navigation }) => {
 
  
   const [userid, setUserid]=useState(null);
+  const [Postid, setPostid]=useState(null);
   //catch the current user id
   useEffect(() => {
   AsyncStorage.getItem('UserId', (err, data)=>{
@@ -178,30 +179,42 @@ const PostComponent = ({ navigation }) => {
   //toggel a model
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen1, setModalOpen1] = useState(false);
- // const [text, onChangeComment] = useState("");
-  const [value, onChangeText] = useState("");
+  const [comment, setComment] = useState("");
+  const [value, setText] = useState("");
+ 
 
+
+  const handelCommentChange = (val) =>{
+    // console.log(val);
+    setComment(val);
+  } 
   //onchange comment
-  const onChangeComment = (text) => {
-     console.log(text);
-      const data ={
-        comment: text,
-      }
+  const handelComment = () => {
+    //  console.log(comment);
+     
+     setModalOpen1(false)
+      const config = {
+        headers: {
+          "Content-Type": "Application/json",
+        },
+      };
+      const body = JSON.stringify({
+        content:comment,
+        userId:userid,
+        PostId:Postid,
+      });
       tracker.post("/comment/addComment", body, config)
       .then ((res)=>{
         console.log(res.data);
       })
- 
       .catch((err)=>{
         console.log(err);
-      })
-      
+      })  
   }
+
 
   const handelPost = () => {
     if(imageCam){
-
-   
     let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
     const data = {
       file: base64Img,
@@ -216,9 +229,7 @@ const PostComponent = ({ navigation }) => {
         let r = await res.json();
        //console.log('res '+r.secure_url);
         setModalOpen(false);
-
         // add new post
-
         const config = {
           headers: {
             "Content-Type": "Application/json",
@@ -229,7 +240,6 @@ const PostComponent = ({ navigation }) => {
           userId:userid,
           //this is the url from cloudinary that we have to send to the server then to the DB
            fileUrl: r.secure_url,
-         
         });
      
        //send a post request to clever cloud DB
@@ -241,7 +251,7 @@ const PostComponent = ({ navigation }) => {
           .catch((err) => {
            console.log('err:' +err);
           });
-          
+          7 
       })
       .catch((err) => console.log(err));
      }
@@ -290,7 +300,7 @@ const PostComponent = ({ navigation }) => {
               style={styles.input}
               multiline={true}
               numberOfLines={6}
-              onChangeText={(text) => onChangeText(text)}
+              onChangeText={(text) => setText(text)}
               value={value}
               placeholder="Add description"
             />
@@ -369,9 +379,9 @@ const PostComponent = ({ navigation }) => {
                             <TextInput
                              placeholder="Comment"
                               style={styles.inputComment}                              
-                              onChangeComment={(text) => onChangeComment(text)}
+                              onChangeText={(val) => handelCommentChange(val)}
                             />
-                            <Button onPress={() => setModalOpen1(false)}>
+                            <Button onPress={() => handelComment()} >
                               Add My Comment
                             </Button>
                             <Button onPress={() => setModalOpen1(false)}>
@@ -385,7 +395,7 @@ const PostComponent = ({ navigation }) => {
                           style={styles.feed}
                           icon={require("../../assets/profile-photo/Comment.png")}
                           color={"#189ad3"}
-                          onPress={() => setModalOpen1(true)}
+                          onPress={() => {setPostid(item.dismissedAction);setModalOpen1(true)}}
                         >
                           Comment
                         </Button>
@@ -457,7 +467,7 @@ const PostComponent = ({ navigation }) => {
                               onChangeComment={(text) => onChangeComment(text)}
                               value={value}
                             />
-                            <Button onPress={() => setModalOpen1(false)}>
+                            <Button onPress={() => handelComment()}>
                               Add my Comment
                             </Button>
                             <Button onPress={() => setModalOpen1(false)}>
