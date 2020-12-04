@@ -44,13 +44,13 @@ const PostComponent = ({ navigation }) => {
     tracker
     .get("/post")
     .then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
       setRefreshing(false)
     })
     .catch((err) => { 
       //console.log(123);
-      // console.log(err);
+      console.log(err);
     });
  
   }, []);
