@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "@react-navigation/native";
 import { Video } from "expo-av";
+import tracker from "../api/tracker";
 
 const LandingScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -23,10 +24,21 @@ const LandingScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      console.log("123");
       const userId = await AsyncStorage.getItem("UserId");
       if (userId) {
-        navigation.navigate("Root");
+        tracker
+        .get(`/user/${userId}`)
+        .then((res) => {
+          console.log(res.data);
+         
+          navigation.navigate("Root");
+        })
+        .catch(async (err) => {
+            await AsyncStorage.clear();
+            navigation.navigate("Login");
+          console.log(err);
+        });
+       
       }
     })();
   });

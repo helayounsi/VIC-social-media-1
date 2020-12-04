@@ -69,7 +69,7 @@ class ChatListScreen extends React.Component {
       .then((UserId)=>{        
         this.setState({UserId: UserId});
         this.getUsers()
-       // this.getConversation()
+       this.getConversation()
       })
       .catch((err)=>{
         console.log(err);
@@ -143,7 +143,7 @@ class ChatListScreen extends React.Component {
   render() {
     
     
-    return !this.state.UserDATA  ? <Loading></Loading> :  (
+    return !this.state.UserDATA || !this.state.ConvDATA  ? <Loading></Loading> :  (
       <View>
         <Text
           style={{
@@ -203,10 +203,12 @@ class ChatListScreen extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-            {this.state.UserDATA.map(user => (
+            {this.state.UserDATA.map((user, index) => (
               <TouchableOpacity
               onPress={()=>this.props.navigation.navigate('chatUser')}>
+                
                 <View
+                key={{index}}
                   style={{
                     flex: 2,
                     flexDirection: 'row',
@@ -243,7 +245,7 @@ class ChatListScreen extends React.Component {
                         
                         color: 'black',
                       }}>
-                      {user.message}
+                      {user.messageId}
                      
                     </Text>
                   </View>
