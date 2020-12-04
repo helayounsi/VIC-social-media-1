@@ -27,7 +27,7 @@ const ProfileScreen = ({navigation}) => {
 //catch the current user id
   useEffect(() => {
     getProfile()
-    // getUserposts()
+    getUserposts()
 },[])
 
 const getProfile = () =>{
@@ -44,8 +44,25 @@ const getProfile = () =>{
       console.log(err);
     });
 
+    // tracker
+    // .get(`/myPost/${Data}`)
+    // .then((res) => {
+    //   console.log(res.data);
+    //   setUserposts(res.data);
+    // })
+    // .catch((err) => {
+      
+    //   console.log(err);
+    // });
+    
+})
+}
+
+const getUserposts = () => {
+  AsyncStorage.getItem('UserId', (err, data)=>{
+    console.log(data)
     tracker
-    .get(`/myPost/${Data}`)
+    .get(`/myPost/${data}`)
     .then((res) => {
       console.log(res.data);
       setUserposts(res.data);
@@ -57,23 +74,6 @@ const getProfile = () =>{
     
 })
 }
-
-// const getUserposts = () => {
-//   AsyncStorage.getItem('UserId', (err, data)=>{
-//     console.log(data)
-//     tracker
-//     .get(`/myPost/${data}`)
-//     .then((res) => {
-//       console.log(res.data);
-//       setUserposts(res.data);
-//     })
-//     .catch((err) => {
-      
-//       console.log(err);
-//     });
-    
-// })
-// }
 
   // let [Icon, setIcon] = useState(null);
 
@@ -294,10 +294,10 @@ const handelProfileImage = () =>{
            </View>
          </View>
          {userPosts.map((post, index) =>
-         <View style={{marginTop: 32}}>
+         <View key={index} style={{marginTop: 32}}>
          
            <ScrollView >             
-           <View key={index} style={styles.med} >
+           <View  style={styles.med} >
              <View style={styles.mediaImagecontainer}>
                <Image source={{uri:post.fileUrl}} style={styles.image} resizeMode= "cover"></Image>
              </View>             

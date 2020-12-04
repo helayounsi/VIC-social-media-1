@@ -13,17 +13,21 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
-import * as DocumentPicker from 'expo-document-picker';
-import { Video } from 'expo-av';
-import { AsyncStorage ,RefreshControl} from 'react-native';
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
+import * as DocumentPicker from "expo-document-picker";
+import { Video } from "expo-av";
+import { AsyncStorage, RefreshControl } from "react-native";
 import Loading from "./Loading";
 import tracker from "../api/tracker";
 
 const PostComponent = ({ navigation }) => {
   const [imageCam, setImageCam] = useState(null);
   const [posts, setPosts] = useState(null);
+  const [Postid, setPostid] = useState(null);
+  const [comments, setComments] = useState(null);
+
+
   let post = [
     "https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320",
     "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922",
@@ -35,48 +39,42 @@ const PostComponent = ({ navigation }) => {
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
   ];
 
-
   const [refreshing, setRefreshing] = useState(false);
-  
- 
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     tracker
-    .get("/post")
-    .then((res) => {
-      // console.log(res.data);
-      setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
-      setRefreshing(false)
-    })
-    .catch((err) => { 
-      //console.log(123);
-      console.log(err);
-    });
- 
+      .get("/post")
+      .then((res) => {
+        // console.log(res.data);
+        setPosts(res.data.sort((a, b) => a.createdAt < b.createdAt));
+        setRefreshing(false);
+      })
+      .catch((err) => {
+        //console.log(123);
+        console.log(err);
+      });
   }, []);
 
- 
-  const [userid, setUserid]=useState(null);
-  const [Postid, setPostid]=useState(null);
+  const [userid, setUserid] = useState(null);
+
   //catch the current user id
   useEffect(() => {
-  AsyncStorage.getItem('UserId', (err, data)=>{
-    setUserid(data);
-    // console.log(userid)
-})
-})
+    AsyncStorage.getItem("UserId", (err, data) => {
+      setUserid(data);
+      // console.log(userid)
+    });
+  });
 
-
-  const LeftContent = (img) => (
-    img? <Avatar.Image
-    size={45}
-    source={{uri:img}}
-  />:
-    <Avatar.Image
-      size={45}
-      source={require("../../assets/profile-photo/me.png")}
-    />
-  );
+  const LeftContent = (img) =>
+    img ? (
+      <Avatar.Image size={45} source={{ uri: img }} />
+    ) : (
+      <Avatar.Image
+        size={45}
+        source={require("../../assets/profile-photo/me.png")}
+      />
+    );
 
   const onShare = async () => {
     try {
@@ -98,20 +96,21 @@ const PostComponent = ({ navigation }) => {
     }
   };
 
+ 
 
+  //getting all posts
   const getPosts = () => {
     tracker
       .get("/post")
       .then((res) => {
-        console.log(res.data);
-        setPosts(res.data.sort((a, b) => a.createdAt<b.createdAt));
+        // console.log(res.data);
+        setPosts(res.data.sort((a, b) => a.createdAt < b.createdAt));
       })
-      .catch((err) => { 
+      .catch((err) => {
         //console.log(123);
         // console.log(err);
       });
   };
-
 
   //sending image to cloudinary
   useEffect(() => {
@@ -145,7 +144,6 @@ const PostComponent = ({ navigation }) => {
   };
   //console.log(imageCam);
 
-
   // Pick image from camera
   const pickFromCamera = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -166,8 +164,6 @@ const PostComponent = ({ navigation }) => {
     }
   };
 
-  
-
   //pick video from gallery
   const pickDocument = async () => {
     let data = await DocumentPicker.getDocumentAsync({ type: "video/*" });
@@ -175,94 +171,111 @@ const PostComponent = ({ navigation }) => {
     setImageCam(data);
   };
 
-
   //toggel a model
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen1, setModalOpen1] = useState(false);
+
+  //setting input
   const [comment, setComment] = useState("");
   const [value, setText] = useState("");
- 
 
 
-  const handelCommentChange = (val) =>{
-    // console.log(val);
-    setComment(val);
-  } 
-  //onchange comment
-  const handelComment = () => {
-    //  console.log(comment);
-     
-     setModalOpen1(false)
-      const config = {
-        headers: {
-          "Content-Type": "Application/json",
-        },
-      };
-      const body = JSON.stringify({
-        content:comment,
-        userId:userid,
-        PostId:Postid,
+
+    //getting all comments
+  const getComments = () => {
+    tracker
+      .get(`/comment/showComments/${Postid}`)
+      .then((res) => {
+        setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      tracker.post("/comment/addComment", body, config)
-      .then ((res)=>{
-        console.log(res.data);
-      })
-      .catch((err)=>{
-        console.log(err);
-      })  
-  }
-
-
-  const handelPost = () => {
-    if(imageCam){
-    let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
-    const data = {
-      file: base64Img,
-      upload_preset: "postInMainPage",
-    };
-    fetch("https://api.cloudinary.com/v1_1/vic2021/image/upload", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "content-type": "application/json" },
-    })
-      .then(async (res) => {
-        let r = await res.json();
-       //console.log('res '+r.secure_url);
-        setModalOpen(false);
-        // add new post
-        const config = {
-          headers: {
-            "Content-Type": "Application/json",
-          },
-        };
-        const body = JSON.stringify({
-          content: value,
-          userId:userid,
-          //this is the url from cloudinary that we have to send to the server then to the DB
-           fileUrl: r.secure_url,
-        });
-     
-       //send a post request to clever cloud DB
-       tracker.post("/post/addPost", body, config)
-       .then((res) => {
-            // console.log(res.data);
-            getPosts()
-          })
-          .catch((err) => {
-           console.log('err:' +err);
-          });
-          7 
-      })
-      .catch((err) => console.log(err));
-     }
   };
 
-   
-  return ( !posts ? (
+
+  //handeling the changes added in the commentInput
+  const handelCommentChange = (val) => {
+    // console.log(val);
+    setComment(val);
+
+  };
+
+  //onchange comment
+  const handelComment = comment => {
+    // console.log(comment);
+    setModalOpen1(false);
+    const config = {
+      headers: {
+        "Content-Type": "Application/json",
+      },
+    };
+    const body = JSON.stringify({
+      content: comment,
+      userId: userid,
+      PostId: Postid,
+    });
+    tracker
+      .post("/comment/addComment", body, config)
+      .then((res) => {
+        // console.log(res.data);
+        getComments();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
+  //handel post changes
+  const handelPost = () => {
+    if (imageCam) {
+      let base64Img = `data:image/jpg;base64,${imageCam.base64}`;
+      const data = {
+        file: base64Img,
+        upload_preset: "postInMainPage",
+      };
+      fetch("https://api.cloudinary.com/v1_1/vic2021/image/upload", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "content-type": "application/json" },
+      })
+        .then(async (res) => {
+          let r = await res.json();
+          //console.log('res '+r.secure_url);
+          setModalOpen(false);
+          // add new post
+          const config = {
+            headers: {
+              "Content-Type": "Application/json",
+            },
+          };
+          const body = JSON.stringify({
+            content: value,
+            userId: userid,
+            //this is the url from cloudinary that we have to send to the server then to the DB
+            fileUrl: r.secure_url,
+          });
+
+          //send a post request to clever cloud DB
+          tracker
+            .post("/post/addPost", body, config)
+            .then((res) => {
+              // console.log(res.data);
+              getPosts();
+            })
+            .catch((err) => {
+              console.log("err:" + err);
+            });
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  return !posts ? (
     <Loading></Loading>
   ) : (
-
-   <SafeAreaView>
+    <SafeAreaView>
       {/* add a post input */}
       <View style={{ backgroundColor: "#fff" }}>
         <Text
@@ -316,192 +329,226 @@ const PostComponent = ({ navigation }) => {
               </Button>
             </View>
             <Button onPress={() => handelPost()}>Add my Post</Button>
-            <Button onPress={() =>setModalOpen(false) }>Cancel</Button>
+            <Button onPress={() => setModalOpen(false)}>Cancel</Button>
           </View>
         </Modal>
         <Button icon="pencil" onPress={() => setModalOpen(true)}>
           Add a post
         </Button>
-        <ScrollView fadingEdgeLength={100}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
+        <ScrollView
+          fadingEdgeLength={100}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <View style={{ justifyContent: "center" }}>
-            {posts.filter(post => post.fileUrl).map((item, index) => {
-             
-              if ( 
-                item.fileUrl.includes(".jpg") ||
-                item.fileUrl.includes(".jpeg") ||
-                item.fileUrl.includes(".png") ||
-                item.fileUrl.includes(".gif")
-              ) {
-                return (
-                  <Card key={index}>
-                    <Card.Title
-                      title={item.User.userName}
-                      subtitle={item.content}
-                      left={()=>LeftContent(item.User.profileImage)}
-                    />
-
-                    <Card.Cover key={index} source={{ uri: item.fileUrl }} />
-                    <Card.Content>
-                      <View style={styles.feed}>
-                        <Button
-                          style={styles.feed}
-                          icon={require("../../assets/profile-photo/like.png")}
-                          color={"#189ad3"}
-                        >
-                          Like
-                        </Button>
-
-                        {/* </Button> */}
-                        <Modal
-                          visible={modalOpen1}
-                          animationType="slide"
-                          transparent={true}
-                        >
-                          <ScrollView>
-                          <View
-                            style={{
-                              height: "100%",
-                              marginTop: "auto",
-                              backgroundColor: "white",
-                            }}
-                          >
-                            <Text
-                              style={[
-                                styles.text_footer,
-                                {
-                                  marginTop: 400,
-                                  marginLeft: 80,
-                                },
-                              ]}
-                            >
-                              Comment it here
-                            </Text>
-                            <TextInput
-                             placeholder="Comment"
-                              style={styles.inputComment}                              
-                              onChangeText={(val) => handelCommentChange(val)}
-                            />
-                            <Button onPress={() => handelComment()} >
-                              Add My Comment
-                            </Button>
-                            <Button onPress={() => setModalOpen1(false)}>
-                              Cancel
-                            </Button>
-                          </View>
-                          </ScrollView>
-                         
-                        </Modal>
-                        <Button
-                          style={styles.feed}
-                          icon={require("../../assets/profile-photo/Comment.png")}
-                          color={"#189ad3"}
-                          onPress={() => {setPostid(item.dismissedAction);setModalOpen1(true)}}
-                        >
-                          Comment
-                        </Button>
-                        <Button
-                          icon={require("../../assets/profile-photo/share.png")}
-                          onPress={onShare}
-                          color={"#189ad3"}
-                        >
-                          Share
-                        </Button>
-                      </View>
-                    </Card.Content>
-                  </Card>
-                );
-              } else if (item.fileUrl.includes(".mp4")) {
-                return (
-                  <Card key={index}>
+            {posts
+              .filter((post) => post.fileUrl)
+              .map((item, index) => {
+                if (
+                  item.fileUrl.includes(".jpg") ||
+                  item.fileUrl.includes(".jpeg") ||
+                  item.fileUrl.includes(".png") ||
+                  item.fileUrl.includes(".gif")
+                ) {
+                  return (
+                    <Card key={index}>
                       <Card.Title
-                      title={item.User.userName}
-                      subtitle={item.content}
-                      left={()=>LeftContent(item.User.profileImage)}
-                    />
-                    <Video
-                      key={index}
-                      source={{ uri: item.fileUrl }}
-                      rate={1.0}
-                      volume={1.0}
-                      isMuted={true}
-                      resizeMode="cover"
-                      autoPlay={true}
-                      shouldPlay={true}
-                      isLooping={true}
-                      style={styles.card}
-                    />
-                    <Card.Content>
-                      <View style={styles.feed}>
-                        <Button
-                          style={styles.feed}
-                          icon={require("../../assets/profile-photo/like.png")}
-                          color={"#189ad3"}
-                        >
-                          Like
-                        </Button>
-                        <Modal
-                          visible={modalOpen1}
-                          animationType="slide"
-                          transparent={true}
-                        >
-                          <View
-                             style={{
-                              height: "100%",
-                              marginTop: "auto",
-                              backgroundColor: "white",
+                        title={item.User.userName}
+                        subtitle={item.content}
+                        left={() => LeftContent(item.User.profileImage)}
+                      />
+                      
+                      <Card.Cover key={index} source={{ uri: item.fileUrl }} />
+                      <Card.Content>
+                        <View style={styles.feed}>
+                          <Button
+                            style={styles.feed}
+                            icon={require("../../assets/profile-photo/like.png")}
+                            color={"#189ad3"}
+                          >
+                            Like
+                          </Button>
+
+                          {/* </Button> */}
+                          <Modal
+                            visible={modalOpen1}
+                            animationType="slide"
+                            transparent={true}
+                          >
+                            <ScrollView>
+                              <View
+                                style={{
+                                  height: "100%",
+                                  marginTop: "auto",
+                                  backgroundColor: "white",
+                                }}
+                              >
+                                {/* add a place to post comments */}
+                                {/* {console.log(comments)} */}
+                                <View>
+                                  {!comments ? (
+                                    <Text >No comments found</Text>
+                                  ) : (
+                                    <View>
+                                     
+                                      {comments.map((comment, index) => {
+                                        <View
+                                          username={comment.User.userName}
+                                          comment={comment.content}
+                                          left={() =>
+                                            LeftContent(
+                                              comment.User.profileImage
+                                            )
+                                          }
+                                        ></View>;
+                                      })}
+                                    </View>
+                                  )}
+                                </View>
+                                <Text
+                                  style={[
+                                    styles.text_footer,
+                                    {
+                                      marginTop: 405,
+                                      marginLeft: 80,
+                                    },
+                                  ]}
+                                >
+                                  Comment it here
+                                </Text>
+                                <TextInput
+                                  placeholder="Comment"
+                                  style={styles.inputComment}
+                                  onChangeText={(val) =>
+                                    handelCommentChange(val)
+                                  }
+                                />
+                                <Button onPress={() => handelComment(comment)}>
+                                  Add My Comment
+                                </Button>
+                                <Button onPress={() => setModalOpen1(false)}>
+                                  Cancel
+                                </Button>
+                              </View>
+                            </ScrollView>
+                          </Modal>
+                          <Button
+                            style={styles.feed}
+                            icon={require("../../assets/profile-photo/Comment.png")}
+                            color={"#189ad3"}
+                            onPress={() => {
+                              setPostid(item.dismissedAction);
+                              setModalOpen1(true);
                             }}
                           >
-                            <Text
-                              style={[
-                                styles.text_footer,
-                                {
-                                  marginTop: 15,
-                                  marginLeft: 40,
-                                },
-                              ]}
+                            Comment
+                          </Button>
+                          <Button
+                            icon={require("../../assets/profile-photo/share.png")}
+                            onPress={onShare}
+                            color={"#189ad3"}
+                          >
+                            Share
+                          </Button>
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  );
+                } else if (item.fileUrl.includes(".mp4")) {
+                  return (
+                    <Card key={index}>
+                      <Card.Title
+                        title={item.User.userName}
+                        subtitle={item.content}
+                        left={() => LeftContent(item.User.profileImage)}
+                      />
+                      <Video
+                        key={index}
+                        source={{ uri: item.fileUrl }}
+                        rate={1.0}
+                        volume={1.0}
+                        isMuted={true}
+                        resizeMode="cover"
+                        autoPlay={true}
+                        shouldPlay={true}
+                        isLooping={true}
+                        style={styles.card}
+                      />
+                      <Card.Content>
+                        <View style={styles.feed}>
+                          <Button
+                            style={styles.feed}
+                            icon={require("../../assets/profile-photo/like.png")}
+                            color={"#189ad3"}
+                          >
+                            Like
+                          </Button>
+                          <Modal
+                            visible={modalOpen1}
+                            animationType="slide"
+                            transparent={true}
+                          >
+                            <View
+                              style={{
+                                height: "100%",
+                                marginTop: "auto",
+                                backgroundColor: "white",
+                              }}
                             >
-                              Comment it here
-                            </Text>
-                            <TextInput
-                              style={styles.inputComment}
-                              onChangeComment={(text) => onChangeComment(text)}
-                              value={value}
-                            />
-                            <Button onPress={() => handelComment()}>
-                              Add my Comment
-                            </Button>
-                            <Button onPress={() => setModalOpen1(false)}>
-                              Cancel
-                            </Button>
-                          </View>
-                        </Modal>
-                        <Button
-                          style={styles.feed}
-                          icon={require("../../assets/profile-photo/Comment.png")}
-                          color={"#189ad3"}
-                          onPress={() => setModalOpen1(true)}
-                        >
-                          Comment
-                        </Button>
-                        <Button
-                          icon={require("../../assets/profile-photo/share.png")}
-                          onPress={onShare}
-                          color={"#189ad3"}
-                        >
-                          Share
-                        </Button>
-                      </View>
-                    </Card.Content>
-                  </Card>
-                );
-              }
-            })}
+                              <Text
+                                style={[
+                                  styles.text_footer,
+                                  {
+                                    marginTop: 15,
+                                    marginLeft: 40,
+                                  },
+                                ]}
+                              >
+                                Comment it here
+                              </Text>
+                              <TextInput
+                                style={styles.inputComment}
+                                onChangeComment={(text) =>
+                                  onChangeComment(text)
+                                }
+                                
+                                value={value}
+                              />
+                              <Button onPress={() => handelComment()}>
+                                Add my Comment
+                              </Button>
+                              <Button onPress={() => setModalOpen1(false)}>
+                                Cancel
+                              </Button>
+                            </View>
+                          </Modal>
+                          <Button
+                            style={styles.feed}
+                            icon={require("../../assets/profile-photo/Comment.png")}
+                            color={"#189ad3"}
+                            onPress={() => setModalOpen1(true)}
+                          >
+                            Comment
+                          </Button>
+                          <Button
+                            icon={require("../../assets/profile-photo/share.png")}
+                            onPress={onShare}
+                            color={"#189ad3"}
+                          >
+                            Share
+                          </Button>
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  );
+                }
+              })}
           </View>
         </ScrollView>
       </View>
     </SafeAreaView>
-  )
-  )
+  );
 };
 export default PostComponent;
 
@@ -556,5 +603,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 8,
   },
-})
-
+});
