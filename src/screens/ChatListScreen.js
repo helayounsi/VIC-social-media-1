@@ -156,7 +156,7 @@ class ChatListScreen extends React.Component {
           Conversations
         </Text>
         <View>
-          <ScrollView
+          <ScrollView 
             style={{
               paddingHorizontal: '7%',
               marginBottom: '18%',
