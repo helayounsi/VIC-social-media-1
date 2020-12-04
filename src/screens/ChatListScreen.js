@@ -26,6 +26,7 @@ class ChatListScreen extends React.Component {
     this.getUsers = this.getUsers.bind(this);
     this.getConversation = this.getConversation.bind(this);
     this.handleUserConv = this.handleUserConv.bind(this)
+    this.handleConv = this.handleConv.bind(this)
   }
 
   getConversation = () => {
@@ -69,7 +70,7 @@ class ChatListScreen extends React.Component {
 
 
   handleUserConv(idUser){
-    console.log(idUser)
+    //console.log(idUser)
     const config = {
       headers: {
         "Content-Type": "Application/json",
@@ -83,12 +84,16 @@ class ChatListScreen extends React.Component {
     .post(`/conversation/addconversation`,body,config)
     .then((res) => {
       console.log(res.data);
-    
+      this.handleConv(res.data)
     })
     .catch((err) => {
       console.log(err);
     });
 
+  }
+
+  handleConv(idConv){
+    this.props.navigation.navigate("chatUser",{idConv})
   }
 
 
@@ -174,7 +179,7 @@ class ChatListScreen extends React.Component {
 
         <View
           style={{
-            backgroundColor: "red",
+           
             flex: 0.6,
             borderRadius: 10,
           }}
@@ -219,7 +224,7 @@ class ChatListScreen extends React.Component {
           >
             {this.state.ConvDATA.map((conv, index) => (
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("chatUser")}
+                onPress={() => this.handleConv(conv.id)}
               >
                 <View
                   key={{ index }}
