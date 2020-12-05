@@ -1,11 +1,11 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useCallback } from 'react';
 import {TextInput, Button, Paragraph, Menu, Divider, Provider} from 'react-native-paper';
 import {StyleSheet, View, Text, SafeAreaView, Image,
  ScrollView, TouchableOpacity, UIManager, findNodeHandle, Alert, Modal} from 'react-native';
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, RefreshControl } from 'react-native';
 import tracker from "../api/tracker";
 import Loading from "../components/Loading";
 //import Modal from 'react-native-modal';
@@ -21,7 +21,8 @@ const ProfileScreen = ({navigation}) => {
   const [Icon, setIcon, image, setImage] = useState(null);
   const [imageCam, setImageCam]= useState("");
   const [user, setUser]=useState(null);
-  const [userPosts, setUserposts]=useState(null);
+  const [Posts, setPosts]=useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   
   
 //catch the current user id
@@ -62,10 +63,10 @@ const getUserposts = () => {
   AsyncStorage.getItem('UserId', (err, data)=>{
     console.log(data)
     tracker
-    .get(`/myPost/${data}`)
+    .get(`Post/userPost/${Data}`)
     .then((res) => {
       console.log(res.data);
-      setUserposts(res.data);
+      setPosts(res.data);
     })
     .catch((err) => {
       
@@ -74,6 +75,23 @@ const getUserposts = () => {
     
 })
 }
+
+// const getUserposts = () => {
+//   AsyncStorage.getItem('UserId', (err, data)=>{
+//     // console.log(data)
+//     tracker
+//     .get(`Post/userPost/${data}`)
+//     .then((res) => {
+//       console.log(res.data);
+//       setUserposts(res.data);
+//     })
+//     .catch((err) => {
+      
+//       console.log(err);
+//     });
+    
+// })
+// }
 
   // let [Icon, setIcon] = useState(null);
 
@@ -196,26 +214,6 @@ const handelProfileImage = () =>{
       .catch((err) => console.log(err));
   };
   
-  // const getProfileImag = () => {
-  //   tracker
-  //     .get("/:id")
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setPosts(res.data);
-  //     })
-  //     .catch((err) => {
-        
-  //       console.log(err);
-  //     });
-  // };
-
-//   console.log(imageCam)
-//   const fd = new FormData()
-//   fd.append('photo',imageCam)
-// return  axios.put(`http://localhost:3000/uploadImage`,fd,{
-//   headers: {
-//     'Content-Type': 'multipart/form-data'
-//   }}); 
 
 
  //toggel a model 
@@ -223,7 +221,24 @@ const handelProfileImage = () =>{
  const [modalOpen1, setModalOpen1]=useState(false);
 
 
-    return !user ? <Loading></Loading> :  (
+ const onRefresh = useCallback(() => {
+  AsyncStorage.getItem('UserId', (err, Data)=>{
+  setRefreshing(true);
+  tracker
+  .get(`Post/userPost/${Data}`)
+  .then((res) => {
+    console.log(res.data);
+    setPosts(res.data);
+  })
+  .catch((err) => {
+    
+    console.log(err);
+  });
+})
+}, []);
+
+
+    return !user  ? <Loading></Loading> :  (
      <SafeAreaView style={styles.container}>       
          <Provider>
           <View style={styles.titleBar}>
@@ -240,7 +255,7 @@ const handelProfileImage = () =>{
           </TouchableOpacity>
       </View>
         
-         <ScrollView showVerticalScrollIndicator={false}>
+         <ScrollView   refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
          <View style={{alignSelf: 'center'}}>
            <View style={styles.profileImage}>
              <Image source={{uri:user.profileImage}}  style={styles.image}  resizeMode="center"></Image>
@@ -281,31 +296,32 @@ const handelProfileImage = () =>{
 
          <View style={styles.statsContainer}>
            <View style={styles.statsBox}>
-             <Text style={[styles.text, {fontSize: 24}]} >1500</Text>
+             <Text style={[styles.text, {fontSize: 24}]} >10</Text>
              <Text style={[styles.text, styles.subText]}>Following</Text>
            </View>
            <View style={[styles.statsBox, {borderColor: "#DFD8C8", borderLeftWidth: 1, borderRightWidth: 1}]}>
-             <Text style={[styles.text, {fontSize: 24}]} >43.200</Text>
+             <Text style={[styles.text, {fontSize: 24}]} >5</Text>
              <Text style={[styles.text, styles.subText]}>Follower</Text>
            </View>
            <View style={styles.statsBox}>
-             <Text style={[styles.text, {fontSize: 24}]} >10.000</Text>
-             <Text style={[styles.text, styles.subText]}>Likes</Text>
+             <Text style={[styles.text, {fontSize: 24}]} >{!Posts ? 0 : Posts.length}</Text>
+             <Text style={[styles.text, styles.subText]}>Posts</Text>
            </View>
-         </View>
-         {userPosts.map((post, index) =>
-         <View key={index} style={{marginTop: 32}}>
-         
-           <ScrollView >             
-           <View  style={styles.med} >
-             <View style={styles.mediaImagecontainer}>
+         </View>         
+         <View  style={{marginTop: 32}}>         
+           <ScrollView >                                  
+           <View  style={styles.med} > 
+           {!Posts ? <View>
+          <Text>waiting for your first post</Text> 
+         </View> : Posts.map((post, index) =>         
+             <View key={index} style={styles.mediaImagecontainer}>
                <Image source={{uri:post.fileUrl}} style={styles.image} resizeMode= "cover"></Image>
-             </View>             
-            </View>           
-           </ScrollView>
-            
+             </View> 
+              )}                      
+            </View>                     
+           </ScrollView>            
          </View>
-          )} 
+           
        </ScrollView>
        </Provider>
      </SafeAreaView>
