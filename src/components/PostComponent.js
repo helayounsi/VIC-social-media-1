@@ -180,6 +180,7 @@ const PostComponent = ({ navigation }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen1, setModalOpen1] = useState(false);
 
+  
   //setting input
   const [commen, setComment] = useState("");
   const [value, setText] = useState("");
@@ -207,7 +208,7 @@ const PostComponent = ({ navigation }) => {
   };
 
   //onchange comment
-  const handelComment = com => {
+  const handelComment = (com, postid) => {
     //  console.log(comment);
     setModalOpen1(false);
     const config = {
@@ -222,10 +223,11 @@ const PostComponent = ({ navigation }) => {
       PostId: Postid,
     });
     console.log(commen)
+    console.log(body)
     tracker
       .post("/comment/addComment", body, config)
       .then((res) => {
-       // console.log(res.data);
+       console.log(res.data);
         getComments();
       })
       .catch((err) => {
@@ -268,7 +270,7 @@ const PostComponent = ({ navigation }) => {
           tracker
             .post("/post/addPost", body, config)
             .then((res) => {
-              // console.log(res.data);
+             console.log(res.data);
               getPosts();
             })
             .catch((err) => {
@@ -398,7 +400,13 @@ const PostComponent = ({ navigation }) => {
                                 {/* {console.log(comments)} */}
                                 <View>
                                   {!comments ? (
-                                    <Text >No comments found</Text>
+                                    <Text style={[
+                                      styles.text_footer,
+                                      {
+                                        marginTop: 15,
+                                        marginLeft: 40,
+                                      },
+                                    ]}> We are waiting for your comment</Text>
                                   ) : (
                                     <View>
                                      
@@ -434,7 +442,7 @@ const PostComponent = ({ navigation }) => {
                                     handelCommentChange(val)
                                   }
                                 />
-                                <Button color="#189ad3" onPress={() => handelComment(com)}>
+                                <Button color="#189ad3" onPress={() => handelComment(com, Postid)}>
                                   Add My Comment
                                 </Button>
                                 <Button color="#189ad3" onPress={() => setModalOpen1(false)}>

@@ -269,17 +269,17 @@ const handelProfileImage = () =>{
                <View style={{height: '30%', marginTop: 'auto', backgroundColor:'white'}}>
              
                <View style={styles.modalButtonView}>
-                        <Button icon="camera" onPress={pickFromCamera}>
+                        <Button color="#189ad3" icon="camera" onPress={pickFromCamera}>
                                 camera
                         </Button>
-                        <Button  icon="image-area" onPress={pickImage}>
+                        <Button color="#189ad3" icon="image-area" onPress={pickImage}>
                                 gallery
                         </Button>
                   </View>
-                <Button onPress={()=> setModalOpen(false)}>
+                <Button color="#189ad3" onPress={()=> setModalOpen(false)}>
                         cancel
                 </Button>
-                <Button  onPress={()=> handelProfileImage()} >
+                <Button color="#189ad3" onPress={()=> handelProfileImage()} >
                         Add profile Image
                 </Button>
                </View>
@@ -296,11 +296,11 @@ const handelProfileImage = () =>{
 
          <View style={styles.statsContainer}>
            <View style={styles.statsBox}>
-             <Text style={[styles.text, {fontSize: 24}]} >10</Text>
+             <Text style={[styles.text, {fontSize: 24}]} >0</Text>
              <Text style={[styles.text, styles.subText]}>Following</Text>
            </View>
            <View style={[styles.statsBox, {borderColor: "#DFD8C8", borderLeftWidth: 1, borderRightWidth: 1}]}>
-             <Text style={[styles.text, {fontSize: 24}]} >5</Text>
+             <Text style={[styles.text, {fontSize: 24}]} >0</Text>
              <Text style={[styles.text, styles.subText]}>Follower</Text>
            </View>
            <View style={styles.statsBox}>
@@ -309,7 +309,9 @@ const handelProfileImage = () =>{
            </View>
          </View>         
          <View  style={{marginTop: 32}}>         
-           <ScrollView >                                  
+           <ScrollView > 
+             <View>
+               </View>                                 
            <View  style={styles.med} > 
            {!Posts ? <View>
           <Text>waiting for your first post</Text> 
