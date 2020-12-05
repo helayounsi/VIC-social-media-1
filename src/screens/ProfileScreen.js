@@ -63,7 +63,7 @@ const getUserposts = () => {
   AsyncStorage.getItem('UserId', (err, data)=>{
     console.log(data)
     tracker
-    .get(`Post/userPost/${Data}`)
+    .get(`Post/userPost/${data}`)
     .then((res) => {
       console.log(res.data);
       setPosts(res.data);

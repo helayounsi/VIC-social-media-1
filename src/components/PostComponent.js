@@ -113,6 +113,10 @@ const PostComponent = ({ navigation }) => {
       });
   };
 
+   useEffect (()=>{
+     getComments();
+   })
+
   //sending image to cloudinary
   useEffect(() => {
     (async () => {
@@ -125,9 +129,8 @@ const PostComponent = ({ navigation }) => {
         }
       }
     })();
-
     getPosts();
-    getComments();
+    // getComments();
   }, []);
 
   // Pick image from gallery
@@ -322,21 +325,24 @@ const PostComponent = ({ navigation }) => {
               placeholder="Add description"
             />
             <View style={styles.modalButtonView}>
-              <Button icon="camera" onPress={pickFromCamera}>
+              <Button color="#189ad3" icon="camera" onPress={pickFromCamera}>
                 Image from camera
               </Button>
-              <Button icon="image-area" onPress={pickImage}>
+              <Button color="#189ad3" icon="image-area" onPress={pickImage}>
                 Image from gallery
               </Button>
-              <Button icon="video" onPress={pickDocument}>
+              <Button color="#189ad3" icon="video" onPress={pickDocument}>
                 Video from gallery
               </Button>
             </View>
-            <Button onPress={() => handelPost()}>Add my Post</Button>
-            <Button onPress={() => setModalOpen(false)}>Cancel</Button>
+            <Button   title="Add my post"
+          color="#189ad3"
+          onPress={() => handelPost()}>Add my Post</Button>
+            <Button 
+          color="#189ad3" onPress={() => setModalOpen(false)}>Cancel</Button>
           </View>
         </Modal>
-        <Button icon="pencil" onPress={() => setModalOpen(true)}>
+        <Button color="#189ad3" style={styles.postInput} icon="pencil" onPress={() => setModalOpen(true)}>
           Add a post
         </Button>
         <ScrollView
@@ -428,10 +434,10 @@ const PostComponent = ({ navigation }) => {
                                     handelCommentChange(val)
                                   }
                                 />
-                                <Button onPress={() => handelComment(com)}>
+                                <Button color="#189ad3" onPress={() => handelComment(com)}>
                                   Add My Comment
                                 </Button>
-                                <Button onPress={() => setModalOpen1(false)}>
+                                <Button color="#189ad3" onPress={() => setModalOpen1(false)}>
                                   Cancel
                                 </Button>
                               </View>
@@ -607,4 +613,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 8,
   },
+  postInput:{
+    color:"#05375a",
+  }
 });
