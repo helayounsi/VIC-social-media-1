@@ -398,7 +398,7 @@ const PostComponent = ({ navigation }) => {
                                      
                                       {comments.map((comment, index) => {
                                         <View>
-                                         <Text>{comment.User.userName}}</Text> 
+                                         <Text>{comment.User.userName}</Text> 
                                          <Text>{comment.content}</Text>
                                          <Text   left={() =>
                                             LeftContent(
