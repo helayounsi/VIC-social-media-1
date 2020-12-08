@@ -25,9 +25,9 @@ const PostComponent = ({ navigation }) => {
   const [imageCam, setImageCam] = useState(null);
   const [posts, setPosts] = useState(null);
   const [Postid, setPostid] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [com, setCom] = useState(null);
-
+  const [comment, setComment] = useState(null);
+   const [comments, setComments] = useState(null);
+   
 
   // let post = [
   //   "https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320",
@@ -53,7 +53,7 @@ const PostComponent = ({ navigation }) => {
       })
       .catch((err) => {
         //console.log(123);
-        console.log(err);
+        // console.log(err);
       });
   }, []);
 
@@ -104,18 +104,19 @@ const PostComponent = ({ navigation }) => {
     tracker
       .get("/post")
       .then((res) => {
-        // console.log(res.data);
+        //objects
+      //  console.log('data' + res.data);
         setPosts(res.data.sort((a, b) => a.createdAt < b.createdAt));
       })
       .catch((err) => {
         //console.log(123);
-        // console.log(err);
+        console.log(err);
       });
   };
 
-   useEffect (()=>{
-     getComments();
-   })
+  //  useEffect (()=>{
+    
+  //  })
 
   //sending image to cloudinary
   useEffect(() => {
@@ -130,7 +131,7 @@ const PostComponent = ({ navigation }) => {
       }
     })();
     getPosts();
-    // getComments();
+     getComments();
   }, []);
 
   // Pick image from gallery
@@ -182,34 +183,35 @@ const PostComponent = ({ navigation }) => {
 
   
   //setting input
-  const [commen, setComment] = useState("");
+  // const [commen, setComment] = useState("");
   const [value, setText] = useState("");
 
 
 
-    //getting all comments
+    //getting all comments by post
   const getComments = () => {
     tracker
-      .get(`/comment/showComments/${Postid}`)
+      .get(`/comment/${PostId}`)
       .then((res) => {
+        console.log(res.data);
         setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 
 
   //handeling the changes added in the commentInput
   const handelCommentChange = (val) => {
-    //console.log(val);
+     console.log('val:' +val);
     setComment(val);
 
   };
 
   //onchange comment
-  const handelComment = (com, postid) => {
-    //  console.log(comment);
+  const handelComment = () => {
+      // console.log('comment:' +comment);
     setModalOpen1(false);
     const config = {
       headers: {
@@ -217,21 +219,20 @@ const PostComponent = ({ navigation }) => {
       },
     };
     const body = JSON.stringify({
-     
-      content: commen,
+      content:comment,
       userId: userid,
       PostId: Postid,
     });
-    console.log(commen)
-    console.log(body)
+    // console.log(commen)
+    // console.log(body)
     tracker
-      .post("/comment/addComment", body, config)
+      .post("comment/addComment", body, config)
       .then((res) => {
-       console.log(res.data);
-        getComments();
+       console.log( 'postres:' + JSON.stringify(res.data));
+       getComments();
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -270,14 +271,16 @@ const PostComponent = ({ navigation }) => {
           tracker
             .post("/post/addPost", body, config)
             .then((res) => {
-             console.log(res.data);
+            //  console.log('postadd:' +res.data);
               getPosts();
             })
             .catch((err) => {
-              console.log("err:" + err);
+              // console.log("err:" + err);
             });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          // console.log(err)
+        }) ;
     }
   };
 
@@ -287,7 +290,7 @@ const PostComponent = ({ navigation }) => {
     <SafeAreaView>
       {/* add a post input */}
       <View style={{ backgroundColor: "#fff" }}>
-        <Text
+        {/* <Text
           style={[
             styles.text_footer,
             {
@@ -297,7 +300,7 @@ const PostComponent = ({ navigation }) => {
           ]}
         >
           Share what is in your mind?
-        </Text>
+        </Text> */}
 
         <Modal visible={modalOpen} animationType="slide" transparent={true}>
           <View
@@ -344,9 +347,9 @@ const PostComponent = ({ navigation }) => {
           color="#189ad3" onPress={() => setModalOpen(false)}>Cancel</Button>
           </View>
         </Modal>
-        <Button color="#189ad3" style={styles.postInput} icon="pencil" onPress={() => setModalOpen(true)}>
+        {/* <Button color="#189ad3" style={styles.postInput} icon="pencil" onPress={() => setModalOpen(true)}>
           Add a post
-        </Button>
+        </Button> */}
         <ScrollView
           fadingEdgeLength={100}
           refreshControl={
@@ -399,19 +402,12 @@ const PostComponent = ({ navigation }) => {
                                 {/* add a place to post comments */}
                                 {/* {console.log(comments)} */}
                                 <View>
-                                  {!comments ? (
-                                    <Text style={[
-                                      styles.text_footer,
-                                      {
-                                        marginTop: 15,
-                                        marginLeft: 40,
-                                      },
-                                    ]}> We are waiting for your comment</Text>
-                                  ) : (
-                                    <View>
-                                     
-                                      {comments.map((comment, index) => {
-                                        <View>
+                                  {!comments ? 
+                                    <Text> We are waiting for your comment</Text>
+                                  :
+                                    
+                                      comments.map((comment, index) => {
+                                        <View key={index}>
                                          <Text>{comment.User.userName}</Text> 
                                          <Text>{comment.content}</Text>
                                          <Text   left={() =>
@@ -420,9 +416,9 @@ const PostComponent = ({ navigation }) => {
                                             )
                                           }></Text>
                                         </View>;
-                                      })}
-                                    </View>
-                                  )}
+                                      })
+                                  
+                                  }
                                 </View>
                                 <Text
                                   style={[
@@ -442,7 +438,8 @@ const PostComponent = ({ navigation }) => {
                                     handelCommentChange(val)
                                   }
                                 />
-                                <Button color="#189ad3" onPress={() => handelComment(com, Postid)}>
+                                <Button color="#189ad3" onPress={() => handelComment(comment)}>
+                                  {/* {console.log(comments)} */}
                                   Add My Comment
                                 </Button>
                                 <Button color="#189ad3" onPress={() => setModalOpen1(false)}>
@@ -456,7 +453,8 @@ const PostComponent = ({ navigation }) => {
                             icon={require("../../assets/profile-photo/Comment.png")}
                             color={"#189ad3"}
                             onPress={() => {
-                              setPostid(item.dismissedAction);
+                              setPostid(item.id);
+                              // console.log(item.id);
                               setModalOpen1(true);
                             }}
                           >
