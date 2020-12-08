@@ -113,10 +113,22 @@ const PostComponent = ({ navigation }) => {
         console.log(err);
       });
   };
-
-  //  useEffect (()=>{
-    
-  //  })
+  
+  
+    //getting all comments by post
+    const getComments = () => {
+      tracker
+        .get(`/comment/${Postid}`)
+        .then((res) => {
+          // let resp=JSON.stringify(res.data)
+          console.log('res:' + JSON.stringify(res.data));
+          setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
+          console.log('comments:' + comments);
+        })
+        .catch((error) => {
+          console.log('err' +error);
+        });
+    };
 
   //sending image to cloudinary
   useEffect(() => {
@@ -131,7 +143,22 @@ const PostComponent = ({ navigation }) => {
       }
     })();
     getPosts();
-     getComments();
+  
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const {
+          status,
+        } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    })();
+
+    getComments();
   }, []);
 
   // Pick image from gallery
@@ -188,18 +215,6 @@ const PostComponent = ({ navigation }) => {
 
 
 
-    //getting all comments by post
-  const getComments = () => {
-    tracker
-      .get(`/comment/${PostId}`)
-      .then((res) => {
-        console.log(res.data);
-        setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
-      })
-      .catch((error) => {
-        // console.log(error);
-      });
-  };
 
 
   //handeling the changes added in the commentInput
@@ -228,7 +243,7 @@ const PostComponent = ({ navigation }) => {
     tracker
       .post("comment/addComment", body, config)
       .then((res) => {
-       console.log( 'postres:' + JSON.stringify(res.data));
+      //  console.log( 'postres:' + JSON.stringify(res.data));
        getComments();
       })
       .catch((err) => {
@@ -399,23 +414,22 @@ const PostComponent = ({ navigation }) => {
                                   backgroundColor: "white",
                                 }}
                               >
-                                {/* add a place to post comments */}
-                                {/* {console.log(comments)} */}
                                 <View>
                                   {!comments ? 
                                     <Text> We are waiting for your comment</Text>
                                   :
                                     
-                                      comments.map((comment, index) => {
+                                      comments.map((element, index) => {
+                                        // {{console.log('comments:'+comments[0].User)}}
                                         <View key={index}>
-                                         <Text>{comment.User.userName}</Text> 
-                                         <Text>{comment.content}</Text>
-                                         <Text   left={() =>
-                                            LeftContent(
-                                              comment.User.profileImage
-                                            )
-                                          }></Text>
-                                        </View>;
+                                         <Card.Title title={element.User.userName}
+                                         subtitle={element.content}
+                                         left={() =>
+                                          LeftContent(
+                                            element.User.profileImage
+                                          )
+                                        }></Card.Title> 
+                                        </View>
                                       })
                                   
                                   }
@@ -439,7 +453,7 @@ const PostComponent = ({ navigation }) => {
                                   }
                                 />
                                 <Button color="#189ad3" onPress={() => handelComment(comment)}>
-                                  {/* {console.log(comments)} */}
+                                
                                   Add My Comment
                                 </Button>
                                 <Button color="#189ad3" onPress={() => setModalOpen1(false)}>
