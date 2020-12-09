@@ -4,6 +4,7 @@ import {
   View,
   Text,
   StyleSheet,
+  Animated,
   SafeAreaView,
   ScrollView,
   Share,
@@ -11,7 +12,7 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Modal,
-  Alert  
+  Alert
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
@@ -20,6 +21,8 @@ import { Video } from "expo-av";
 import { AsyncStorage, RefreshControl } from "react-native";
 import Loading from "./Loading";
 import tracker from "../api/tracker";
+//import * as Animatable from 'react-native-animatable'
+import {AntDesign}from '@expo/vector-icons'
 
 const PostComponent = ({ navigation }) => {
   const [imageCam, setImageCam] = useState(null);
@@ -27,20 +30,39 @@ const PostComponent = ({ navigation }) => {
   const [Postid, setPostid] = useState(null);
   const [comment, setComment] = useState(null);
    const [comments, setComments] = useState(null);
-   
-
-  // let post = [
-  //   "https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320",
-  //   "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922",
-  //   "https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg",
-  //   "https://photolemur.com/img/home/top-slider/after-1440.jpg",
-  //   "https://photolemur.com/uploads/blog/unnamed.jpg",
-  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-  // ];
-
+     //toggel a model
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen1, setModalOpen1] = useState(false);
+  
+  const [counter, setCounter] = useState(-2);
+  
   const [refreshing, setRefreshing] = useState(false);
+  const currentValue = new Animated.Value(1)
+  //toggel like dislike
+const [liked, setliked]=useState(false);
+const [visible, setVisible]= useState(false);
+const AnimatedIcon= Animated.createAnimatedComponent(AntDesign)
+  useEffect(() => {
+    getPosts()
+    getComments()
+},[])
+
+
+//animation heart
+useEffect(() => {
+  if(liked==true){
+    Animated.spring(currentValue, {
+      toValue:2,
+      friction:2
+    }).start(() => {
+      Animated.spring(currentValue,{
+        tovalue:1
+      }).start(()=> {
+        setVisible(false);
+      })
+    })
+  }
+},[liked])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -53,7 +75,7 @@ const PostComponent = ({ navigation }) => {
       })
       .catch((err) => {
         //console.log(123);
-        // console.log(err);
+        console.log(err);
       });
   }, []);
 
@@ -105,7 +127,7 @@ const PostComponent = ({ navigation }) => {
       .get("/post")
       .then((res) => {
         //objects
-      //  console.log('data' + res.data);
+      console.log('data' + res.data);
         setPosts(res.data.sort((a, b) => a.createdAt < b.createdAt));
       })
       .catch((err) => {
@@ -120,9 +142,10 @@ const PostComponent = ({ navigation }) => {
       tracker
         .get(`/comment/${Postid}`)
         .then((res) => {
-          // let resp=JSON.stringify(res.data)
-          console.log('res:' + JSON.stringify(res.data));
-          setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
+          let resp=JSON.stringify(res.data)
+          //  console.log(resp)
+          // console.log('res:' + JSON.stringify(res.data));
+            setComments(res.data.sort((a, b) => a.createdAt < b.createdAt));
           console.log('comments:' + comments);
         })
         .catch((error) => {
@@ -142,24 +165,11 @@ const PostComponent = ({ navigation }) => {
         }
       }
     })();
-    getPosts();
+    // getPosts();
   
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== "web") {
-        const {
-          status,
-        } = await ImagePicker.requestCameraRollPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-    })();
 
-    getComments();
-  }, []);
 
   // Pick image from gallery
   const pickImage = async () => {
@@ -204,22 +214,13 @@ const PostComponent = ({ navigation }) => {
     setImageCam(data);
   };
 
-  //toggel a model
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalOpen1, setModalOpen1] = useState(false);
-
-  
   //setting input
   // const [commen, setComment] = useState("");
   const [value, setText] = useState("");
 
-
-
-
-
   //handeling the changes added in the commentInput
   const handelCommentChange = (val) => {
-     console.log('val:' +val);
+    //  console.log('val:' +val);
     setComment(val);
 
   };
@@ -238,16 +239,15 @@ const PostComponent = ({ navigation }) => {
       userId: userid,
       PostId: Postid,
     });
-    // console.log(commen)
-    // console.log(body)
+  
     tracker
       .post("comment/addComment", body, config)
       .then((res) => {
       //  console.log( 'postres:' + JSON.stringify(res.data));
-       getComments();
+      //  getComments();
       })
       .catch((err) => {
-        // console.log(err);
+         console.log(err);
       });
   };
 
@@ -290,11 +290,11 @@ const PostComponent = ({ navigation }) => {
               getPosts();
             })
             .catch((err) => {
-              // console.log("err:" + err);
+              console.log("err:" + err);
             });
         })
         .catch((err) => {
-          // console.log(err)
+          console.log(err)
         }) ;
     }
   };
@@ -302,7 +302,9 @@ const PostComponent = ({ navigation }) => {
   return !posts ? (
     <Loading></Loading>
   ) : (
-    <SafeAreaView>
+    
+     
+    <ScrollView>
       {/* add a post input */}
       <View style={{ backgroundColor: "#fff" }}>
         {/* <Text
@@ -371,7 +373,20 @@ const PostComponent = ({ navigation }) => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <View style={{ justifyContent: "center" }}>
+           {/* <AnimatedIcon 
+                    name='heart' 
+                    size={50} 
+                    color='red'
+                    style={{position: "absolute",
+                    top:4,
+                    left:'40%',
+                    elevation:4,
+                    zIndex:3,
+                    transform:[
+                        {scale:currentValue}
+                      ]
+                    }} > */}
+                       <View style={{ justifyContent: "center" }}>
             {posts
               .filter((post) => post.fileUrl)
               .map((item, index) => {
@@ -382,31 +397,43 @@ const PostComponent = ({ navigation }) => {
                   item.fileUrl.includes(".gif")
                 ) {
                   return (
+                   
                     <Card key={index}>
                       <Card.Title
                         title={item.User.userName}
                         subtitle={item.content}
                         left={() => LeftContent(item.User.profileImage)}
                       />
-                      
                       <Card.Cover key={index} source={{ uri: item.fileUrl }} />
-                      <Card.Content>
+                      <Card.Content >
                         <View style={styles.feed}>
-                          <Button
+                          {/* <Button
                             style={styles.feed}
                             icon={require("../../assets/profile-photo/like.png")}
                             color={"#189ad3"}
                           >
                             Like
-                          </Button>
+                          </Button> */}
 
-                          {/* </Button> */}
+
+                          {/* </Button heart> */}
+                          <AntDesign 
+                          name={liked && index==counter?'heart':'hearto'} 
+                          size={15} 
+                          color="#189ad3"
+                          onPress={()=>{
+                            if(liked==false){
+                              setVisible(true)
+                            }
+                            setliked(!liked)
+                            setCounter(index)
+                          }}>  Like</AntDesign>
                           <Modal
                             visible={modalOpen1}
                             animationType="slide"
                             transparent={true}
                           >
-                            <ScrollView>
+                           
                               <View
                                 style={{
                                   height: "100%",
@@ -414,12 +441,11 @@ const PostComponent = ({ navigation }) => {
                                   backgroundColor: "white",
                                 }}
                               >
+                                 <ScrollView>
                                 <View>
-                                  {!comments ? 
-                                    <Text> We are waiting for your comment</Text>
-                                  :
-                                    
-                                      comments.map((element, index) => {
+                                  {!comments ? <View>
+                                    <Text>waiting for your comment</Text>
+                                    </View>: comments.map((element, index) => 
                                         // {{console.log('comments:'+comments[0].User)}}
                                         <View key={index}>
                                          <Card.Title title={element.User.userName}
@@ -430,10 +456,9 @@ const PostComponent = ({ navigation }) => {
                                           )
                                         }></Card.Title> 
                                         </View>
-                                      })
-                                  
-                                  }
+                                      ) }
                                 </View>
+                                </ScrollView>
                                 <Text
                                   style={[
                                     styles.text_footer,
@@ -460,7 +485,7 @@ const PostComponent = ({ navigation }) => {
                                   Cancel
                                 </Button>
                               </View>
-                            </ScrollView>
+                            
                           </Modal>
                           <Button
                             style={styles.feed}
@@ -484,6 +509,7 @@ const PostComponent = ({ navigation }) => {
                         </View>
                       </Card.Content>
                     </Card>
+                  
                   );
                 } else if (item.fileUrl.includes(".mp4")) {
                   return (
@@ -575,9 +601,14 @@ const PostComponent = ({ navigation }) => {
                 }
               })}
           </View>
+                   
+         
+            
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </ScrollView>
+  
+            
   );
 };
 export default PostComponent;
@@ -637,3 +668,16 @@ const styles = StyleSheet.create({
     color:"#05375a",
   }
 });
+
+
+
+// let post = [
+  //   "https://i2.wp.com/www.alphr.com/wp-content/uploads/2018/04/how_to_back_up_photos_on_google_photos.jpg?zoom=2&resize=738%2C320",
+  //   "https://bloximages.chicago2.vip.townnews.com/mymcr.net/content/tncms/assets/v3/editorial/a/6c/a6c39bd0-b325-11ea-9027-334715b6d420/5eee587f1da77.image.jpg?resize=1200%2C922",
+  //   "https://cdn.pizap.com/pizapfiles/images/photo_effects_filters_app05.jpg",
+  //   "https://photolemur.com/img/home/top-slider/after-1440.jpg",
+  //   "https://photolemur.com/uploads/blog/unnamed.jpg",
+  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
+  //   "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  // ];
