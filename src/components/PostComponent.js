@@ -254,12 +254,36 @@ const animatedStyles = [
       .post("comment/addComment", body, config)
       .then((res) => {
       //  console.log( 'postres:' + JSON.stringify(res.data));
-      //  getComments();
+        getComments();
       })
       .catch((err) => {
          console.log(err);
       });
   };
+
+  //handel like 
+ const handelLike=()=>{
+  const config = {
+    headers: {
+      "Content-Type": "Application/json",
+    },
+  };
+  const body = JSON.stringify({
+    PostId:Postid,
+    userId: userid,
+    like : false,
+  });
+
+  tracker
+    .post("like/addLike", body, config)
+    .then((res) => {
+      console.log(res);
+    
+    })
+    .catch((err) => {
+       console.log(err);
+    });
+ }
 
 
   //handel post changes
@@ -309,11 +333,12 @@ const animatedStyles = [
     }
   };
 
+
+
+
   return !posts ? (
     <Loading></Loading>
-  ) : (
-    
-     
+  ) : (  
     <ScrollView>
       {/* add a post input */}
       <View style={{ backgroundColor: "#fff" }}>
@@ -415,7 +440,11 @@ const animatedStyles = [
 
 
                           {/* </Button heart> */}
-                          <Animated.View>
+                          <Animated.View
+                           onPress={()=>{
+                            animate(Easing.bounce)
+                           }}
+                          >
                           <AntDesign 
                           name={liked && index==counter?'heart':'hearto'} 
                           size={15} 
@@ -423,7 +452,7 @@ const animatedStyles = [
                           onPress={()=>{
                             setliked(!liked)
                             setCounter(index)
-                            animate(Easing.bounce)
+                            handelLike()
                           }}>  Like</AntDesign>
                           </Animated.View>
                          
