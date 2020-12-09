@@ -12,7 +12,8 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Modal,
-  Alert
+  Alert,
+  Easing
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
@@ -21,7 +22,7 @@ import { Video } from "expo-av";
 import { AsyncStorage, RefreshControl } from "react-native";
 import Loading from "./Loading";
 import tracker from "../api/tracker";
-//import * as Animatable from 'react-native-animatable'
+import * as Animatable from 'react-native-animatable'
 import {AntDesign}from '@expo/vector-icons'
 
 const PostComponent = ({ navigation }) => {
@@ -37,32 +38,19 @@ const PostComponent = ({ navigation }) => {
   const [counter, setCounter] = useState(-2);
   
   const [refreshing, setRefreshing] = useState(false);
-  const currentValue = new Animated.Value(1)
+  // const currentValue = new Animated.Value(1)
+  let opacity = new Animated.Value(0);
+
   //toggel like dislike
-const [liked, setliked]=useState(false);
-const [visible, setVisible]= useState(false);
-const AnimatedIcon= Animated.createAnimatedComponent(AntDesign)
+  const [liked, setliked]=useState(false);
+
+
+
   useEffect(() => {
     getPosts()
     getComments()
 },[])
 
-
-//animation heart
-useEffect(() => {
-  if(liked==true){
-    Animated.spring(currentValue, {
-      toValue:2,
-      friction:2
-    }).start(() => {
-      Animated.spring(currentValue,{
-        tovalue:1
-      }).start(()=> {
-        setVisible(false);
-      })
-    })
-  }
-},[liked])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -119,7 +107,29 @@ useEffect(() => {
     }
   };
 
- 
+ //animating heart
+ const animate = easing => {
+  opacity.setValue(0);
+  Animated.timing(opacity, {
+    toValue: 1,
+    duration: 1200,
+    useNativeDriver: true,
+    easing
+  }).start();
+};
+const size = opacity.interpolate({
+  inputRange: [0, 1],
+  outputRange: [0, 80]
+});
+
+const animatedStyles = [
+  styles.box,
+  {
+    opacity,
+    width: size,
+    height: size
+  }
+];
 
   //getting all posts
   const getPosts = () => {
@@ -373,20 +383,8 @@ useEffect(() => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-           {/* <AnimatedIcon 
-                    name='heart' 
-                    size={50} 
-                    color='red'
-                    style={{position: "absolute",
-                    top:4,
-                    left:'40%',
-                    elevation:4,
-                    zIndex:3,
-                    transform:[
-                        {scale:currentValue}
-                      ]
-                    }} > */}
-                       <View style={{ justifyContent: "center" }}>
+         
+           <View style={{ justifyContent: "center" }}>
             {posts
               .filter((post) => post.fileUrl)
               .map((item, index) => {
@@ -417,17 +415,18 @@ useEffect(() => {
 
 
                           {/* </Button heart> */}
+                          <Animated.View>
                           <AntDesign 
                           name={liked && index==counter?'heart':'hearto'} 
                           size={15} 
                           color="#189ad3"
                           onPress={()=>{
-                            if(liked==false){
-                              setVisible(true)
-                            }
                             setliked(!liked)
                             setCounter(index)
+                            animate(Easing.bounce)
                           }}>  Like</AntDesign>
+                          </Animated.View>
+                         
                           <Modal
                             visible={modalOpen1}
                             animationType="slide"
