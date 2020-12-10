@@ -165,6 +165,43 @@ const UpdateScreen = ({navigation}) => {
             });
         }
     }
+
+    const onSubmitEditing = () =>{
+        // console.log(data.password)
+        const config = {
+            headers: {
+                "Content-Type": "Application/json",
+            },
+        };
+        const body = JSON.stringify({
+          firstName:data.firstName,
+          lastName: data.lastName,
+          userName:data.userName,
+          email: data.email,
+          password: data.password,
+          dateOfBirth: data.dateOfBirth,
+          phoneNumber: data.phoneNumber,
+          description: data.description,
+          profileImage: data.profileImage,
+          coverImage: data.coverImage,
+          isActif: data.isActif,
+          address: data.address,
+          city: data.city,
+          country: data.country,
+          zipCode: data.zipCode 
+
+        });
+        console.log(body);
+        console.log(data);
+        tracker.put(`/user/${userId}`, body, config)
+       .then((res) => {
+            console.log(res.data)
+        }).catch((err) => {
+            
+            console.log(err)
+        })
+
+    }
     
     
     return (

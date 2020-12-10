@@ -146,8 +146,8 @@ const SignUpScreen = ({navigation}) => {
         const body = JSON.stringify({
         phoneNumber:data.phonenumber, 
         email:data.email,
-          userName:data.username,
-          password: data.password 
+        userName:data.username,
+        password: data.password 
 
         });
         console.log(body);
