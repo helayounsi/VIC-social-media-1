@@ -9,6 +9,7 @@ import {
     StatusBar,
     Alert,
     ScrollView,
+    Image
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -17,8 +18,14 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
 import { AsyncStorage, RefreshControl } from "react-native";
 import tracker from "../api/tracker";
+import ProfileScreen from "../screens/ProfileScreen";
+import Loading from "../components/Loading";
 
 const UpdateScreen = ({navigation}) => {
+    const { colors } = useTheme();
+    const [user, setUser]=useState(null);
+    const [userid, setUserid] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     const [data, setData] = React.useState({
         firstName:'',
@@ -37,39 +44,40 @@ const UpdateScreen = ({navigation}) => {
         check_phonenumberChange: false,
     });
 
-    const { colors } = useTheme();
-    const [user, setUser]=useState(null);
-    const [userid, setUserid] = useState(null);
-
-    //catch the current user id
-    useEffect(() => {
-      AsyncStorage.getItem("UserId", (err, data) => {
-        setUserid(data);
-         console.log(userid)
+    
+     //catch the current user id
+     useEffect(() => {
+        AsyncStorage.getItem("UserId", (err, data) => {
+          setUserid(data);
+          //  console.log(userid)
+        });
       });
-    });
 
-    //catch the current user id
+       //catch the current user id
   useEffect(() => {
     getProfile()
 },[])
 
 const getProfile = () =>{
-  AsyncStorage.getItem('UserId', (err, Data)=>{
-    console.log(Data)
-    tracker
-    .get(`/user/${Data}`)
-    .then((res) => {
-      // console.log(res.data);
-      setUser(res.data);
-    })
-    .catch((err) => {
-      
-      console.log(err);
-    });
-})
-}
+    AsyncStorage.getItem('UserId', (err, Data)=>{
+      console.log(Data)
+      tracker
+      .get(`/user/${Data}`)
+      .then((res) => {
+        // console.log(res.data);
+        setUser(res.data);
+        console.log(user);
+      })
+      .catch((err) => {
+        
+        console.log(err);
+      });
+  })
+  }
 
+   
+
+ 
     const usernameChange = (username) => {
         // console.log(val)
         if( username.length !== 0 ) {
@@ -236,20 +244,45 @@ const getProfile = () =>{
        .then((res) => {
             console.log('res:' +JSON.stringify(res.data))
             console.log('userid' +userid)
+            getProfile()
         }).catch((err) => {
             
             console.log(err)
         })
 
     }
+
+    const onRefresh = useCallback(() => {
+        AsyncStorage.getItem('UserId', (err, Data)=>{
+        setRefreshing(true);
+        tracker
+        .get(`Post/userPost/${Data}`)
+        .then((res) => {
+          console.log(res.data);
+          setPosts(res.data);
+        })
+        .catch((err) => {
+          
+          console.log(err);
+        });
+      })
+      }, []);
     
     
-    return (
-      <View style={styles.container}>
+    return !user?  <Loading></Loading> : (
+      <View style={styles.container}  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <StatusBar backgroundColor='#189ad3' barStyle="light-content"/>
-        <View style={styles.header}>
+       
             <Text style={styles.text_header}>Edit profile !</Text>
-        </View>
+            <View style={{alignSelf: 'center'}}>
+           <View style={styles.profileImage}>
+             <Image source={{uri:user.profileImage}}  style={styles.image}  resizeMode="center"></Image>
+           </View>
+         </View>
+       
+          <Text style={[styles.text, {fontWeight: "100", fontSize: 25, alignSelf: 'center' }]}>Hello! {user.userName} </Text>
+    
+     
         <Animatable.View 
             animation="fadeInUpBig"
             style={[styles.footer, {
@@ -582,7 +615,7 @@ const styles = StyleSheet.create({
     text_header: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 30
+        fontSize: 25
     },
     text_footer: {
         color: '#05375a',
@@ -626,5 +659,17 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
-    }
+    },
+    image:{
+        flex: 1,
+        width: undefined,
+        height: undefined,
+
+      },
+      profileImage:{
+        width: 110,
+        height: 110,
+        borderRadius: 100,
+        overflow: "hidden"
+      }
   });
