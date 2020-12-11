@@ -76,45 +76,7 @@ const getUserposts = () => {
 })
 }
 
-// const getUserposts = () => {
-//   AsyncStorage.getItem('UserId', (err, data)=>{
-//     // console.log(data)
-//     tracker
-//     .get(`Post/userPost/${data}`)
-//     .then((res) => {
-//       console.log(res.data);
-//       setUserposts(res.data);
-//     })
-//     .catch((err) => {
-      
-//       console.log(err);
-//     });
-    
-// })
-// }
 
-  // let [Icon, setIcon] = useState(null);
-
-  //  onError = () => {
-  //   console.log('Popup Error')
-  // }
-
-  // onPress = () => {
-  //   if (this.state.icon) {
-  //     UIManager.showPopupMenu(
-  //       findNodeHandle(this.state.icon),
-  //       this.props.actions,
-  //       this.onError,
-  //       this.props.onPress
-  //     )
-  //   }
-  // }
-//   nRef = (icon) => {
-//     if (!{Icon}) {
-//       setIcon(icon)
-//     }
-//   }
-  
 
 // Pick image from gallery
 useEffect (() => {
@@ -203,7 +165,7 @@ const handelProfileImage = () =>{
           .then((res) => {
             console.log(res.data);
             //getProfileImag()
-    getProfile()
+           getProfile()
 
           })
           .catch((err) => {

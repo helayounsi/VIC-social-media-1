@@ -271,7 +271,7 @@ const animatedStyles = [
   const body = JSON.stringify({
     PostId:Postid,
     userId: userid,
-    like : false,
+    like : true,
   });
 
   tracker
@@ -451,7 +451,7 @@ const animatedStyles = [
                           color="#189ad3"
                           onPress={()=>{
                             setliked(!liked)
-                            setCounter(index)
+                            setCounter(Postid)
                             handelLike()
                           }}>  Like</AntDesign>
                           </Animated.View>

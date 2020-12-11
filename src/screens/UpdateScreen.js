@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import { 
     View, 
     Text, 
@@ -7,24 +7,27 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    ScrollView,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { useTheme } from 'react-native-paper';
+import { AsyncStorage, RefreshControl } from "react-native";
+import tracker from "../api/tracker";
 
 const UpdateScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
-        firstname:'',
-        lastname:'',
-        username: '',
+        firstName:'',
+        lastName:'',
+        userName: '',
         city:'',
         country:'',
+        phoneNumber:'',
         description:'',
-        phonenumber:'',
         check_usernameChange: false,
         check_firstnameChange: false,
         check_lastnameChange: false,
@@ -35,135 +38,176 @@ const UpdateScreen = ({navigation}) => {
     });
 
     const { colors } = useTheme();
+    const [user, setUser]=useState(null);
+    const [userid, setUserid] = useState(null);
 
-    const usernameChange = (val) => {
-        if( val.length !== 0 ) {
+    //catch the current user id
+    useEffect(() => {
+      AsyncStorage.getItem("UserId", (err, data) => {
+        setUserid(data);
+         console.log(userid)
+      });
+    });
+
+    //catch the current user id
+  useEffect(() => {
+    getProfile()
+},[])
+
+const getProfile = () =>{
+  AsyncStorage.getItem('UserId', (err, Data)=>{
+    console.log(Data)
+    tracker
+    .get(`/user/${Data}`)
+    .then((res) => {
+      // console.log(res.data);
+      setUser(res.data);
+    })
+    .catch((err) => {
+      
+      console.log(err);
+    });
+})
+}
+
+    const usernameChange = (username) => {
+        // console.log(val)
+        if( username.length !== 0 ) {
             setData({
                 ...data,
-                username: val,
+                userName: username,
                 check_usernameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                username: val,
+                userName: username,
                 check_usernameChange: false,
                 isValidUser: false
             });
+            
         }
+        // console.log(val)
+        // setusername(username)
     }
 
 
-    const firstnameChange = (val) => {
-        if( val.length !== 0 ) {
+    const firstnameChange = (firstname) => {
+        if( firstname.length !== 0 ) {
             setData({
                 ...data,
-                firstname: val,
+                firstName: firstname,
                 check_firstnameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                firstname: val,
+                firstName: firstname,
                 check_firstnameChange: false,
                 isValidUser: false
             });
         }
+        // setfirstname(firstname)
     }
 
 
-    const lastnameChange = (val) => {
-        if( val.length !== 0 ) {
+    const lastnameChange = (lastname) => {
+        if( lastname.length !== 0 ) {
             setData({
                 ...data,
-                lastname: val,
+                lastName: lastname,
                 check_lastnameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                lastname: val,
+                lastName: lastname,
                 check_lastnameChange: false,
                 isValidUser: false
             });
         }
+        // setlastname(lastname)
     }
 
-    const bioChange = (val) => {
-        if( val.length !== 0 ) {
+    const bioChange = (bio) => {
+        if( bio.length !== 0 ) {
             setData({
                 ...data,
-                description: val,
+                description: bio,
                 check_bioChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                description: val,
+                description: bio,
                 check_bioChange: false,
                 isValidUser: false
             });
         }
+        // setbio(bio)
     }
 
 
 
-    const citynameChange = (val) => {
-        if( val.length !== 0 ) {
+    const citynameChange = (cityname) => {
+        if( cityname.length !== 0 ) {
             setData({
                 ...data,
-                bio: val,
+                city: cityname,
                 check_citynameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                bio: val,
+                city: cityname,
                 check_citynameChange: false,
                 isValidUser: false
             });
         }
+        // setUser(val)
     }
 
-    const countrynameChange = (val) => {
-        if( val.length !== 0 ) {
+    const countrynameChange = (countryname) => {
+        if( countryname.length !== 0 ) {
             setData({
                 ...data,
-                bio: val,
+                country: countryname,
                 check_countrynameChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                bio: val,
+                country: countryname,
                 check_countrynameChange: false,
                 isValidUser: false
             });
         }
+        // setUser(val)
     }
 
-    const phonenumberChange = (val) => {
-        if( val.length !== 0 ) {
+    const phonenumberChange = (phonenumber) => {
+        if( phonenumber.length !== 0 ) {
             setData({
                 ...data,
-                bio: val,
+                phoneNumber:phonenumber ,
                 check_phonenumberChange: true,
                 isValidUser: true
             });
         } else {
             setData({
                 ...data,
-                bio: val,
+                phoneNumber: phonenumber,
                 check_phonenumberChange: false,
                 isValidUser: false
             });
         }
+        // setphonenumber(phonenumber)
     }
 
     const onSubmitEditing = () =>{
@@ -177,25 +221,21 @@ const UpdateScreen = ({navigation}) => {
           firstName:data.firstName,
           lastName: data.lastName,
           userName:data.userName,
-          email: data.email,
-          password: data.password,
-          dateOfBirth: data.dateOfBirth,
           phoneNumber: data.phoneNumber,
-          description: data.description,
+          description: data.bio,
           profileImage: data.profileImage,
-          coverImage: data.coverImage,
           isActif: data.isActif,
           address: data.address,
           city: data.city,
-          country: data.country,
-          zipCode: data.zipCode 
+          country: data.country
 
         });
-        console.log(body);
-        console.log(data);
-        tracker.put(`/user/${userId}`, body, config)
+        // console.log(body);
+         console.log(body);
+        tracker.put(`/user/${userid}`, body, config)
        .then((res) => {
-            console.log(res.data)
+            console.log('res:' +JSON.stringify(res.data))
+            console.log('userid' +userid)
         }).catch((err) => {
             
             console.log(err)
@@ -216,10 +256,9 @@ const UpdateScreen = ({navigation}) => {
                 backgroundColor: colors.background
             }]}
         >
-
-
-            {/* edit username */}
-            <Text style={[styles.text_footer, {
+        <ScrollView>
+              {/* edit username */}
+              <Text style={[styles.text_footer, {
                 color: colors.text,
                 marginTop: 35
             }]}>Change Username</Text>
@@ -236,7 +275,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => usernameChange(val)}
+                    onChangeText={(username) => usernameChange(username)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 
@@ -277,7 +316,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => firstnameChange(val)}
+                    onChangeText={(firstname) => firstnameChange(firstname)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_firstnameChange ? 
@@ -317,7 +356,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => lastnameChange(val)}
+                    onChangeText={(lastname) => lastnameChange(lastname)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_lastnameChange ? 
@@ -356,7 +395,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => bioChange(val)}
+                    onChangeText={(bio) => bioChange(bio)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_bioChange ? 
@@ -395,7 +434,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => citynameChange(val)}
+                    onChangeText={(cityname) => citynameChange(cityname)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_citynameChange ? 
@@ -434,7 +473,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => countrynameChange(val)}
+                    onChangeText={(countryname) => countrynameChange(countryname)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_countrynameChange ? 
@@ -475,7 +514,7 @@ const UpdateScreen = ({navigation}) => {
                         color: colors.text
                     }]}
                     autoCapitalize="none"
-                    onChangeText={(val) => phonenumberChange(val)}
+                    onChangeText={(phonenumber) => phonenumberChange(phonenumber)}
                     // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                 />
                 {data.check_phonenumberChange ? 
@@ -511,6 +550,9 @@ const UpdateScreen = ({navigation}) => {
                 </LinearGradient>
                 </TouchableOpacity>
             </View>
+        </ScrollView>
+
+          
         </Animatable.View>
       </View>
     );
